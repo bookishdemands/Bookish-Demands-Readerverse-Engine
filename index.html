@@ -195,8 +195,8 @@
 <body>
 <header>
   <div class="wrap">
-    <h1>Bookish Demands Readerverse Engine <span class="badge">v1.2</span></h1>
-    <div class="sub">Now includes Drop Library (save/load full drops), plus 30-pack, content mode, and Drop Builder.</div>
+    <h1>Bookish Demands Readerverse Engine <span class="badge">v1.3</span></h1>
+    <div class="sub">Adds Body Types, Hair Color, Nail builder, Extras, Lighting, White/Transparent backgrounds, Custom Add-ons + Custom Categories.</div>
     <div class="pill">Trademark-safe language: uses “e-reader” (not “Kindle”).</div>
   </div>
 </header>
@@ -268,10 +268,32 @@
           <textarea id="quoteInput" placeholder="Paste quote here (recommended for Packs + Drops)."></textarea>
         </div>
         <div>
-          <label for="customCategory">Custom Category / Notes (optional)</label>
-          <input id="customCategory" type="text" placeholder="Example: Tropes, drop era, vibe notes"/>
+          <label for="customCategory">Custom Notes (optional)</label>
+          <input id="customCategory" type="text" placeholder="Example: tropes, drop era, vibe notes"/>
           <div class="note">Appends to prompt as “custom notes: …”</div>
         </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="customAddons">Custom Add-ons (comma-separated)</label>
+          <input id="customAddons" type="text" placeholder="extra dramatic lashes, oversized glasses, glossy highlight, nose ring"/>
+          <div class="note">Use this for quick details without editing dropdowns.</div>
+        </div>
+        <div>
+          <label for="customCategories">Custom Categories (one per line: Label: value)</label>
+          <textarea id="customCategories" placeholder="Lashes: extra dramatic manga lashes&#10;Glasses: oversized gold rim glasses&#10;Vibe: retro pop art print texture"></textarea>
+          <div class="note">This becomes prompt lines automatically. Great when you want new “categories” on the fly.</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="negativePrompt">Avoid / Negative Prompt (optional)</label>
+          <textarea id="negativePrompt" placeholder="avoid: masculine face, harsh jawline, thick brows, realism, blurry, low quality, watermark, logo"></textarea>
+          <div class="note">Use this to keep the style feminine + clean.</div>
+        </div>
+        <div></div>
       </div>
 
       <div class="btnrow">
@@ -283,6 +305,7 @@
 
       <div class="divider"></div>
 
+      <!-- Core dropdowns -->
       <div class="row">
         <div>
           <label for="archetype">Reader Archetype</label>
@@ -327,54 +350,77 @@
         </div>
       </div>
 
+      <!-- New: body + beauty controls -->
       <div class="row">
         <div>
           <label for="complexion">Melanated Complexion</label>
           <select id="complexion"></select>
         </div>
         <div>
-          <label for="faceShape">Face Shape</label>
-          <select id="faceShape"></select>
+          <label for="bodyType">Body Type</label>
+          <select id="bodyType"></select>
         </div>
       </div>
 
       <div class="row">
         <div>
-          <label for="hair">Hair</label>
+          <label for="faceShape">Face Shape</label>
+          <select id="faceShape"></select>
+        </div>
+        <div>
+          <label for="extras">Extras (lashes / glasses / piercings)</label>
+          <select id="extras"></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="hairColor">Hair Color</label>
+          <select id="hairColor"></select>
+        </div>
+        <div>
+          <label for="hair">Hair Style</label>
           <select id="hair"></select>
         </div>
+      </div>
+
+      <div class="row">
         <div>
           <label for="makeup">Makeup</label>
           <select id="makeup"></select>
         </div>
+        <div>
+          <label for="lighting">Lighting</label>
+          <select id="lighting"></select>
+        </div>
       </div>
 
       <div class="row">
         <div>
-          <label for="nails">Nails</label>
-          <select id="nails"></select>
+          <label for="nailShape">Nail Shape / Style</label>
+          <select id="nailShape"></select>
         </div>
+        <div>
+          <label for="nailDesign">Nail Color / Design</label>
+          <select id="nailDesign"></select>
+        </div>
+      </div>
+
+      <div class="row">
         <div>
           <label for="outfit">Outfit</label>
           <select id="outfit"></select>
         </div>
-      </div>
-
-      <div class="row">
         <div>
           <label for="accessories">Jewelry / Accessories</label>
           <select id="accessories"></select>
         </div>
-        <div>
-          <label for="prop">Bookish Props</label>
-          <select id="prop"></select>
-        </div>
       </div>
 
       <div class="row">
         <div>
-          <label for="background">Background</label>
-          <select id="background"></select>
+          <label for="prop">Bookish Props</label>
+          <select id="prop"></select>
         </div>
         <div>
           <label for="scene">Scene</label>
@@ -384,13 +430,21 @@
 
       <div class="row">
         <div>
+          <label for="background">Background</label>
+          <select id="background"></select>
+        </div>
+        <div>
           <label for="palette">Palette</label>
           <select id="palette"></select>
         </div>
+      </div>
+
+      <div class="row">
         <div>
           <label for="composition">Composition</label>
           <select id="composition"></select>
         </div>
+        <div></div>
       </div>
 
       <div class="divider"></div>
@@ -409,10 +463,15 @@
             <option value="pose">Pose</option>
             <option value="poseAtt">Pose Attitude</option>
             <option value="complexion">Complexion</option>
+            <option value="bodyType">Body Type</option>
             <option value="faceShape">Face Shape</option>
+            <option value="extras">Extras</option>
+            <option value="hairColor">Hair Color</option>
             <option value="hair">Hair</option>
             <option value="makeup">Makeup</option>
-            <option value="nails">Nails</option>
+            <option value="lighting">Lighting</option>
+            <option value="nailShape">Nail Shape</option>
+            <option value="nailDesign">Nail Design</option>
             <option value="outfit">Outfit</option>
             <option value="accessories">Accessories</option>
             <option value="prop">Prop</option>
@@ -432,10 +491,10 @@
         <button id="btnAddOption">Add Option</button>
         <button class="bad" id="btnResetDefaults">Reset to Defaults</button>
       </div>
-      <div class="note">Reset restores original lists (presets + drop library remain exportable).</div>
+      <div class="note">Reset restores original lists (presets + drop library remain).</div>
     </section>
 
-    <!-- RIGHT: Output + Presets + Drop Library -->
+    <!-- RIGHT: Output + Drop Library + Presets -->
     <aside class="card">
       <h2>Output</h2>
       <div class="out"><pre id="output">(Click “Build Output”)</pre></div>
@@ -449,7 +508,6 @@
       <div class="divider"></div>
 
       <h2>Drop Library</h2>
-
       <div class="row">
         <div>
           <label for="dropLibSelect">Saved Drops</label>
@@ -457,16 +515,14 @@
         </div>
         <div>
           <label>&nbsp;</label>
-          <div class="small">Saves in your browser (localStorage). Export JSON to back it up.</div>
+          <div class="small">Saves in your browser. Export JSON to back up.</div>
         </div>
       </div>
-
       <div class="btnrow">
         <button class="good" id="btnSaveDrop">Save Current Drop</button>
         <button id="btnLoadDrop">Load Drop</button>
         <button class="bad" id="btnDeleteDrop">Delete Drop</button>
       </div>
-
       <div class="btnrow">
         <button id="btnExportDropLibrary">Export Drop Library (JSON)</button>
         <button id="btnImportDropLibrary">Import Drop Library (JSON)</button>
@@ -486,13 +542,11 @@
           <select id="presetSelect"></select>
         </div>
       </div>
-
       <div class="btnrow">
         <button class="good" id="btnSavePreset">Save Preset</button>
         <button id="btnLoadPreset">Load Preset</button>
         <button class="bad" id="btnDeletePreset">Delete Preset</button>
       </div>
-
       <div class="btnrow">
         <button id="btnExportPresets">Export Presets (JSON)</button>
         <button id="btnImportPresets">Import Presets (JSON)</button>
@@ -509,10 +563,7 @@
         <span class="chip">Character packs</span>
         <span class="chip">Meme graphics</span>
       </div>
-
-      <div class="note">
-        Tip: Use <span class="kbd">Drop Builder</span> → then hit <span class="kbd">Save Current Drop</span> so you can reopen it anytime.
-      </div>
+      <div class="note">Tip: Use <span class="kbd">Drop Builder</span> → then <span class="kbd">Save Current Drop</span>.</div>
     </aside>
 
   </div>
@@ -520,15 +571,24 @@
 
 <script>
 /* =========================
-   Readerverse Engine v1.2
-   Adds Drop Library:
-   - Save/Load/Delete full drops
-   - Export/Import drop library JSON
+   Readerverse Engine v1.3
+   Adds:
+   - Body Types
+   - Hair Color
+   - Nails split (Shape + Design)
+   - Extras dropdown
+   - Lighting dropdown
+   - White + Transparent backgrounds
+   - More palettes
+   - Custom Add-ons + Custom Categories lines
+   - Negative prompt field
+   Keeps:
+   - Drop Builder + 30-pack + Content Mode + Drop Library + Presets + exports
 ========================= */
 
-const STORAGE_KEY_DATA = "readerverse_data_v1_2";
-const STORAGE_KEY_PRESETS = "readerverse_presets_v1_2";
-const STORAGE_KEY_DROP_LIBRARY = "readerverse_drop_library_v1_2";
+const STORAGE_KEY_DATA = "readerverse_data_v1_3";
+const STORAGE_KEY_PRESETS = "readerverse_presets_v1_3";
+const STORAGE_KEY_DROP_LIBRARY = "readerverse_drop_library_v1_3";
 
 /* ====== DEFAULT VAULTS ====== */
 const DEFAULTS = {
@@ -544,6 +604,7 @@ const DEFAULTS = {
     "Feral Romance Reader",
     "Soft Girl Menace"
   ],
+
   archetype: [
     "Petty Reader",
     "Soft Girl Menace",
@@ -566,6 +627,7 @@ const DEFAULTS = {
     "The Book Was Better",
     "Reader With Expensive Taste"
   ],
+
   expression: [
     "dramatic side-eye",
     "unimpressed deadpan",
@@ -580,6 +642,7 @@ const DEFAULTS = {
     "dangerous smirk",
     "confident main character smirk"
   ],
+
   micro: [
     "one eyebrow raised",
     "half-lidded unimpressed gaze",
@@ -592,6 +655,7 @@ const DEFAULTS = {
     "side glance with dramatic lashes",
     "soft squint like she knows the tea"
   ],
+
   reaction: [
     "suspicious side-eye reaction",
     "unimpressed reader reaction",
@@ -604,6 +668,7 @@ const DEFAULTS = {
     "emotionally damaged reaction",
     "feral romance reader reaction"
   ],
+
   mood: [
     "controlled chaos mood",
     "plot twist panic mood",
@@ -616,6 +681,7 @@ const DEFAULTS = {
     "soft cozy mood",
     "revenge arc mood"
   ],
+
   attitude: [
     "quietly petty",
     "bossy main character energy",
@@ -628,6 +694,7 @@ const DEFAULTS = {
     "unbothered & booked",
     "emotionally invested"
   ],
+
   pose: [
     "arms crossed unimpressed",
     "hand on hip confident",
@@ -640,6 +707,7 @@ const DEFAULTS = {
     "phone in hand reaction",
     "clutching book dramatically"
   ],
+
   poseAtt: [
     "slow blink like she’s judging you",
     "leaning with shoulder popped attitude",
@@ -652,6 +720,7 @@ const DEFAULTS = {
     "feral excitement posture",
     "soft menace posture"
   ],
+
   complexion: [
     "deep espresso skin tone (cool undertone)",
     "deep espresso skin tone (warm undertone)",
@@ -664,6 +733,20 @@ const DEFAULTS = {
     "dark chocolate complexion (cool)",
     "deep walnut complexion (neutral)"
   ],
+
+  bodyType: [
+    "plus size curvy body type (soft, feminine silhouette)",
+    "mid-size curvy body type",
+    "curvy hourglass body type",
+    "voluptuous hourglass body type",
+    "thick athletic body type",
+    "athletic toned body type",
+    "petite slim body type",
+    "tall statuesque body type",
+    "soft pear-shaped body type",
+    "curvy athletic body type"
+  ],
+
   faceShape: [
     "heart face shape",
     "oval face shape",
@@ -672,6 +755,41 @@ const DEFAULTS = {
     "square face shape (softened)",
     "oval-heart hybrid face"
   ],
+
+  extras: [
+    "extra dramatic lashes",
+    "manga lashes",
+    "flutter lashes",
+    "oversized glasses",
+    "gold rim oversized glasses",
+    "cat-eye glasses",
+    "rimless glasses",
+    "nose ring (subtle)",
+    "septum ring (subtle)",
+    "stacked ear piercings",
+    "beauty mark",
+    "baby hairs laid",
+    "rhinestone hair clips",
+    "hair cuffs",
+    "bold statement earrings",
+    "none"
+  ],
+
+  hairColor: [
+    "jet black hair",
+    "soft black hair",
+    "espresso brown hair",
+    "chocolate brown hair",
+    "warm auburn hair",
+    "copper brown hair",
+    "honey blonde hair",
+    "caramel blonde hair",
+    "golden blonde highlights",
+    "brown hair with blonde money-piece",
+    "burgundy wine hair",
+    "midnight blue-black hair"
+  ],
+
   hair: [
     "long glossy glam waves",
     "voluminous curly glam hair",
@@ -684,6 +802,7 @@ const DEFAULTS = {
     "messy glam bun",
     "deep side part Hollywood waves"
   ],
+
   makeup: [
     "soft glam makeup",
     "editorial glam makeup",
@@ -694,16 +813,49 @@ const DEFAULTS = {
     "rich girl natural glam",
     "night-out glam"
   ],
-  nails: [
-    "long coffin acrylic nails (glossy pink)",
-    "long stiletto acrylic nails (chrome)",
-    "short almond nails (nude gloss)",
-    "rhinestone accent nails",
-    "glitter French tip nails",
-    "matte nude acrylic nails",
-    "high-shine cherry red nails",
-    "pearly white glossy nails"
+
+  lighting: [
+    "soft beauty lighting",
+    "studio beauty lighting",
+    "flash glam lighting",
+    "warm golden glow lighting",
+    "cool editorial lighting",
+    "high contrast dramatic lighting",
+    "subtle magenta rim light",
+    "neon pop lighting"
   ],
+
+  nailShape: [
+    "short almond nails",
+    "long almond nails",
+    "coffin nails",
+    "XL coffin nails",
+    "stiletto nails",
+    "square nails",
+    "builder gel nails (high-end)",
+    "press-on nails (premium look)"
+  ],
+
+  nailDesign: [
+    "nude gloss",
+    "pink gloss",
+    "milky white",
+    "classic french tip",
+    "colored french tip",
+    "chrome silver",
+    "chrome gold",
+    "rose chrome",
+    "glitter ombré",
+    "cherry red gloss",
+    "deep wine gloss",
+    "black gloss",
+    "black + chrome accent",
+    "rhinestone accent nails",
+    "aura nails",
+    "cat eye gel nails",
+    "marble nails"
+  ],
+
   outfit: [
     "luxury streetwear outfit",
     "soft girl aesthetic outfit",
@@ -714,6 +866,7 @@ const DEFAULTS = {
     "cozy reader outfit",
     "night-out glam outfit"
   ],
+
   accessories: [
     "oversized gold hoop earrings + layered gold necklaces",
     "gold hoops + chunky chain necklace",
@@ -724,6 +877,7 @@ const DEFAULTS = {
     "stacked bracelets + rings",
     "nose ring + hoops (subtle)"
   ],
+
   prop: [
     "holding an e-reader",
     "holding an open romance novel dramatically",
@@ -734,16 +888,20 @@ const DEFAULTS = {
     "holding a stack of books",
     "holding a reading journal + pen"
   ],
+
   background: [
-    "vibrant hot pink glam background",
+    "pure white background (studio clean)",
+    "transparent background, isolated cutout, sticker style",
+    "transparent background, clean outline cut sticker",
+    "clean sticker background (minimal)",
     "sparkle gradient glam background",
     "bubblegum pop art background",
-    "luxury marble background with gold accents",
-    "clean sticker background (minimal)",
     "soft pink gradient with twinkle stars",
     "dark glam gradient with magenta rim glow",
-    "comic pop art halftone background"
+    "comic pop art halftone background",
+    "luxury marble background with gold accents"
   ],
+
   scene: [
     "reading at 3AM under a blanket",
     "dramatic plot twist moment",
@@ -754,16 +912,27 @@ const DEFAULTS = {
     "annotating and highlighting scene",
     "scrolling reactions to a chapter reveal"
   ],
+
   palette: [
+    /* Bookish Demands brand-safe */
     "matte black + electric magenta + bone",
-    "hot pink + black + gold",
-    "bubblegum pink + cream + gold",
     "black + magenta glow + charcoal",
-    "champagne gold + black + blush",
+    "espresso + ivory + electric magenta accent",
+    "gunmetal + blush + champagne gold",
+    "oxblood + matte black + antique gold",
+    "black + hot pink + silver",
+
+    /* Viral pop / carousel */
+    "bubblegum pink + white + gold",
+    "lavender + mint + white",
+    "aqua + hot pink + black",
+    "neon lime + black + chrome",
+    "peach + cream + espresso",
+    "candy pink + sky blue + white",
     "neon magenta + violet + black",
-    "soft pink + ivory + espresso",
     "crimson + gunmetal + ivory"
   ],
+
   composition: [
     "clean centered portrait, sticker-friendly framing",
     "waist-up character, big expression, minimal clutter",
@@ -773,7 +942,7 @@ const DEFAULTS = {
   ]
 };
 
-/* ====== DATA ====== */
+/* ====== DATA / STORAGE ====== */
 function loadData(){
   const raw = localStorage.getItem(STORAGE_KEY_DATA);
   if(!raw) return structuredClone(DEFAULTS);
@@ -787,7 +956,6 @@ function loadData(){
 function saveData(data){ localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(data)); }
 function resetData(){ localStorage.removeItem(STORAGE_KEY_DATA); }
 
-/* ====== PRESETS ====== */
 function loadPresets(){
   const raw = localStorage.getItem(STORAGE_KEY_PRESETS);
   if(!raw) return {};
@@ -795,15 +963,12 @@ function loadPresets(){
 }
 function savePresets(p){ localStorage.setItem(STORAGE_KEY_PRESETS, JSON.stringify(p)); }
 
-/* ====== DROP LIBRARY ====== */
 function loadDropLibrary(){
   const raw = localStorage.getItem(STORAGE_KEY_DROP_LIBRARY);
   if(!raw) return {};
   try{ return JSON.parse(raw) || {}; }catch{ return {}; }
 }
-function saveDropLibrary(lib){
-  localStorage.setItem(STORAGE_KEY_DROP_LIBRARY, JSON.stringify(lib));
-}
+function saveDropLibrary(lib){ localStorage.setItem(STORAGE_KEY_DROP_LIBRARY, JSON.stringify(lib)); }
 
 /* ====== HELPERS ====== */
 const $ = (id)=>document.getElementById(id);
@@ -867,8 +1032,13 @@ function getSelections(){
     contentMode: $("contentMode").checked,
     carouselMode: $("carouselMode").checked,
     noText: $("noText").checked,
+
     quote: $("quoteInput").value.trim(),
     customCategory: $("customCategory").value.trim(),
+    customAddons: $("customAddons").value.trim(),
+    customCategories: $("customCategories").value.trim(),
+    negativePrompt: $("negativePrompt").value.trim(),
+
     dropTheme: $("dropTheme").value,
     dropName: $("dropName").value.trim(),
 
@@ -880,38 +1050,57 @@ function getSelections(){
     attitude: $("attitude").value,
     pose: $("pose").value,
     poseAtt: $("poseAtt").value,
+
     complexion: $("complexion").value,
+    bodyType: $("bodyType").value,
     faceShape: $("faceShape").value,
+    extras: $("extras").value,
+
+    hairColor: $("hairColor").value,
     hair: $("hair").value,
     makeup: $("makeup").value,
-    nails: $("nails").value,
+    lighting: $("lighting").value,
+
+    nailShape: $("nailShape").value,
+    nailDesign: $("nailDesign").value,
+
     outfit: $("outfit").value,
     accessories: $("accessories").value,
     prop: $("prop").value,
-    background: $("background").value,
     scene: $("scene").value,
+    background: $("background").value,
     palette: $("palette").value,
     composition: $("composition").value
   };
 }
+
 function applySelections(sel){
   const ids = [
     "archetype","expression","micro","reaction","mood","attitude","pose","poseAtt",
-    "complexion","faceShape","hair","makeup","nails","outfit","accessories","prop",
-    "background","scene","palette","composition"
+    "complexion","bodyType","faceShape","extras",
+    "hairColor","hair","makeup","lighting",
+    "nailShape","nailDesign",
+    "outfit","accessories","prop","scene","background","palette","composition"
   ];
   ids.forEach(id=>{
     if(sel[id] && $(id)) $(id).value = sel[id];
   });
+
   if(typeof sel.carouselMode === "boolean") $("carouselMode").checked = sel.carouselMode;
   if(typeof sel.noText === "boolean") $("noText").checked = sel.noText;
   if(typeof sel.contentMode === "boolean") $("contentMode").checked = sel.contentMode;
+
   if(sel.quote !== undefined) $("quoteInput").value = sel.quote;
   if(sel.customCategory !== undefined) $("customCategory").value = sel.customCategory;
+  if(sel.customAddons !== undefined) $("customAddons").value = sel.customAddons;
+  if(sel.customCategories !== undefined) $("customCategories").value = sel.customCategories;
+  if(sel.negativePrompt !== undefined) $("negativePrompt").value = sel.negativePrompt;
+
   if(sel.matchStrength) $("matchStrength").value = sel.matchStrength;
   if(sel.mode) $("mode").value = sel.mode;
   if(sel.dropTheme) $("dropTheme").value = sel.dropTheme;
   if(sel.dropName !== undefined) $("dropName").value = sel.dropName;
+
   showDropControls();
 }
 
@@ -976,16 +1165,39 @@ function buildContent(sel){
   };
 }
 
+/* ====== CUSTOM CATEGORY LINES PARSER ====== */
+function parseCustomCategoryLines(text){
+  const raw = String(text || "").trim();
+  if(!raw) return [];
+  return raw
+    .split("\n")
+    .map(line => line.trim())
+    .filter(Boolean)
+    .map(line => "custom category: " + line);
+}
+
 /* ====== PROMPT BUILD ====== */
 function buildSinglePrompt(sel){
   const parts = [];
+
   parts.push(basePrompt());
+
   parts.push(sel.complexion);
+  parts.push(sel.bodyType);
   parts.push(sel.faceShape);
 
+  // hair = color + style
+  parts.push(sel.hairColor);
   parts.push(sel.hair);
+
   parts.push(sel.makeup);
-  parts.push(sel.nails);
+  parts.push(sel.extras);
+  parts.push(sel.lighting);
+
+  // nails = shape + design
+  parts.push(sel.nailShape);
+  parts.push(sel.nailDesign);
+
   parts.push(sel.outfit);
   parts.push(sel.accessories);
 
@@ -1007,12 +1219,26 @@ function buildSinglePrompt(sel){
   if(sel.carouselMode){
     parts.push("centered composition, clean background, large expressive face, sticker-friendly framing, minimal background clutter");
   }
+
   if(sel.customCategory){
     parts.push("custom notes: " + sel.customCategory);
   }
+
+  if(sel.customAddons){
+    parts.push("add-ons: " + sel.customAddons);
+  }
+
+  const customLines = parseCustomCategoryLines(sel.customCategories);
+  customLines.forEach(x => parts.push(x));
+
   if(sel.noText){
     parts.push("no text, no watermark, no logo");
   }
+
+  if(sel.negativePrompt){
+    parts.push(sel.negativePrompt);
+  }
+
   return parts.filter(Boolean).join(", ");
 }
 
@@ -1026,13 +1252,24 @@ function randomizeAll(data){
   $("attitude").value = pick(data.attitude);
   $("pose").value = pick(data.pose);
   $("poseAtt").value = pick(data.poseAtt);
+
   $("complexion").value = pick(data.complexion);
+  $("bodyType").value = pick(data.bodyType);
   $("faceShape").value = pick(data.faceShape);
+  $("extras").value = pick(data.extras);
+
+  $("hairColor").value = pick(data.hairColor);
   $("hair").value = pick(data.hair);
+
   $("makeup").value = pick(data.makeup);
-  $("nails").value = pick(data.nails);
+  $("lighting").value = pick(data.lighting);
+
+  $("nailShape").value = pick(data.nailShape);
+  $("nailDesign").value = pick(data.nailDesign);
+
   $("outfit").value = pick(data.outfit);
   $("accessories").value = pick(data.accessories);
+
   $("prop").value = pick(data.prop);
   $("background").value = pick(data.background);
   $("scene").value = pick(data.scene);
@@ -1046,6 +1283,7 @@ function matchToQuote(data, quoteRaw, strength){
   const has = (...words)=>words.some(w=>quote.includes(w));
   const intensity = strength;
 
+  // default steer
   let target = {
     archetype: "Controlled Chaos Reader",
     expression: "confident main character smirk",
@@ -1057,9 +1295,11 @@ function matchToQuote(data, quoteRaw, strength){
     poseAtt: "unbothered posture",
     prop: "holding an e-reader",
     scene: "cozy luxury bedroom reading",
-    background: "vibrant hot pink glam background",
-    palette: "hot pink + black + gold",
-    composition: "clean centered portrait, sticker-friendly framing"
+    background: "sparkle gradient glam background",
+    palette: "matte black + electric magenta + bone",
+    composition: "clean centered portrait, sticker-friendly framing",
+    extras: "extra dramatic lashes",
+    lighting: "studio beauty lighting"
   };
 
   if(has("humble","quietly","proved me right","prove me right","told you","i knew it","unbothered","as expected","mmhmm","sure","okay then","watching")){
@@ -1073,11 +1313,13 @@ function matchToQuote(data, quoteRaw, strength){
     target.poseAtt = "slow blink like she’s judging you";
     target.prop = "holding a phone like she just read something shocking";
     target.scene = "scrolling reactions to a chapter reveal";
-    target.background = "vibrant hot pink glam background";
-    target.palette = "hot pink + black + gold";
+    target.background = "pure white background (studio clean)";
+    target.palette = "black + hot pink + silver";
+    target.extras = "oversized glasses";
+    target.lighting = "flash glam lighting";
   }
 
-  if(has("plot twist","wait","what","betrayal","shocked","gasp","jaw dropped","screaming","can’t believe","cant believe","insane","wild","twist")){
+  if(has("plot twist","wait","what","betrayal","shocked","gasp","jaw dropped","screaming","cant believe","can’t believe","insane","wild","twist")){
     target.archetype = "Plot Twist Detective";
     target.expression = "wide shocked eyes";
     target.micro = "eyes widened slightly";
@@ -1090,6 +1332,8 @@ function matchToQuote(data, quoteRaw, strength){
     target.scene = "dramatic plot twist moment";
     target.background = "comic pop art halftone background";
     target.palette = "neon magenta + violet + black";
+    target.extras = "manga lashes";
+    target.lighting = "high contrast dramatic lighting";
   }
 
   if(has("villain","unhinged","toxic","obsessed","mine","possessive","ruin","morally gray","morally grey","therapy","dangerous")){
@@ -1105,30 +1349,12 @@ function matchToQuote(data, quoteRaw, strength){
     target.scene = "dramatic plot twist moment";
     target.background = "dark glam gradient with magenta rim glow";
     target.palette = "matte black + electric magenta + bone";
-  }
-
-  if(has("soft","healing","cozy","comfort","peace","gentle","safe","calm")){
-    target.archetype = "Late Night Reader";
-    target.expression = "soft knowing smile";
-    target.micro = "side glance with dramatic lashes";
-    target.reaction = "unimpressed reader reaction";
-    target.mood = "soft cozy mood";
-    target.attitude = "unbothered & booked";
-    target.pose = "leaning slightly with attitude";
-    target.poseAtt = "soft menace posture";
-    target.prop = "holding iced coffee + open book";
-    target.scene = "coffee shop reading aesthetic";
-    target.background = "soft pink gradient with twinkle stars";
-    target.palette = "soft pink + ivory + espresso";
+    target.extras = "extra dramatic lashes";
+    target.lighting = "subtle magenta rim light";
   }
 
   if(intensity==="super"){
-    if(target.mood.includes("plot twist")){
-      target.expression = "dramatic gasp";
-      target.micro = "eyes widened slightly";
-      target.pose = "hands raised dramatic reaction";
-    }
-    if(target.mood.includes("feral dark romance")) target.poseAtt = "hair flip moment";
+    if(target.mood.includes("plot twist")) target.expression = "dramatic gasp";
     if(target.mood.includes("petty")) target.micro = "head tilted judgmentally";
   }
 
@@ -1146,13 +1372,18 @@ function matchToQuote(data, quoteRaw, strength){
   safeSet("background", target.background, data.background);
   safeSet("palette", target.palette, data.palette);
   safeSet("composition", target.composition, data.composition);
+  safeSet("extras", target.extras, data.extras);
+  safeSet("lighting", target.lighting, data.lighting);
 
-  // keep style varied
+  // keep the rest varied
   $("complexion").value = pick(data.complexion);
+  $("bodyType").value = pick(data.bodyType);
   $("faceShape").value = pick(data.faceShape);
+  $("hairColor").value = pick(data.hairColor);
   $("hair").value = pick(data.hair);
   $("makeup").value = pick(data.makeup);
-  $("nails").value = pick(data.nails);
+  $("nailShape").value = pick(data.nailShape);
+  $("nailDesign").value = pick(data.nailDesign);
   $("outfit").value = pick(data.outfit);
   $("accessories").value = pick(data.accessories);
 }
@@ -1163,6 +1394,7 @@ function autoDropName(theme, quote){
   const tag = quote ? " — Quote-Driven" : "";
   return `${theme} ${pick(vibe)}${tag}`;
 }
+
 function themeSteer(themeNorm){
   const t = normalize(themeNorm);
   if(t.includes("petty")){
@@ -1170,21 +1402,27 @@ function themeSteer(themeNorm){
     $("mood").value = "petty commentary mood";
     $("attitude").value = "quietly petty";
     $("expression").value = "dramatic side-eye";
+    $("extras").value = "oversized glasses";
+    $("background").value = "pure white background (studio clean)";
   } else if(t.includes("after dark") || t.includes("morally") || t.includes("loyalty")){
     $("archetype").value = "Dark Romance Delulu";
     $("mood").value = "feral dark romance mood";
     $("attitude").value = "villain apologist energy";
     $("expression").value = "dangerous smirk";
+    $("extras").value = "extra dramatic lashes";
+    $("background").value = "dark glam gradient with magenta rim glow";
   } else if(t.includes("plot twist")){
     $("archetype").value = "Plot Twist Detective";
     $("mood").value = "plot twist panic mood";
     $("attitude").value = "emotionally invested";
     $("expression").value = "wide shocked eyes";
+    $("background").value = "comic pop art halftone background";
   } else if(t.includes("controlled") || t.includes("chaos")){
     $("archetype").value = "Controlled Chaos Reader";
     $("mood").value = "controlled chaos mood";
     $("attitude").value = "delusional but calculated";
     $("expression").value = "smug knowing smirk";
+    $("background").value = "sparkle gradient glam background";
   } else if(t.includes("audiobook")){
     $("archetype").value = "Audiobook Multitasker";
     $("mood").value = "late night binge reading mood";
@@ -1212,6 +1450,7 @@ function themeSteer(themeNorm){
     $("expression").value = "dreamy delulu smile";
   }
 }
+
 function buildDrop(data){
   const sel = getSelections();
   const theme = sel.dropTheme;
@@ -1227,6 +1466,7 @@ function buildDrop(data){
     themeSteer(theme);
     if(quote) matchToQuote(data, quote, sel.matchStrength);
 
+    // palette bias for cohesion
     if(i % 3 !== 0){
       $("palette").value = sel.matchStrength === "super"
         ? "matte black + electric magenta + bone"
@@ -1279,6 +1519,8 @@ function buildPack4(data){
       $("prop").value = "holding an open romance novel dramatically";
       $("background").value = "comic pop art halftone background";
       $("scene").value = "dramatic plot twist moment";
+      $("extras").value = "manga lashes";
+      $("lighting").value = "high contrast dramatic lighting";
     }},
     { label:"2. Delulu Dark Romance Reader", steer: ()=> {
       $("archetype").value = "Dark Romance Delulu";
@@ -1291,6 +1533,8 @@ function buildPack4(data){
       $("prop").value = "holding an open romance novel dramatically";
       $("background").value = "dark glam gradient with magenta rim glow";
       $("scene").value = "dramatic plot twist moment";
+      $("extras").value = "extra dramatic lashes";
+      $("lighting").value = "subtle magenta rim light";
     }},
     { label:"3. Petty Side-Eye Reader", steer: ()=> {
       $("archetype").value = "Petty Reader";
@@ -1302,8 +1546,10 @@ function buildPack4(data){
       $("pose").value = "arms crossed unimpressed";
       $("poseAtt").value = "slow blink like she’s judging you";
       $("prop").value = "holding a phone like she just read something shocking";
-      $("background").value = "vibrant hot pink glam background";
+      $("background").value = "pure white background (studio clean)";
       $("scene").value = "scrolling reactions to a chapter reveal";
+      $("extras").value = "oversized glasses";
+      $("lighting").value = "flash glam lighting";
     }},
     { label:"4. Feral Romance Reader", steer: ()=> {
       $("archetype").value = "Morally Gray Enjoyer";
@@ -1316,20 +1562,13 @@ function buildPack4(data){
       $("prop").value = "holding a stack of books";
       $("background").value = "sparkle gradient glam background";
       $("scene").value = "late-night audiobook binge";
+      $("extras").value = "extra dramatic lashes";
+      $("lighting").value = "studio beauty lighting";
     }},
   ];
 
   roles.forEach(r=>{
-    $("complexion").value = pick(data.complexion);
-    $("faceShape").value = pick(data.faceShape);
-    $("hair").value = pick(data.hair);
-    $("makeup").value = pick(data.makeup);
-    $("nails").value = pick(data.nails);
-    $("outfit").value = pick(data.outfit);
-    $("accessories").value = pick(data.accessories);
-    $("palette").value = pick(data.palette);
-    $("composition").value = pick(data.composition);
-
+    randomizeAll(data);
     r.steer();
 
     const s = getSelections();
@@ -1386,10 +1625,10 @@ let DATA = loadData();
 let PRESETS = loadPresets();
 let DROP_LIB = loadDropLibrary();
 
-function refreshPresetSelect(presets){
+function refreshPresetSelect(){
   const sel = $("presetSelect");
   sel.innerHTML = "";
-  const names = Object.keys(presets).sort((a,b)=>a.localeCompare(b));
+  const names = Object.keys(PRESETS).sort((a,b)=>a.localeCompare(b));
   const blank = document.createElement("option");
   blank.value = ""; blank.textContent = "— Select —";
   sel.appendChild(blank);
@@ -1407,7 +1646,7 @@ function refreshDropLibSelect(){
   const ids = Object.keys(DROP_LIB).sort((a,b)=>{
     const da = DROP_LIB[a]?.createdAt || "";
     const db = DROP_LIB[b]?.createdAt || "";
-    return db.localeCompare(da); // newest first
+    return db.localeCompare(da);
   });
 
   const blank = document.createElement("option");
@@ -1416,9 +1655,9 @@ function refreshDropLibSelect(){
 
   ids.forEach(id=>{
     const d = DROP_LIB[id];
-    const opt = document.createElement("option");
     const date = d?.createdAt ? new Date(d.createdAt).toLocaleString() : "";
     const count = d?.rows?.length ?? 0;
+    const opt = document.createElement("option");
     opt.value = id;
     opt.textContent = `${d.dropName} • ${d.dropTheme} • ${count} items • ${date}`;
     sel.appendChild(opt);
@@ -1427,6 +1666,7 @@ function refreshDropLibSelect(){
 
 function init(){
   fillSelect("dropTheme", DATA.dropTheme);
+
   fillSelect("archetype", DATA.archetype);
   fillSelect("expression", DATA.expression);
   fillSelect("micro", DATA.micro);
@@ -1435,11 +1675,21 @@ function init(){
   fillSelect("attitude", DATA.attitude);
   fillSelect("pose", DATA.pose);
   fillSelect("poseAtt", DATA.poseAtt);
+
   fillSelect("complexion", DATA.complexion);
+  fillSelect("bodyType", DATA.bodyType);
   fillSelect("faceShape", DATA.faceShape);
+  fillSelect("extras", DATA.extras);
+
+  fillSelect("hairColor", DATA.hairColor);
   fillSelect("hair", DATA.hair);
+
   fillSelect("makeup", DATA.makeup);
-  fillSelect("nails", DATA.nails);
+  fillSelect("lighting", DATA.lighting);
+
+  fillSelect("nailShape", DATA.nailShape);
+  fillSelect("nailDesign", DATA.nailDesign);
+
   fillSelect("outfit", DATA.outfit);
   fillSelect("accessories", DATA.accessories);
   fillSelect("prop", DATA.prop);
@@ -1448,7 +1698,7 @@ function init(){
   fillSelect("palette", DATA.palette);
   fillSelect("composition", DATA.composition);
 
-  refreshPresetSelect(PRESETS);
+  refreshPresetSelect();
   refreshDropLibSelect();
   showDropControls();
 
@@ -1560,10 +1810,8 @@ $("btnGenerate").addEventListener("click", ()=>{
   }
 
   if(mode === "pack30"){
-    // 30-pack uses full drop logic
     drop = buildDrop(DATA);
     rows = drop.rows;
-
     $("output").textContent = rows.map(r=>{
       return sel.contentMode
         ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
@@ -1626,18 +1874,17 @@ $("btnCopy").addEventListener("click", async ()=>{
   }
 });
 
+/* ====== EXPORTS ====== */
 $("btnExportTXT").addEventListener("click", ()=>{
   const text = $("output").textContent || "";
   if(!text.trim()){ alert("Nothing to export yet."); return; }
   downloadText("readerverse_output.txt", text);
 });
-
 $("btnExportCSV").addEventListener("click", ()=>{
   const rows = window.__lastRows || [];
   if(!rows.length){ alert("Nothing to export yet. Build Output first."); return; }
   downloadText("readerverse_output.csv", buildCSV(rows));
 });
-
 $("btnExportDropJSON").addEventListener("click", ()=>{
   const drop = window.__lastDrop;
   if(!drop){
@@ -1647,7 +1894,7 @@ $("btnExportDropJSON").addEventListener("click", ()=>{
   downloadText("readerverse_drop.json", JSON.stringify(drop, null, 2));
 });
 
-/* ====== DROP LIBRARY ACTIONS ====== */
+/* ====== DROP LIBRARY ====== */
 $("btnSaveDrop").addEventListener("click", ()=>{
   const drop = window.__lastDrop;
   if(!drop){
@@ -1667,16 +1914,13 @@ $("btnLoadDrop").addEventListener("click", ()=>{
   const drop = DROP_LIB[id];
   if(!drop){ alert("That drop wasn’t found."); return; }
 
-  // Load theme/name/quote into UI
   $("dropTheme").value = drop.dropTheme || DEFAULTS.dropTheme[0];
   $("dropName").value = drop.dropName || "";
   $("quoteInput").value = drop.quoteReference || "";
 
-  // Set mode to dropbuilder for display style
   $("mode").value = "dropbuilder";
   showDropControls();
 
-  // Render output immediately
   const sel = getSelections();
   const header = `DROP NAME\n${drop.dropName}\n\nDROP THEME\n${drop.dropTheme}\n\nQUOTE (optional)\n${drop.quoteReference || "(none)"}\n\n=== OUTPUT ===\n`;
   const body = drop.rows.map(r=>{
@@ -1705,7 +1949,7 @@ $("btnDeleteDrop").addEventListener("click", ()=>{
 
 $("btnExportDropLibrary").addEventListener("click", ()=>{
   const payload = {
-    version: "readerverse_drop_library_v1_2",
+    version: "readerverse_drop_library_v1_3",
     exportedAt: new Date().toISOString(),
     drops: DROP_LIB
   };
@@ -1735,55 +1979,14 @@ $("importDropLibFile").addEventListener("change", async (e)=>{
   }
 });
 
-/* ====== QUICK ADD OPTION ====== */
-$("btnAddOption").addEventListener("click", ()=>{
-  const target = $("addTarget").value;
-  const val = $("addValue").value.trim();
-  if(!val){ alert("Type a new option first."); return; }
-  if(!DATA[target]){ alert("Invalid target."); return; }
-  const exists = DATA[target].some(x=>normalize(x)===normalize(val));
-  if(exists){ alert("That option already exists."); return; }
-
-  DATA[target].push(val);
-  fillSelect(target, DATA[target]);
-  $(target).value = val;
-  $("addValue").value = "";
-  saveData(DATA);
-
-  // If adding new drop theme, refresh selector too
-  if(target === "dropTheme") fillSelect("dropTheme", DATA.dropTheme);
-});
-
-$("btnResetDefaults").addEventListener("click", ()=>{
-  if(!confirm("Reset lists to defaults? This removes custom vault additions. Presets + Drop Library remain.")) return;
-  resetData();
-  DATA = loadData();
-  init();
-});
-
 /* ====== PRESETS ====== */
-function refreshPresetSelect(presets){
-  const sel = $("presetSelect");
-  sel.innerHTML = "";
-  const names = Object.keys(presets).sort((a,b)=>a.localeCompare(b));
-  const blank = document.createElement("option");
-  blank.value = ""; blank.textContent = "— Select —";
-  sel.appendChild(blank);
-  names.forEach(name=>{
-    const opt = document.createElement("option");
-    opt.value = name;
-    opt.textContent = name;
-    sel.appendChild(opt);
-  });
-}
-
 $("btnSavePreset").addEventListener("click", ()=>{
   const name = $("presetName").value.trim();
   if(!name){ alert("Name your preset first."); return; }
   const sel = getSelections();
   PRESETS[name] = { ...sel };
   savePresets(PRESETS);
-  refreshPresetSelect(PRESETS);
+  refreshPresetSelect();
   $("presetSelect").value = name;
   alert("Preset saved!");
 });
@@ -1822,16 +2025,18 @@ $("btnDeletePreset").addEventListener("click", ()=>{
   if(!confirm(`Delete preset "${name}"?`)) return;
   delete PRESETS[name];
   savePresets(PRESETS);
-  refreshPresetSelect(PRESETS);
+  refreshPresetSelect();
   $("presetName").value = "";
   alert("Deleted.");
 });
 
 $("btnExportPresets").addEventListener("click", ()=>{
-  const payload = { version:"readerverse_presets_v1_2", exportedAt:new Date().toISOString(), presets: PRESETS };
+  const payload = { version:"readerverse_presets_v1_3", exportedAt:new Date().toISOString(), presets: PRESETS };
   downloadText("readerverse_presets.json", JSON.stringify(payload, null, 2));
 });
+
 $("btnImportPresets").addEventListener("click", ()=> $("importFile").click());
+
 $("importFile").addEventListener("change", async (e)=>{
   const file = e.target.files?.[0];
   if(!file) return;
@@ -1842,7 +2047,7 @@ $("importFile").addEventListener("change", async (e)=>{
     if(typeof imported !== "object") throw new Error("Invalid");
     PRESETS = { ...PRESETS, ...imported };
     savePresets(PRESETS);
-    refreshPresetSelect(PRESETS);
+    refreshPresetSelect();
     alert("Presets imported!");
   }catch{
     alert("Import failed. Use Readerverse presets JSON export.");
@@ -1851,9 +2056,51 @@ $("importFile").addEventListener("change", async (e)=>{
   }
 });
 
+/* ====== QUICK ADD OPTION ====== */
+$("btnAddOption").addEventListener("click", ()=>{
+  const target = $("addTarget").value;
+  const val = $("addValue").value.trim();
+  if(!val){ alert("Type a new option first."); return; }
+  if(!DATA[target]){ alert("Invalid target."); return; }
+
+  const exists = DATA[target].some(x=>normalize(x)===normalize(val));
+  if(exists){ alert("That option already exists."); return; }
+
+  DATA[target].push(val);
+  fillSelect(target, DATA[target]);
+  $(target).value = val;
+  $("addValue").value = "";
+  saveData(DATA);
+
+  if(target === "dropTheme") fillSelect("dropTheme", DATA.dropTheme);
+});
+
+$("btnResetDefaults").addEventListener("click", ()=>{
+  if(!confirm("Reset lists to defaults? This removes custom vault additions. Presets + Drop Library remain.")) return;
+  resetData();
+  DATA = loadData();
+  init();
+});
+
+function refreshPresetSelect(){
+  const sel = $("presetSelect");
+  sel.innerHTML = "";
+  const names = Object.keys(PRESETS).sort((a,b)=>a.localeCompare(b));
+  const blank = document.createElement("option");
+  blank.value = ""; blank.textContent = "— Select —";
+  sel.appendChild(blank);
+  names.forEach(name=>{
+    const opt = document.createElement("option");
+    opt.value = name;
+    opt.textContent = name;
+    sel.appendChild(opt);
+  });
+}
+
 /* ====== STARTUP ====== */
 $("dropTheme").value = DEFAULTS.dropTheme[0];
 showDropControls();
+refreshPresetSelect();
 refreshDropLibSelect();
 
 </script>
