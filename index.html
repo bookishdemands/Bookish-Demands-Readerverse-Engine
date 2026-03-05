@@ -37,16 +37,8 @@
       backdrop-filter: blur(10px);
     }
     .wrap{ max-width:1200px; margin:0 auto; }
-    h1{
-      margin:0;
-      font-size:20px;
-      letter-spacing:.2px;
-    }
-    .sub{
-      margin:6px 0 0;
-      color:var(--muted);
-      font-size:13px;
-    }
+    h1{ margin:0; font-size:20px; letter-spacing:.2px; }
+    .sub{ margin:6px 0 0; color:var(--muted); font-size:13px; }
     .pill{
       display:inline-block;
       padding:4px 10px;
@@ -165,10 +157,7 @@
       background: var(--line);
       margin:12px 0;
     }
-    .small{
-      font-size:12px;
-      color:var(--muted);
-    }
+    .small{ font-size:12px; color:var(--muted); }
     .kbd{
       display:inline-block;
       padding:2px 8px;
@@ -191,13 +180,23 @@
       color:var(--muted);
     }
     .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .badge{
+      display:inline-block;
+      padding:3px 8px;
+      border-radius:10px;
+      background: rgba(224,0,154,.18);
+      border:1px solid rgba(224,0,154,.35);
+      color:#ffd3f2;
+      font-size:12px;
+      margin-left:8px;
+    }
   </style>
 </head>
 <body>
 <header>
   <div class="wrap">
-    <h1>Bookish Demands Readerverse Engine</h1>
-    <div class="sub">Stable, browser-based prompt generator for your glam reader character universe — reactions, packs, presets, exports.</div>
+    <h1>Bookish Demands Readerverse Engine <span class="badge">v1.1</span></h1>
+    <div class="sub">Stable, browser-based prompt generator — now with 30-pack drops, content mode, and full Drop Builder.</div>
     <div class="pill">Trademark-safe language: uses “e-reader” (not “Kindle”).</div>
   </div>
 </header>
@@ -216,6 +215,8 @@
             <option value="single">Single Character</option>
             <option value="pack4">Reaction Pack (4)</option>
             <option value="pack10">10-Pack From Quote</option>
+            <option value="pack30">30-Pack (Full Product Drop)</option>
+            <option value="dropbuilder">Drop Builder (Theme → Pack)</option>
             <option value="batch5">Generate 5 Characters (Random)</option>
           </select>
         </div>
@@ -229,10 +230,28 @@
         </div>
       </div>
 
+      <div class="row" id="dropRow">
+        <div>
+          <label for="dropTheme">Drop Theme</label>
+          <select id="dropTheme"></select>
+        </div>
+        <div>
+          <label for="dropName">Drop Name (auto or custom)</label>
+          <input id="dropName" type="text" placeholder="Example: Delusional But Calculated — Volume 1"/>
+          <div class="note">If blank, Readerverse will auto-name your drop based on theme + vibe.</div>
+        </div>
+      </div>
+
+      <div class="toggle">
+        <input id="contentMode" type="checkbox" checked />
+        <label for="contentMode" style="margin:0;color:var(--text);font-size:13px;">Content Generator Mode</label>
+        <span class="small">(adds caption + hook + hashtags per prompt)</span>
+      </div>
+
       <div class="toggle">
         <input id="carouselMode" type="checkbox" checked />
         <label for="carouselMode" style="margin:0;color:var(--text);font-size:13px;">Carousel / Sticker Composition Mode</label>
-        <span class="small">(centered, clean background, big expression)</span>
+        <span class="small">(clean, centered, big expression)</span>
       </div>
 
       <div class="toggle">
@@ -246,20 +265,20 @@
       <div class="row">
         <div>
           <label for="quoteInput">Quote (for matching / packs)</label>
-          <textarea id="quoteInput" placeholder="Paste quote here (optional for Single Character)."></textarea>
+          <textarea id="quoteInput" placeholder="Paste quote here (recommended for Packs + Drops)."></textarea>
         </div>
         <div>
-          <label for="customCategory">Custom Category (optional)</label>
-          <input id="customCategory" type="text" placeholder="Example: 'Tropes: enemies to lovers' or your own tags"/>
-          <div class="note">This gets appended to the prompt as a custom line. Good for tropes, vibe notes, drop names.</div>
+          <label for="customCategory">Custom Category / Notes (optional)</label>
+          <input id="customCategory" type="text" placeholder="Example: Tropes, drop era, vibe notes"/>
+          <div class="note">This gets appended to the prompt. Great for tropes + collection naming.</div>
         </div>
       </div>
 
       <div class="btnrow">
         <button class="primary" id="btnMatch">Match Character to Quote</button>
         <button class="good" id="btnRandom">One-Click Random Character</button>
-        <button class="warn" id="btnGenerate">Build Prompt Output</button>
-        <button id="btnCopy">Copy Prompt</button>
+        <button class="warn" id="btnGenerate">Build Output</button>
+        <button id="btnCopy">Copy Output</button>
       </div>
 
       <div class="divider"></div>
@@ -412,18 +431,18 @@
         <button id="btnAddOption">Add Option</button>
         <button class="bad" id="btnResetDefaults">Reset to Defaults</button>
       </div>
-      <div class="note">“Reset to Defaults” restores the original lists (but keeps your saved presets exported separately).</div>
-
+      <div class="note">Reset restores original lists (presets remain exportable).</div>
     </section>
 
     <!-- RIGHT: Output + Presets/Export -->
     <aside class="card">
-      <h2>Prompt Output</h2>
-      <div class="out"><pre id="output">(Click “Build Prompt Output”)</pre></div>
+      <h2>Output</h2>
+      <div class="out"><pre id="output">(Click “Build Output”)</pre></div>
 
       <div class="btnrow">
         <button id="btnExportTXT">Export TXT</button>
         <button id="btnExportCSV">Export CSV</button>
+        <button id="btnExportDropJSON">Export Drop JSON</button>
       </div>
 
       <div class="divider"></div>
@@ -454,17 +473,17 @@
 
       <div class="divider"></div>
 
-      <h2>What you can make fast</h2>
+      <h2>Fast products</h2>
       <div class="chips">
-        <span class="chip">Sticker packs</span>
+        <span class="chip">30-pack sticker drops</span>
         <span class="chip">Reader reaction carousels</span>
-        <span class="chip">E-reader insert art prompts</span>
+        <span class="chip">E-reader insert prompts</span>
         <span class="chip">Character packs</span>
         <span class="chip">Meme graphics</span>
       </div>
 
       <div class="note">
-        Tip: Use <span class="kbd">Reaction Pack (4)</span> for carousels and <span class="kbd">10-Pack</span> for full sticker sets.
+        Tip: Use <span class="kbd">Drop Builder</span> to generate a whole pack with names + prompts + export files in one click.
       </div>
     </aside>
 
@@ -473,15 +492,30 @@
 
 <script>
 /* =========================
-   Readerverse Engine v1.0
-   Single-file: stable + hostable
+   Readerverse Engine v1.1
+   Adds:
+   - 30-pack mode
+   - Content Generator Mode (caption + hook + hashtags)
+   - Drop Builder (theme → pack names + prompts + exports)
 ========================= */
 
-const STORAGE_KEY_DATA = "readerverse_data_v1";
-const STORAGE_KEY_PRESETS = "readerverse_presets_v1";
+const STORAGE_KEY_DATA = "readerverse_data_v1_1";
+const STORAGE_KEY_PRESETS = "readerverse_presets_v1_1";
 
-/* ====== DEFAULT VAULTS (edit anytime) ====== */
+/* ====== DEFAULT VAULTS ====== */
 const DEFAULTS = {
+  dropTheme: [
+    "Delusional But Calculated",
+    "Controlled Chaos",
+    "Morally Grey Loyalty",
+    "Plot Twist Survivor",
+    "After Dark Reader",
+    "Petty Reader Energy",
+    "Audiobook Girlie Chaos",
+    "Urban Book Club",
+    "Feral Romance Reader",
+    "Soft Girl Menace"
+  ],
   archetype: [
     "Petty Reader",
     "Soft Girl Menace",
@@ -711,13 +745,12 @@ const DEFAULTS = {
   ]
 };
 
-/* ====== DATA STATE ====== */
+/* ====== DATA ====== */
 function loadData(){
   const raw = localStorage.getItem(STORAGE_KEY_DATA);
   if(!raw) return structuredClone(DEFAULTS);
   try{
     const parsed = JSON.parse(raw);
-    // merge to ensure new default keys exist
     return { ...structuredClone(DEFAULTS), ...parsed };
   }catch{
     return structuredClone(DEFAULTS);
@@ -730,7 +763,7 @@ function resetData(){
   localStorage.removeItem(STORAGE_KEY_DATA);
 }
 
-/* ====== PRESETS STATE ====== */
+/* ====== PRESETS ====== */
 function loadPresets(){
   const raw = localStorage.getItem(STORAGE_KEY_PRESETS);
   if(!raw) return {};
@@ -755,14 +788,24 @@ function fillSelect(id, arr){
     el.appendChild(opt);
   });
 }
+
+function showDropControls(){
+  const mode = $("mode").value;
+  $("dropRow").style.display = (mode === "dropbuilder" || mode === "pack30") ? "grid" : "none";
+}
+$("mode").addEventListener("change", showDropControls);
+
 function getSelections(){
   return {
     mode: $("mode").value,
     matchStrength: $("matchStrength").value,
+    contentMode: $("contentMode").checked,
     carouselMode: $("carouselMode").checked,
     noText: $("noText").checked,
     quote: $("quoteInput").value.trim(),
     customCategory: $("customCategory").value.trim(),
+    dropTheme: $("dropTheme").value,
+    dropName: $("dropName").value.trim(),
 
     archetype: $("archetype").value,
     expression: $("expression").value,
@@ -787,9 +830,8 @@ function getSelections(){
   };
 }
 
-/* ====== BASE PROMPT (STYLE LOCK) ====== */
+/* ====== STYLE LOCK BASE PROMPT ====== */
 function basePrompt(){
-  // This matches the viral Grok look you showed: glam doll + pink + jewelry + polished sticker aesthetic.
   return [
     "high-end Y2K glam doll illustration",
     "Bratz inspired beauty cartoon illustration",
@@ -807,6 +849,60 @@ function basePrompt(){
   ].join(", ");
 }
 
+/* ====== CAPTION/HASH GENERATOR ====== */
+function buildContent(sel, label){
+  const q = sel.quote || "";
+  const arche = sel.archetype || "Reader";
+  const mood = sel.mood || "bookish";
+  const att = sel.attitude || "unbothered";
+  const rx = sel.reaction || "reaction";
+  const theme = sel.dropTheme || "";
+
+  const captions = [
+    `${arche} energy: ${att}.`,
+    `Me reading this like: ${rx}.`,
+    `This chapter had me in ${mood}.`,
+    `Readerverse check-in: ${arche}.`,
+    `If you get it, you get it. ${arche} edition.`
+  ];
+
+  const hooks = [
+    "Be honest… what would your face be right here?",
+    "Drop your reaction type in the comments 👇",
+    "Which reader archetype are you today?",
+    "Tag your book bestie who would scream at this scene.",
+    "This is the part where I start speed-reading and spiraling."
+  ];
+
+  const hashtags = [
+    "#BookishDemands",
+    "#Readerverse",
+    "#BookTok",
+    "#Bookstagram",
+    "#RomanceReaders",
+    "#DarkRomance",
+    "#ReadingCommunity",
+    "#BookishHumor",
+    "#EReaderGirlies",
+    "#ReaderReactions",
+    "#StickerShop",
+    "#DigitalDownloads"
+  ];
+
+  // Lightly tailor hashtags based on quote keywords
+  const t = normalize(q);
+  if(t.includes("plot twist") || t.includes("twist")) hashtags.push("#PlotTwist");
+  if(t.includes("villain") || t.includes("morally")) hashtags.push("#MorallyGrey");
+  if(t.includes("obsessed") || t.includes("mine") || t.includes("possessive")) hashtags.push("#ObsessedMMC");
+  if(theme) hashtags.push("#" + theme.replace(/\s+/g,""));
+
+  return {
+    caption: pick(captions) + (q ? `\n\n“${q}”` : ""),
+    hook: pick(hooks),
+    hashtags: Array.from(new Set(hashtags)).join(" ")
+  };
+}
+
 /* ====== PROMPT ASSEMBLY ====== */
 function buildSinglePrompt(sel){
   const parts = [];
@@ -815,14 +911,12 @@ function buildSinglePrompt(sel){
   parts.push(sel.complexion);
   parts.push(sel.faceShape);
 
-  // Styling anchors
   parts.push(sel.hair);
   parts.push(sel.makeup);
   parts.push(sel.nails);
   parts.push(sel.outfit);
   parts.push(sel.accessories);
 
-  // Character logic
   parts.push(sel.archetype + " reader character");
   parts.push(sel.expression + " expression");
   parts.push(sel.micro + " micro-expression");
@@ -830,7 +924,6 @@ function buildSinglePrompt(sel){
   parts.push(sel.mood);
   parts.push(sel.attitude);
 
-  // Pose + props + setting
   parts.push(sel.pose + " pose");
   parts.push(sel.poseAtt);
   parts.push(sel.prop);
@@ -839,16 +932,12 @@ function buildSinglePrompt(sel){
   parts.push("palette: " + sel.palette);
   parts.push(sel.composition);
 
-  // Carousel/sticker mode: ensure minimal clutter, centered, clean background bias
   if(sel.carouselMode){
     parts.push("centered composition, clean background, large expressive face, sticker-friendly framing, minimal background clutter");
   }
-
-  // Custom category
   if(sel.customCategory){
     parts.push("custom notes: " + sel.customCategory);
   }
-
   if(sel.noText){
     parts.push("no text, no watermark, no logo");
   }
@@ -880,15 +969,12 @@ function randomizeAll(data){
   $("composition").value = pick(data.composition);
 }
 
-/* ====== QUOTE MATCHER (RULES) ====== */
+/* ====== QUOTE MATCHER ====== */
 function matchToQuote(data, quoteRaw, strength){
   const quote = normalize(quoteRaw);
   const has = (...words)=>words.some(w=>quote.includes(w));
+  const intensity = strength;
 
-  // default pick helpers (balanced vs super)
-  const intensity = strength; // balanced | ontheme | super
-
-  // Start from a sensible base
   let target = {
     archetype: "Controlled Chaos Reader",
     expression: "confident main character smirk",
@@ -905,7 +991,6 @@ function matchToQuote(data, quoteRaw, strength){
     composition: "clean centered portrait, sticker-friendly framing"
   };
 
-  // A) Side-eye / humble brag / proved me right / unbothered
   if(has("humble","quietly","proved me right","prove me right","told you","i knew it","unbothered","as expected","mmhmm","sure","okay then","watching")){
     target.archetype = "Petty Reader";
     target.expression = "dramatic side-eye";
@@ -921,7 +1006,6 @@ function matchToQuote(data, quoteRaw, strength){
     target.palette = "hot pink + black + gold";
   }
 
-  // B) Shock / twist / betrayal
   if(has("plot twist","wait","what","betrayal","shocked","gasp","jaw dropped","screaming","can’t believe","cant believe","insane","wild","twist")){
     target.archetype = "Plot Twist Detective";
     target.expression = "wide shocked eyes";
@@ -937,8 +1021,7 @@ function matchToQuote(data, quoteRaw, strength){
     target.palette = "neon magenta + violet + black";
   }
 
-  // C) Dark romance / villain / unhinged / possessive
-  if(has("villain","unhinged","toxic","obsessed","mine","possessive","ruin me","morally gray","morally grey","therapy","dangerous")){
+  if(has("villain","unhinged","toxic","obsessed","mine","possessive","ruin","morally gray","morally grey","therapy","dangerous")){
     target.archetype = "Dark Romance Delulu";
     target.expression = "dangerous smirk";
     target.micro = "half-lidded unimpressed gaze";
@@ -953,7 +1036,6 @@ function matchToQuote(data, quoteRaw, strength){
     target.palette = "matte black + electric magenta + bone";
   }
 
-  // D) Soft / healing / cozy
   if(has("soft","healing","cozy","comfort","peace","gentle","safe","calm")){
     target.archetype = "Late Night Reader";
     target.expression = "soft knowing smile";
@@ -969,16 +1051,13 @@ function matchToQuote(data, quoteRaw, strength){
     target.palette = "soft pink + ivory + espresso";
   }
 
-  // Strength tweaks: “super on-theme” pushes drama
   if(intensity==="super"){
-    // push more dramatic expressions if already in twist/dark buckets
     if(target.mood.includes("plot twist")){
       target.expression = "dramatic gasp";
       target.micro = "eyes widened slightly";
       target.pose = "hands raised dramatic reaction";
     }
     if(target.mood.includes("feral dark romance")){
-      target.expression = "dangerous smirk";
       target.poseAtt = "hair flip moment";
     }
     if(target.mood.includes("petty")){
@@ -986,7 +1065,6 @@ function matchToQuote(data, quoteRaw, strength){
     }
   }
 
-  // Apply matched values only if they exist in vaults (fallback to closest defaults)
   const safeSet = (id, val, arr)=>{ if(arr.includes(val)) $(id).value = val; };
   safeSet("archetype", target.archetype, data.archetype);
   safeSet("expression", target.expression, data.expression);
@@ -1002,7 +1080,7 @@ function matchToQuote(data, quoteRaw, strength){
   safeSet("palette", target.palette, data.palette);
   safeSet("composition", target.composition, data.composition);
 
-  // Keep complexion/face/hair/makeup/nails/outfit/accessories randomized but cohesive:
+  // keep the rest randomized so packs don't look identical
   $("complexion").value = pick(data.complexion);
   $("faceShape").value = pick(data.faceShape);
   $("hair").value = pick(data.hair);
@@ -1012,165 +1090,7 @@ function matchToQuote(data, quoteRaw, strength){
   $("accessories").value = pick(data.accessories);
 }
 
-/* ====== PACK GENERATORS ====== */
-function buildPack4(data, sel){
-  // 4 canonical reactions
-  const types = [
-    { name:"Shock Reaction Reader", set:()=> {
-      $("archetype").value = data.archetype.includes("Plot Twist Detective") ? "Plot Twist Detective" : pick(data.archetype);
-      $("expression").value = data.expression.includes("wide shocked eyes") ? "wide shocked eyes" : pick(data.expression);
-      $("micro").value = data.micro.includes("eyes widened slightly") ? "eyes widened slightly" : pick(data.micro);
-      $("reaction").value = data.reaction.includes("plot twist shock reaction") ? "plot twist shock reaction" : pick(data.reaction);
-      $("mood").value = data.mood.includes("plot twist panic mood") ? "plot twist panic mood" : pick(data.mood);
-      $("pose").value = data.pose.includes("hands near face shocked") ? "hands near face shocked" : pick(data.pose);
-      $("poseAtt").value = data.poseAtt.includes("dramatic gasp stance") ? "dramatic gasp stance" : pick(data.poseAtt);
-      $("prop").value = data.prop.includes("holding an open romance novel dramatically") ? "holding an open romance novel dramatically" : pick(data.prop);
-      $("background").value = data.background.includes("comic pop art halftone background") ? "comic pop art halftone background" : pick(data.background);
-      $("scene").value = data.scene.includes("dramatic plot twist moment") ? "dramatic plot twist moment" : pick(data.scene);
-    }},
-    { name:"Delulu Dark Romance Reader", set:()=> {
-      $("archetype").value = data.archetype.includes("Dark Romance Delulu") ? "Dark Romance Delulu" : pick(data.archetype);
-      $("expression").value = data.expression.includes("dangerous smirk") ? "dangerous smirk" : pick(data.expression);
-      $("micro").value = data.micro.includes("half-lidded unimpressed gaze") ? "half-lidded unimpressed gaze" : pick(data.micro);
-      $("reaction").value = data.reaction.includes("“this man is unhinged” reaction") ? "“this man is unhinged” reaction" : pick(data.reaction);
-      $("mood").value = data.mood.includes("feral dark romance mood") ? "feral dark romance mood" : pick(data.mood);
-      $("pose").value = data.pose.includes("looking over shoulder") ? "looking over shoulder" : pick(data.pose);
-      $("poseAtt").value = data.poseAtt.includes("calm but dangerous eyes") ? "calm but dangerous eyes" : pick(data.poseAtt);
-      $("prop").value = data.prop.includes("holding an open romance novel dramatically") ? "holding an open romance novel dramatically" : pick(data.prop);
-      $("background").value = data.background.includes("dark glam gradient with magenta rim glow") ? "dark glam gradient with magenta rim glow" : pick(data.background);
-      $("scene").value = data.scene.includes("dramatic plot twist moment") ? "dramatic plot twist moment" : pick(data.scene);
-    }},
-    { name:"Petty Side-Eye Reader", set:()=> {
-      $("archetype").value = data.archetype.includes("Petty Reader") ? "Petty Reader" : pick(data.archetype);
-      $("expression").value = data.expression.includes("dramatic side-eye") ? "dramatic side-eye" : pick(data.expression);
-      $("micro").value = data.micro.includes("one eyebrow raised") ? "one eyebrow raised" : pick(data.micro);
-      $("reaction").value = data.reaction.includes("suspicious side-eye reaction") ? "suspicious side-eye reaction" : pick(data.reaction);
-      $("mood").value = data.mood.includes("petty commentary mood") ? "petty commentary mood" : pick(data.mood);
-      $("pose").value = data.pose.includes("arms crossed unimpressed") ? "arms crossed unimpressed" : pick(data.pose);
-      $("poseAtt").value = data.poseAtt.includes("slow blink like she’s judging you") ? "slow blink like she’s judging you" : pick(data.poseAtt);
-      $("prop").value = data.prop.includes("holding a phone like she just read something shocking") ? "holding a phone like she just read something shocking" : pick(data.prop);
-      $("background").value = data.background.includes("vibrant hot pink glam background") ? "vibrant hot pink glam background" : pick(data.background);
-      $("scene").value = data.scene.includes("scrolling reactions to a chapter reveal") ? "scrolling reactions to a chapter reveal" : pick(data.scene);
-    }},
-    { name:"Feral Romance Reader", set:()=> {
-      $("archetype").value = data.archetype.includes("Morally Gray Enjoyer") ? "Morally Gray Enjoyer" : pick(data.archetype);
-      $("expression").value = data.expression.includes("mischievous grin") ? "mischievous grin" : pick(data.expression);
-      $("micro").value = data.micro.includes("tiny smirk corner") ? "tiny smirk corner" : pick(data.micro);
-      $("reaction").value = data.reaction.includes("feral romance reader reaction") ? "feral romance reader reaction" : pick(data.reaction);
-      $("mood").value = data.mood.includes("romance high mood") ? "romance high mood" : pick(data.mood);
-      $("pose").value = data.pose.includes("clutching book dramatically") ? "clutching book dramatically" : pick(data.pose);
-      $("poseAtt").value = data.poseAtt.includes("feral excitement posture") ? "feral excitement posture" : pick(data.poseAtt);
-      $("prop").value = data.prop.includes("holding a stack of books") ? "holding a stack of books" : pick(data.prop);
-      $("background").value = data.background.includes("sparkle gradient glam background") ? "sparkle gradient glam background" : pick(data.background);
-      $("scene").value = data.scene.includes("late-night audiobook binge") ? "late-night audiobook binge" : pick(data.scene);
-    }},
-  ];
-
-  const saved = [];
-  const original = getSelections();
-
-  for(const t of types){
-    // randomize style details per character
-    $("complexion").value = pick(data.complexion);
-    $("faceShape").value = pick(data.faceShape);
-    $("hair").value = pick(data.hair);
-    $("makeup").value = pick(data.makeup);
-    $("nails").value = pick(data.nails);
-    $("outfit").value = pick(data.outfit);
-    $("accessories").value = pick(data.accessories);
-    $("palette").value = pick(data.palette);
-    $("composition").value = pick(data.composition);
-
-    // set reaction type
-    t.set();
-
-    const s = getSelections();
-    const prompt = buildSinglePrompt(s);
-    saved.push({ label: t.name, prompt });
-  }
-
-  // restore selections (optional)
-  applySelections(original);
-
-  return saved;
-}
-
-function buildPack10(data){
-  // 10 distinct reaction “roles”
-  const roles = [
-    "Shock Reaction Reader",
-    "Dramatic Gasp Reader",
-    "Petty Side-Eye Reader",
-    "Unimpressed Slow Blink Reader",
-    "Delulu Dark Romance Reader",
-    "Feral Romance Reader",
-    "Smug “I Knew It” Reader",
-    "Book Club Gossip Reader",
-    "Emotional Damage Reader",
-    "Revenge Arc Main Character Reader"
-  ];
-
-  const prompts = [];
-  const original = getSelections();
-
-  roles.forEach((role, idx)=>{
-    randomizeAll(data);
-
-    // Light role steering for uniqueness
-    const r = normalize(role);
-    if(r.includes("shock")){
-      $("expression").value = data.expression.includes("wide shocked eyes") ? "wide shocked eyes" : $("expression").value;
-      $("reaction").value = data.reaction.includes("plot twist shock reaction") ? "plot twist shock reaction" : $("reaction").value;
-      $("pose").value = data.pose.includes("hands near face shocked") ? "hands near face shocked" : $("pose").value;
-    }
-    if(r.includes("gasp")){
-      $("expression").value = data.expression.includes("dramatic gasp") ? "dramatic gasp" : $("expression").value;
-      $("poseAtt").value = data.poseAtt.includes("dramatic gasp stance") ? "dramatic gasp stance" : $("poseAtt").value;
-    }
-    if(r.includes("petty")){
-      $("expression").value = data.expression.includes("dramatic side-eye") ? "dramatic side-eye" : $("expression").value;
-      $("attitude").value = data.attitude.includes("quietly petty") ? "quietly petty" : $("attitude").value;
-      $("pose").value = data.pose.includes("arms crossed unimpressed") ? "arms crossed unimpressed" : $("pose").value;
-    }
-    if(r.includes("slow blink")){
-      $("expression").value = data.expression.includes("slow blink judgment") ? "slow blink judgment" : $("expression").value;
-      $("micro").value = data.micro.includes("slow blink") ? "slow blink" : $("micro").value;
-    }
-    if(r.includes("delulu")){
-      $("mood").value = data.mood.includes("feral dark romance mood") ? "feral dark romance mood" : $("mood").value;
-      $("expression").value = data.expression.includes("dangerous smirk") ? "dangerous smirk" : $("expression").value;
-    }
-    if(r.includes("feral")){
-      $("expression").value = data.expression.includes("chaotic laugh") ? "chaotic laugh" : $("expression").value;
-      $("reaction").value = data.reaction.includes("feral romance reader reaction") ? "feral romance reader reaction" : $("reaction").value;
-    }
-    if(r.includes("i knew")){
-      $("reaction").value = data.reaction.includes("“I knew it” smug reaction") ? "“I knew it” smug reaction" : $("reaction").value;
-      $("expression").value = data.expression.includes("smug knowing smirk") ? "smug knowing smirk" : $("expression").value;
-    }
-    if(r.includes("gossip")){
-      $("reaction").value = data.reaction.includes("book club gossip reaction") ? "book club gossip reaction" : $("reaction").value;
-      $("poseAtt").value = data.poseAtt.includes("gossiping like she has tea") ? "gossiping like she has tea" : $("poseAtt").value;
-    }
-    if(r.includes("emotional")){
-      $("reaction").value = data.reaction.includes("emotionally damaged reaction") ? "emotionally damaged reaction" : $("reaction").value;
-      $("mood").value = data.mood.includes("book hangover mood") ? "book hangover mood" : $("mood").value;
-    }
-    if(r.includes("revenge")){
-      $("mood").value = data.mood.includes("revenge arc mood") ? "revenge arc mood" : $("mood").value;
-      $("attitude").value = data.attitude.includes("bossy main character energy") ? "bossy main character energy" : $("attitude").value;
-      $("expression").value = data.expression.includes("confident main character smirk") ? "confident main character smirk" : $("expression").value;
-    }
-
-    const s = getSelections();
-    const prompt = buildSinglePrompt(s);
-    prompts.push({ label: `${idx+1}. ${role}`, prompt });
-  });
-
-  applySelections(original);
-  return prompts;
-}
-
+/* ====== APPLY SELECTIONS ====== */
 function applySelections(sel){
   const ids = [
     "archetype","expression","micro","reaction","mood","attitude","pose","poseAtt",
@@ -1184,10 +1104,248 @@ function applySelections(sel){
   });
   if(typeof sel.carouselMode === "boolean") $("carouselMode").checked = sel.carouselMode;
   if(typeof sel.noText === "boolean") $("noText").checked = sel.noText;
+  if(typeof sel.contentMode === "boolean") $("contentMode").checked = sel.contentMode;
   if(sel.quote !== undefined) $("quoteInput").value = sel.quote;
   if(sel.customCategory !== undefined) $("customCategory").value = sel.customCategory;
   if(sel.matchStrength) $("matchStrength").value = sel.matchStrength;
   if(sel.mode) $("mode").value = sel.mode;
+  if(sel.dropTheme) $("dropTheme").value = sel.dropTheme;
+  if(sel.dropName !== undefined) $("dropName").value = sel.dropName;
+  showDropControls();
+}
+
+/* ====== PACKS ====== */
+function buildPack4(data){
+  const quote = $("quoteInput").value.trim();
+  const original = getSelections();
+  const rows = [];
+
+  const roles = [
+    { label:"1. Shock Reaction Reader", steer: ()=> {
+      $("archetype").value = "Plot Twist Detective";
+      $("expression").value = "wide shocked eyes";
+      $("micro").value = "eyes widened slightly";
+      $("reaction").value = "plot twist shock reaction";
+      $("mood").value = "plot twist panic mood";
+      $("pose").value = "hands near face shocked";
+      $("poseAtt").value = "dramatic gasp stance";
+      $("prop").value = "holding an open romance novel dramatically";
+      $("background").value = "comic pop art halftone background";
+      $("scene").value = "dramatic plot twist moment";
+    }},
+    { label:"2. Delulu Dark Romance Reader", steer: ()=> {
+      $("archetype").value = "Dark Romance Delulu";
+      $("expression").value = "dangerous smirk";
+      $("micro").value = "half-lidded unimpressed gaze";
+      $("reaction").value = "“this man is unhinged” reaction";
+      $("mood").value = "feral dark romance mood";
+      $("pose").value = "looking over shoulder";
+      $("poseAtt").value = "calm but dangerous eyes";
+      $("prop").value = "holding an open romance novel dramatically";
+      $("background").value = "dark glam gradient with magenta rim glow";
+      $("scene").value = "dramatic plot twist moment";
+    }},
+    { label:"3. Petty Side-Eye Reader", steer: ()=> {
+      $("archetype").value = "Petty Reader";
+      $("expression").value = "dramatic side-eye";
+      $("micro").value = "one eyebrow raised";
+      $("reaction").value = "suspicious side-eye reaction";
+      $("mood").value = "petty commentary mood";
+      $("attitude").value = "quietly petty";
+      $("pose").value = "arms crossed unimpressed";
+      $("poseAtt").value = "slow blink like she’s judging you";
+      $("prop").value = "holding a phone like she just read something shocking";
+      $("background").value = "vibrant hot pink glam background";
+      $("scene").value = "scrolling reactions to a chapter reveal";
+    }},
+    { label:"4. Feral Romance Reader", steer: ()=> {
+      $("archetype").value = "Morally Gray Enjoyer";
+      $("expression").value = "mischievous grin";
+      $("micro").value = "tiny smirk corner";
+      $("reaction").value = "feral romance reader reaction";
+      $("mood").value = "romance high mood";
+      $("pose").value = "clutching book dramatically";
+      $("poseAtt").value = "feral excitement posture";
+      $("prop").value = "holding a stack of books";
+      $("background").value = "sparkle gradient glam background";
+      $("scene").value = "late-night audiobook binge";
+    }},
+  ];
+
+  roles.forEach(r=>{
+    // randomize style so they don't look like clones
+    $("complexion").value = pick(data.complexion);
+    $("faceShape").value = pick(data.faceShape);
+    $("hair").value = pick(data.hair);
+    $("makeup").value = pick(data.makeup);
+    $("nails").value = pick(data.nails);
+    $("outfit").value = pick(data.outfit);
+    $("accessories").value = pick(data.accessories);
+    $("palette").value = pick(data.palette);
+    $("composition").value = pick(data.composition);
+
+    r.steer();
+
+    const s = getSelections();
+    const prompt = buildSinglePrompt(s);
+    const content = s.contentMode ? buildContent(s, r.label) : null;
+
+    rows.push({
+      label: r.label,
+      quoteReference: quote,
+      prompt,
+      caption: content?.caption || "",
+      hook: content?.hook || "",
+      hashtags: content?.hashtags || ""
+    });
+  });
+
+  applySelections(original);
+  return rows;
+}
+
+function buildPackN(data, n, labelPrefix){
+  const quote = $("quoteInput").value.trim();
+  const original = getSelections();
+  const rows = [];
+
+  for(let i=0;i<n;i++){
+    randomizeAll(data);
+
+    // If quote exists, lightly match each item so pack stays cohesive
+    if(quote) matchToQuote(data, quote, $("matchStrength").value);
+
+    const s = getSelections();
+    const prompt = buildSinglePrompt(s);
+    const content = s.contentMode ? buildContent(s, `${labelPrefix} ${i+1}`) : null;
+
+    rows.push({
+      label: `${labelPrefix} ${i+1}`,
+      quoteReference: quote,
+      prompt,
+      caption: content?.caption || "",
+      hook: content?.hook || "",
+      hashtags: content?.hashtags || ""
+    });
+  }
+
+  applySelections(original);
+  return rows;
+}
+
+/* ====== DROP BUILDER ====== */
+function autoDropName(theme, quote){
+  const vibe = [
+    "Volume 1",
+    "Edition",
+    "Pack",
+    "Drop",
+    "Set"
+  ];
+  const tag = quote ? " — Quote-Driven" : "";
+  return `${theme} ${pick(vibe)}${tag}`;
+}
+
+function buildDrop(data){
+  const sel = getSelections();
+  const theme = sel.dropTheme;
+  const quote = sel.quote;
+  const name = sel.dropName || autoDropName(theme, quote);
+
+  // theme steering (keeps the pack feeling like ONE drop)
+  const themeSteer = (themeNorm)=>{
+    const t = normalize(themeNorm);
+    if(t.includes("petty")){
+      $("archetype").value = "Petty Reader";
+      $("mood").value = "petty commentary mood";
+      $("attitude").value = "quietly petty";
+      $("expression").value = "dramatic side-eye";
+    } else if(t.includes("after dark") || t.includes("morally") || t.includes("loyalty")){
+      $("archetype").value = "Dark Romance Delulu";
+      $("mood").value = "feral dark romance mood";
+      $("attitude").value = "villain apologist energy";
+      $("expression").value = "dangerous smirk";
+    } else if(t.includes("plot twist")){
+      $("archetype").value = "Plot Twist Detective";
+      $("mood").value = "plot twist panic mood";
+      $("attitude").value = "emotionally invested";
+      $("expression").value = "wide shocked eyes";
+    } else if(t.includes("controlled") || t.includes("chaos")){
+      $("archetype").value = "Controlled Chaos Reader";
+      $("mood").value = "controlled chaos mood";
+      $("attitude").value = "delusional but calculated";
+      $("expression").value = "smug knowing smirk";
+    } else if(t.includes("audiobook")){
+      $("archetype").value = "Audiobook Multitasker";
+      $("mood").value = "late night binge reading mood";
+      $("prop").value = "wearing headphones listening to an audiobook";
+      $("expression").value = "chaotic laugh";
+    } else if(t.includes("soft girl")){
+      $("archetype").value = "Soft Girl Menace";
+      $("mood").value = "soft cozy mood";
+      $("attitude").value = "soft voice hard leverage";
+      $("expression").value = "soft knowing smile";
+    } else if(t.includes("urban")){
+      $("archetype").value = "Urban Book Club President";
+      $("mood").value = "controlled chaos mood";
+      $("attitude").value = "bossy main character energy";
+      $("expression").value = "confident main character smirk";
+    } else if(t.includes("feral")){
+      $("archetype").value = "Morally Gray Enjoyer";
+      $("mood").value = "romance high mood";
+      $("attitude").value = "chaotic reader energy";
+      $("expression").value = "mischievous grin";
+    } else if(t.includes("delusional")){
+      $("archetype").value = "Delusional But Calculated";
+      $("mood").value = "romance high mood";
+      $("attitude").value = "delusional but calculated";
+      $("expression").value = "dreamy delulu smile";
+    }
+  };
+
+  const original = getSelections();
+  themeSteer(theme);
+
+  // Generate: 30 prompts (default drop size)
+  const rows = [];
+  for(let i=0;i<30;i++){
+    // cohesive but varied
+    randomizeAll(data);
+    themeSteer(theme);
+    if(quote) matchToQuote(data, quote, sel.matchStrength);
+
+    // keep palette consistent-ish by biasing to 1-2 palettes
+    if(i % 3 !== 0){
+      $("palette").value = sel.matchStrength === "super"
+        ? "matte black + electric magenta + bone"
+        : pick(data.palette);
+    }
+
+    const s = getSelections();
+    const prompt = buildSinglePrompt(s);
+    const content = s.contentMode ? buildContent(s, `Drop ${i+1}`) : null;
+
+    rows.push({
+      label: `Drop ${i+1}`,
+      quoteReference: quote,
+      prompt,
+      caption: content?.caption || "",
+      hook: content?.hook || "",
+      hashtags: content?.hashtags || "",
+      dropName: name,
+      dropTheme: theme
+    });
+  }
+
+  applySelections(original);
+
+  return {
+    dropName: name,
+    dropTheme: theme,
+    quoteReference: quote,
+    createdAt: new Date().toISOString(),
+    rows
+  };
 }
 
 /* ====== EXPORTS ====== */
@@ -1201,18 +1359,25 @@ function downloadText(filename, text){
   a.remove();
   URL.revokeObjectURL(url);
 }
-
 function escapeCSV(value){
   const s = String(value ?? "");
   if(/[",\n]/.test(s)) return `"${s.replace(/"/g,'""')}"`;
   return s;
 }
-
 function buildCSV(rows){
-  const headers = ["label","quoteReference","prompt"];
+  const headers = ["label","dropName","dropTheme","quoteReference","prompt","caption","hook","hashtags"];
   const lines = [headers.join(",")];
   rows.forEach(r=>{
-    lines.push([escapeCSV(r.label||""), escapeCSV(r.quoteReference||""), escapeCSV(r.prompt||"")].join(","));
+    lines.push([
+      escapeCSV(r.label||""),
+      escapeCSV(r.dropName||""),
+      escapeCSV(r.dropTheme||""),
+      escapeCSV(r.quoteReference||""),
+      escapeCSV(r.prompt||""),
+      escapeCSV(r.caption||""),
+      escapeCSV(r.hook||""),
+      escapeCSV(r.hashtags||"")
+    ].join(","));
   });
   return lines.join("\n");
 }
@@ -1239,7 +1404,7 @@ let DATA = loadData();
 let PRESETS = loadPresets();
 
 function init(){
-  // fill dropdowns
+  fillSelect("dropTheme", DATA.dropTheme);
   fillSelect("archetype", DATA.archetype);
   fillSelect("expression", DATA.expression);
   fillSelect("micro", DATA.micro);
@@ -1262,73 +1427,162 @@ function init(){
   fillSelect("composition", DATA.composition);
 
   refreshPresetSelect(PRESETS);
-
-  // default output
-  $("output").textContent = "(Click “Build Prompt Output”)";
+  showDropControls();
+  $("output").textContent = "(Click “Build Output”)";
 }
-
 init();
+
+/* ====== LAST OUTPUT STORAGE ====== */
+window.__lastRows = [];
+window.__lastDrop = null;
 
 /* ====== BUTTONS ====== */
 $("btnRandom").addEventListener("click", ()=>{
   randomizeAll(DATA);
   const s = getSelections();
-  $("output").textContent = buildSinglePrompt(s);
+  const prompt = buildSinglePrompt(s);
+
+  const content = s.contentMode ? buildContent(s, "Single") : null;
+  const out = s.contentMode
+    ? `PROMPT\n${prompt}\n\nCAPTION\n${content.caption}\n\nHOOK\n${content.hook}\n\nHASHTAGS\n${content.hashtags}`
+    : prompt;
+
+  $("output").textContent = out;
+  window.__lastRows = [{
+    label:"Single",
+    dropName:"",
+    dropTheme:"",
+    quoteReference:s.quote,
+    prompt,
+    caption: content?.caption || "",
+    hook: content?.hook || "",
+    hashtags: content?.hashtags || ""
+  }];
 });
 
 $("btnMatch").addEventListener("click", ()=>{
   const quote = $("quoteInput").value.trim();
   if(!quote){
-    alert("Paste a quote first (or switch mode to Single Character and use Random).");
+    alert("Paste a quote first (or use Random for Single).");
     return;
   }
   matchToQuote(DATA, quote, $("matchStrength").value);
   const s = getSelections();
-  $("output").textContent = buildSinglePrompt(s);
+  const prompt = buildSinglePrompt(s);
+
+  const content = s.contentMode ? buildContent(s, "Matched") : null;
+  const out = s.contentMode
+    ? `PROMPT\n${prompt}\n\nCAPTION\n${content.caption}\n\nHOOK\n${content.hook}\n\nHASHTAGS\n${content.hashtags}`
+    : prompt;
+
+  $("output").textContent = out;
+  window.__lastRows = [{
+    label:"Matched",
+    dropName:"",
+    dropTheme:"",
+    quoteReference:quote,
+    prompt,
+    caption: content?.caption || "",
+    hook: content?.hook || "",
+    hashtags: content?.hashtags || ""
+  }];
 });
 
 $("btnGenerate").addEventListener("click", ()=>{
   const sel = getSelections();
   const mode = sel.mode;
 
-  if(mode === "single"){
-    $("output").textContent = buildSinglePrompt(sel);
+  // validate quote for modes that need it
+  if((mode === "pack4" || mode === "pack10" || mode === "pack30" || mode === "dropbuilder") && !sel.quote && mode !== "dropbuilder"){
+    alert("Paste a quote first for Packs. (Drop Builder can work without a quote too.)");
     return;
   }
-
-  const quote = sel.quote;
-  if((mode === "pack4" || mode === "pack10") && !quote){
-    alert("Paste a quote first for Reaction Packs.");
-    return;
-  }
-
-  // if quote matching is desired, run matcher once to set a coherent base, then generate
-  matchToQuote(DATA, quote, sel.matchStrength);
 
   let rows = [];
+  let drop = null;
+
+  if(mode === "single"){
+    const prompt = buildSinglePrompt(sel);
+    const content = sel.contentMode ? buildContent(sel, "Single") : null;
+    const out = sel.contentMode
+      ? `PROMPT\n${prompt}\n\nCAPTION\n${content.caption}\n\nHOOK\n${content.hook}\n\nHASHTAGS\n${content.hashtags}`
+      : prompt;
+
+    $("output").textContent = out;
+    rows = [{
+      label:"Single",
+      dropName:"",
+      dropTheme:"",
+      quoteReference:sel.quote,
+      prompt,
+      caption: content?.caption || "",
+      hook: content?.hook || "",
+      hashtags: content?.hashtags || ""
+    }];
+  }
+
   if(mode === "pack4"){
-    const pack = buildPack4(DATA, getSelections());
-    rows = pack.map(p=>({ label: p.label, quoteReference: quote, prompt: p.prompt }));
-  }else if(mode === "pack10"){
-    const pack = buildPack10(DATA);
-    rows = pack.map(p=>({ label: p.label, quoteReference: quote, prompt: p.prompt }));
-  }else if(mode === "batch5"){
+    rows = buildPack4(DATA);
+    $("output").textContent = rows.map(r=>{
+      const block = sel.contentMode
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        : `${r.label}\n${r.prompt}`;
+      return block;
+    }).join("\n\n---\n\n");
+  }
+
+  if(mode === "pack10"){
+    rows = buildPackN(DATA, 10, "Pack");
+    $("output").textContent = rows.map(r=>{
+      const block = sel.contentMode
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        : `${r.label}\n${r.prompt}`;
+      return block;
+    }).join("\n\n---\n\n");
+  }
+
+  if(mode === "pack30"){
+    // theme-biased 30-pack
     const original = getSelections();
-    rows = [];
-    for(let i=0;i<5;i++){
-      randomizeAll(DATA);
-      const s = getSelections();
-      rows.push({ label: `Random ${i+1}`, quoteReference: "", prompt: buildSinglePrompt(s) });
-    }
+    // set theme steering via Drop Builder but without naming overhead
+    drop = buildDrop(DATA);
+    rows = drop.rows.map((r)=>({
+      ...r,
+      dropName: drop.dropName,
+      dropTheme: drop.dropTheme
+    }));
+
+    $("output").textContent = rows.map(r=>{
+      const block = sel.contentMode
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        : `${r.label}\n${r.prompt}`;
+      return block;
+    }).join("\n\n---\n\n");
+
     applySelections(original);
   }
 
-  // display nicely
-  const text = rows.map(r=>`${r.label}\n${r.prompt}`).join("\n\n---\n\n");
-  $("output").textContent = text;
+  if(mode === "dropbuilder"){
+    drop = buildDrop(DATA);
+    rows = drop.rows.map(r=>({
+      ...r,
+      dropName: drop.dropName,
+      dropTheme: drop.dropTheme
+    }));
 
-  // store lastRows for export
+    // show header + body
+    const header = `DROP NAME\n${drop.dropName}\n\nDROP THEME\n${drop.dropTheme}\n\nQUOTE (optional)\n${drop.quoteReference || "(none)"}\n\n=== OUTPUT ===\n`;
+    const body = rows.map(r=>{
+      const block = sel.contentMode
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        : `${r.label}\n${r.prompt}`;
+      return block;
+    }).join("\n\n---\n\n");
+    $("output").textContent = header + "\n" + body;
+  }
+
   window.__lastRows = rows;
+  window.__lastDrop = drop;
 });
 
 $("btnCopy").addEventListener("click", async ()=>{
@@ -1349,9 +1603,22 @@ $("btnExportTXT").addEventListener("click", ()=>{
 });
 
 $("btnExportCSV").addEventListener("click", ()=>{
-  const rows = window.__lastRows || [{label:"Single", quoteReference: $("quoteInput").value.trim(), prompt: $("output").textContent || ""}];
+  const rows = window.__lastRows || [];
+  if(!rows.length){
+    alert("Nothing to export yet. Build Output first.");
+    return;
+  }
   const csv = buildCSV(rows);
   downloadText("readerverse_output.csv", csv);
+});
+
+$("btnExportDropJSON").addEventListener("click", ()=>{
+  const drop = window.__lastDrop;
+  if(!drop){
+    alert("No drop generated yet. Use Drop Builder or 30-Pack mode first.");
+    return;
+  }
+  downloadText("readerverse_drop.json", JSON.stringify(drop, null, 2));
 });
 
 /* ====== QUICK ADD OPTION ====== */
@@ -1361,7 +1628,6 @@ $("btnAddOption").addEventListener("click", ()=>{
   if(!val){ alert("Type a new option first."); return; }
   if(!DATA[target]){ alert("Invalid target."); return; }
 
-  // prevent duplicates (case-insensitive)
   const exists = DATA[target].some(x=>normalize(x)===normalize(val));
   if(exists){
     alert("That option already exists in this list.");
@@ -1369,31 +1635,25 @@ $("btnAddOption").addEventListener("click", ()=>{
   }
 
   DATA[target].push(val);
-  // refresh the one select
   fillSelect(target, DATA[target]);
   $(target).value = val;
   $("addValue").value = "";
-
   saveData(DATA);
 });
 
 $("btnResetDefaults").addEventListener("click", ()=>{
-  if(!confirm("Reset lists to defaults? This will remove any custom-added options (presets remain).")) return;
+  if(!confirm("Reset lists to defaults? This will remove custom-added options (presets remain).")) return;
   resetData();
   DATA = loadData();
   init();
 });
 
-/* ====== PRESETS: SAVE/LOAD/DELETE ====== */
+/* ====== PRESETS ====== */
 $("btnSavePreset").addEventListener("click", ()=>{
   const name = $("presetName").value.trim();
   if(!name){ alert("Name your preset first."); return; }
   const sel = getSelections();
-  // Save only the builder fields (not output)
-  PRESETS[name] = {
-    ...sel,
-    // reduce noise: keep output-specific fields out if any
-  };
+  PRESETS[name] = { ...sel };
   savePresets(PRESETS);
   refreshPresetSelect(PRESETS);
   $("presetSelect").value = name;
@@ -1406,7 +1666,13 @@ $("btnLoadPreset").addEventListener("click", ()=>{
   const preset = PRESETS[name];
   applySelections(preset);
   $("presetName").value = name;
-  $("output").textContent = buildSinglePrompt(getSelections());
+
+  const s = getSelections();
+  const prompt = buildSinglePrompt(s);
+  const content = s.contentMode ? buildContent(s, "Preset") : null;
+  $("output").textContent = s.contentMode
+    ? `PROMPT\n${prompt}\n\nCAPTION\n${content.caption}\n\nHOOK\n${content.hook}\n\nHASHTAGS\n${content.hashtags}`
+    : prompt;
 });
 
 $("btnDeletePreset").addEventListener("click", ()=>{
@@ -1422,7 +1688,7 @@ $("btnDeletePreset").addEventListener("click", ()=>{
 
 $("btnExportPresets").addEventListener("click", ()=>{
   const payload = {
-    version: "readerverse_presets_v1",
+    version: "readerverse_presets_v1_1",
     exportedAt: new Date().toISOString(),
     presets: PRESETS
   };
@@ -1446,14 +1712,15 @@ $("importFile").addEventListener("change", async (e)=>{
     refreshPresetSelect(PRESETS);
     alert("Presets imported!");
   }catch(err){
-    alert("Import failed. Make sure it’s a JSON export from Readerverse.");
+    alert("Import failed. Make sure it’s a Readerverse presets JSON export.");
   }finally{
     $("importFile").value = "";
   }
 });
 
-/* ====== INIT lastRows ====== */
-window.__lastRows = [];
+/* ====== THEME DEFAULT ====== */
+$("dropTheme").value = DEFAULTS.dropTheme[0];
+showDropControls();
 
 </script>
 </body>
