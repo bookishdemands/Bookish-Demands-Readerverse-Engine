@@ -245,7 +245,7 @@
 
 <header>
   <div class="wrap">
-    <h1>Bookish Demands Readerverse Engine <span class="badge">v1.4</span></h1>
+    <h1>Bookish Demands Readerverse Engine <span class="badge">v1.5</span></h1>
     <div class="sub">
       Smart Archetype DNA + Reaction Packs + Carousel Generator + Drop Builder. Single-file HTML. Trademark-safe: uses “e-reader.”
     </div>
@@ -405,6 +405,18 @@
         </div>
       </div>
 
+      <!-- ✅ NEW: GENRE ROW -->
+      <div class="row">
+        <div>
+          <label for="genre">Genre</label>
+          <select id="genre"></select>
+        </div>
+        <div>
+          <label for="subGenre">Sub-Genre</label>
+          <select id="subGenre"></select>
+        </div>
+      </div>
+
       <div class="row">
         <div>
           <label for="pose">Pose</label>
@@ -525,6 +537,8 @@
             <option value="reaction">Reaction</option>
             <option value="mood">Mood</option>
             <option value="attitude">Attitude</option>
+            <option value="genre">Genre</option>
+            <option value="subGenre">Sub-Genre</option>
             <option value="pose">Pose</option>
             <option value="poseAtt">Pose Attitude</option>
             <option value="complexion">Complexion</option>
@@ -627,6 +641,7 @@
         <span class="chip">E-reader insert prompts</span>
         <span class="chip">Character packs</span>
         <span class="chip">Caption + hook output</span>
+        <span class="chip">Multi-genre packs</span>
       </div>
       <div class="note">Best workflow: paste quote → <b>Reaction Pack</b> or <b>Carousel</b> → export CSV.</div>
     </aside>
@@ -635,33 +650,25 @@
 </main>
 
 <script>
-/* =========================
-   Readerverse Engine v1.4
-   Includes:
-   - Smart Archetype DNA system (auto-lock)
-   - Reaction Pack generator (4)
-   - Carousel Generator (4 slides + post caption)
-   - Drop Builder + 30-pack
-   - Body Types, Hair Colors, Nails split, Extras
-   - White + transparent backgrounds
-   - More palettes + custom add-ons + custom category lines
-   - Negative prompt
-   - Presets + Drop Library + exports
-   - OPTIONAL password gate (Phase 1)
+
+  /* =========================
+   Readerverse Engine v1.5
+   Adds:
+   - Genre + Sub-Genre dropdowns
+   - Quote → genre matching
+   - Genre/Sub-genre included in prompt output
+   - Genre hashtags added
 ========================= */
 
-/* ====== OPTIONAL ACCESS GATE SETTINGS ======
-   If you want it OFF: set ACCESS_GATE_ENABLED = false
-   If ON: set password below.
-*/
-const ACCESS_GATE_ENABLED = false;           // <-- set true to enable
-const ACCESS_GATE_PASSWORD = "READERVERSE";  // <-- change anytime
-const ACCESS_GATE_STORAGE_KEY = "readerverse_gate_unlocked_v1_4";
+/* ====== OPTIONAL ACCESS GATE SETTINGS ====== */
+const ACCESS_GATE_ENABLED = false;
+const ACCESS_GATE_PASSWORD = "READERVERSE";
+const ACCESS_GATE_STORAGE_KEY = "readerverse_gate_unlocked_v1_5";
 
 /* ====== STORAGE KEYS ====== */
-const STORAGE_KEY_DATA = "readerverse_data_v1_4";
-const STORAGE_KEY_PRESETS = "readerverse_presets_v1_4";
-const STORAGE_KEY_DROP_LIBRARY = "readerverse_drop_library_v1_4";
+const STORAGE_KEY_DATA = "readerverse_data_v1_5";
+const STORAGE_KEY_PRESETS = "readerverse_presets_v1_5";
+const STORAGE_KEY_DROP_LIBRARY = "readerverse_drop_library_v1_5";
 
 /* ====== DEFAULT VAULTS ====== */
 const DEFAULTS = {
@@ -676,6 +683,46 @@ const DEFAULTS = {
     "Urban Book Club",
     "Feral Romance Reader",
     "Soft Girl Menace"
+  ],
+
+  /* ✅ NEW */
+  genre: [
+    "Romance (General)",
+    "Dark Romance",
+    "Urban Fiction",
+    "Thriller / Suspense",
+    "Mystery",
+    "Fantasy",
+    "Paranormal Romance",
+    "Sci-Fi Romance",
+    "Contemporary Romance",
+    "Romantic Comedy",
+    "Historical Romance",
+    "YA / NA",
+    "Nonfiction (Bookish Lifestyle)"
+  ],
+  /* ✅ NEW */
+  subGenre: [
+    "Enemies to Lovers",
+    "Friends to Lovers",
+    "Morally Grey MMC",
+    "Forced Proximity",
+    "Billionaire / Wealth",
+    "Possessive / Protective",
+    "Second Chance",
+    "Workplace Romance",
+    "Marriage of Convenience",
+    "Forbidden Romance",
+    "Small Town",
+    "Sports Romance",
+    "Vampire / Demon / Witch",
+    "Fae / Kingdom / Magic",
+    "Serial Killer / Cat & Mouse",
+    "Detective / Case File",
+    "Hood Love / Street Romance",
+    "Book Club Drama",
+    "Spicy Comedy",
+    "Slow Burn"
   ],
 
   archetype: [
@@ -987,15 +1034,12 @@ const DEFAULTS = {
   ],
 
   palette: [
-    /* Bookish Demands brand-safe */
     "matte black + electric magenta + bone",
     "black + magenta glow + charcoal",
     "espresso + ivory + electric magenta accent",
     "gunmetal + blush + champagne gold",
     "oxblood + matte black + antique gold",
     "black + hot pink + silver",
-
-    /* Viral pop / carousel */
     "bubblegum pink + white + gold",
     "lavender + mint + white",
     "aqua + hot pink + black",
@@ -1015,9 +1059,7 @@ const DEFAULTS = {
   ]
 };
 
-/* ====== ARCHETYPE DNA MAP ======
-   These steer sets make the engine feel “smart.”
-*/
+/* ====== ARCHETYPE DNA MAP ====== */
 const ARCHETYPE_DNA = {
   "Petty Reader": {
     expression: "dramatic side-eye",
@@ -1113,7 +1155,6 @@ const ARCHETYPE_DNA = {
 
 /* ====== DATA / STORAGE ====== */
 function structuredCloneSafe(obj){ return JSON.parse(JSON.stringify(obj)); }
-
 function loadData(){
   const raw = localStorage.getItem(STORAGE_KEY_DATA);
   if(!raw) return structuredCloneSafe(DEFAULTS);
@@ -1148,6 +1189,7 @@ const normalize = (s)=>String(s||"").toLowerCase();
 
 function fillSelect(id, arr){
   const el = $(id);
+  if(!el) return;
   el.innerHTML = "";
   arr.forEach(v=>{
     const opt = document.createElement("option");
@@ -1172,7 +1214,7 @@ function downloadText(filename, text){
   URL.revokeObjectURL(url);
 }
 function buildCSV(rows){
-  const headers = ["label","dropName","dropTheme","quoteReference","prompt","caption","hook","hashtags","slideText"];
+  const headers = ["label","dropName","dropTheme","quoteReference","genre","subGenre","prompt","caption","hook","hashtags","slideText"];
   const lines = [headers.join(",")];
   rows.forEach(r=>{
     lines.push([
@@ -1180,6 +1222,8 @@ function buildCSV(rows){
       escapeCSV(r.dropName||""),
       escapeCSV(r.dropTheme||""),
       escapeCSV(r.quoteReference||""),
+      escapeCSV(r.genre||""),
+      escapeCSV(r.subGenre||""),
       escapeCSV(r.prompt||""),
       escapeCSV(r.caption||""),
       escapeCSV(r.hook||""),
@@ -1223,6 +1267,8 @@ function buildContent(sel){
   const att = sel.attitude || "unbothered";
   const rx = sel.reaction || "reaction";
   const theme = sel.dropTheme || "";
+  const genre = sel.genre || "";
+  const sub = sel.subGenre || "";
 
   const captions = [
     `${arche} energy: ${att}.`,
@@ -1240,8 +1286,7 @@ function buildContent(sel){
   ];
   const hashtags = [
     "#BookishDemands","#Readerverse","#BookTok","#Bookstagram",
-    "#RomanceReaders","#DarkRomance","#ReadingCommunity","#BookishHumor",
-    "#EReaderGirlies","#ReaderReactions","#StickerShop","#DigitalDownloads"
+    "#ReadingCommunity","#BookishHumor","#ReaderReactions","#DigitalDownloads"
   ];
 
   const t = normalize(q);
@@ -1249,6 +1294,9 @@ function buildContent(sel){
   if(t.includes("villain") || t.includes("morally")) hashtags.push("#MorallyGrey");
   if(t.includes("obsessed") || t.includes("mine") || t.includes("possessive") || t.includes("ruin")) hashtags.push("#ObsessedMMC");
   if(theme) hashtags.push("#" + theme.replace(/\s+/g,""));
+
+  if(genre) hashtags.push("#" + genre.replace(/[^a-z0-9]+/gi,""));
+  if(sub) hashtags.push("#" + sub.replace(/[^a-z0-9]+/gi,""));
 
   return {
     caption: pick(captions) + (q ? `\n\n“${q}”` : ""),
@@ -1268,7 +1316,7 @@ function parseCustomCategoryLines(text){
     .map(line => "custom category: " + line);
 }
 
-/* ====== SELECTIONS ====== */
+  /* ====== SELECTIONS ====== */
 function getSelections(){
   return {
     mode: $("mode").value,
@@ -1295,6 +1343,11 @@ function getSelections(){
     reaction: $("reaction").value,
     mood: $("mood").value,
     attitude: $("attitude").value,
+
+    /* ✅ NEW */
+    genre: $("genre").value,
+    subGenre: $("subGenre").value,
+
     pose: $("pose").value,
     poseAtt: $("poseAtt").value,
 
@@ -1323,7 +1376,9 @@ function getSelections(){
 
 function applySelections(sel){
   const ids = [
-    "archetype","expression","micro","reaction","mood","attitude","pose","poseAtt",
+    "archetype","expression","micro","reaction","mood","attitude",
+    "genre","subGenre",
+    "pose","poseAtt",
     "complexion","bodyType","faceShape","extras",
     "hairColor","hair","makeup","lighting",
     "nailShape","nailDesign",
@@ -1373,7 +1428,6 @@ function applyArchetypeDNA(data, archetypeName){
   safeSet("prop", dna.prop, data.prop);
   safeSet("scene", dna.scene, data.scene);
 
-  // palette bias
   if(dna.paletteBias && dna.paletteBias.length){
     const options = dna.paletteBias.filter(p => data.palette.includes(p));
     if(options.length) $("palette").value = pick(options);
@@ -1408,6 +1462,10 @@ function buildSinglePrompt(sel){
   parts.push(sel.reaction);
   parts.push(sel.mood);
   parts.push(sel.attitude);
+
+  /* ✅ NEW */
+  if(sel.genre) parts.push("genre: " + sel.genre);
+  if(sel.subGenre) parts.push("sub-genre: " + sel.subGenre);
 
   parts.push(sel.pose + " pose");
   parts.push(sel.poseAtt);
@@ -1450,6 +1508,11 @@ function randomizeAll(data){
   $("reaction").value = pick(data.reaction);
   $("mood").value = pick(data.mood);
   $("attitude").value = pick(data.attitude);
+
+  /* ✅ NEW */
+  $("genre").value = pick(data.genre);
+  $("subGenre").value = pick(data.subGenre);
+
   $("pose").value = pick(data.pose);
   $("poseAtt").value = pick(data.poseAtt);
 
@@ -1476,20 +1539,17 @@ function randomizeAll(data){
   $("palette").value = pick(data.palette);
   $("composition").value = pick(data.composition);
 
-  // Smart archetype steering after randomize (optional)
   if($("smartArchetype").checked){
     applyArchetypeDNA(data, $("archetype").value);
   }
 }
 
-/* ====== QUOTE MATCHER (lightweight) ====== */
+/* ====== QUOTE MATCHER (archetype + genre) ====== */
 function matchToQuote(data, quoteRaw, strength){
   const quote = normalize(quoteRaw);
   const has = (...words)=>words.some(w=>quote.includes(w));
 
-  // quote-to-archetype picks
   let arche = "Controlled Chaos Reader";
-
   if(has("humble","quietly","proved me right","prove me right","told you","i knew it","unbothered","as expected","mmhmm","sure","okay then","watching")){
     arche = "Petty Reader";
   } else if(has("plot twist","wait","what","betrayal","shocked","gasp","jaw dropped","screaming","cant believe","can’t believe","insane","wild","twist")){
@@ -1503,15 +1563,42 @@ function matchToQuote(data, quoteRaw, strength){
   } else if(has("feral","screaming","need him","ruined me")){
     arche = "Morally Gray Enjoyer";
   }
-
   $("archetype").value = arche;
 
-  // apply DNA if enabled
+  /* ✅ NEW: quote → genre */
+  let genrePick = "Romance (General)";
+  let subPick = $("subGenre").value || "Slow Burn";
+
+  if(has("murder","killer","blood","crime","case","detective","alibi","evidence","suspect","serial")){
+    genrePick = "Thriller / Suspense";
+    subPick = "Detective / Case File";
+  } else if(has("plot twist","twist","betrayal","secret","double life","exposed")){
+    genrePick = "Mystery";
+    subPick = "Detective / Case File";
+  } else if(has("witch","vampire","demon","curse","coven","spell","hex","paranormal")){
+    genrePick = "Paranormal Romance";
+    subPick = "Vampire / Demon / Witch";
+  } else if(has("fae","kingdom","magic","dragon","sword","realm","court")){
+    genrePick = "Fantasy";
+    subPick = "Fae / Kingdom / Magic";
+  } else if(has("street","hood","trap","boss","hustle","city","ride or die")){
+    genrePick = "Urban Fiction";
+    subPick = "Hood Love / Street Romance";
+  } else if(has("billionaire","rich","heir","penthouse","luxury","ceo","mogul")){
+    genrePick = "Dark Romance";
+    subPick = "Billionaire / Wealth";
+  } else if(has("enemies","hate","can’t stand","rivals")){
+    genrePick = "Romance (General)";
+    subPick = "Enemies to Lovers";
+  }
+
+  if(data.genre.includes(genrePick)) $("genre").value = genrePick;
+  if(data.subGenre.includes(subPick)) $("subGenre").value = subPick;
+
   if($("smartArchetype").checked){
     applyArchetypeDNA(data, arche);
   }
 
-  // strength adds bias for palette/background (small)
   if(strength === "super"){
     const dna = ARCHETYPE_DNA[arche];
     if(dna?.paletteBias?.length){
@@ -1519,7 +1606,6 @@ function matchToQuote(data, quoteRaw, strength){
     }
   }
 
-  // keep beauty/fit varied
   $("complexion").value = pick(data.complexion);
   $("bodyType").value = pick(data.bodyType);
   $("faceShape").value = pick(data.faceShape);
@@ -1558,9 +1644,7 @@ function buildDrop(data){
   for(let i=0;i<30;i++){
     randomizeAll(data);
 
-    // steer theme a little by applying DNA to a theme-aligned archetype
     if(sel.smartArchetype){
-      // choose archetype based on theme
       const t = normalize(theme);
       let a = $("archetype").value;
       if(t.includes("petty")) a = "Petty Reader";
@@ -1584,6 +1668,8 @@ function buildDrop(data){
       dropName: name,
       dropTheme: theme,
       quoteReference: quote,
+      genre: s.genre || "",
+      subGenre: s.subGenre || "",
       prompt,
       caption: content?.caption || "",
       hook: content?.hook || "",
@@ -1632,6 +1718,8 @@ function buildReactionPack4(data){
       dropName:"",
       dropTheme:"",
       quoteReference: quote,
+      genre: s.genre || "",
+      subGenre: s.subGenre || "",
       prompt,
       caption: content?.caption || "",
       hook: content?.hook || "",
@@ -1651,7 +1739,6 @@ function buildCarousel4(data){
 
   const rows = buildReactionPack4(data);
 
-  // attach slide titles + micro copy
   rows.forEach((r, idx)=>{
     const title = titles[idx] || "";
     const slideLine = title ? `${title}\n${quote ? `“${quote}”\n` : ""}${r.caption || ""}` : `${quote ? `“${quote}”\n` : ""}${r.caption || ""}`;
@@ -1679,6 +1766,8 @@ function buildPackN(data, n, labelPrefix){
       dropName:"",
       dropTheme:"",
       quoteReference: quote,
+      genre: s.genre || "",
+      subGenre: s.subGenre || "",
       prompt,
       caption: content?.caption || "",
       hook: content?.hook || "",
@@ -1744,6 +1833,11 @@ function init(){
   fillSelect("reaction", DATA.reaction);
   fillSelect("mood", DATA.mood);
   fillSelect("attitude", DATA.attitude);
+
+  /* ✅ NEW */
+  fillSelect("genre", DATA.genre);
+  fillSelect("subGenre", DATA.subGenre);
+
   fillSelect("pose", DATA.pose);
   fillSelect("poseAtt", DATA.poseAtt);
 
@@ -1805,6 +1899,8 @@ $("btnRandom").addEventListener("click", ()=>{
     dropName:"",
     dropTheme:"",
     quoteReference:s.quote,
+    genre:s.genre || "",
+    subGenre:s.subGenre || "",
     prompt,
     caption: content?.caption || "",
     hook: content?.hook || "",
@@ -1822,7 +1918,6 @@ $("btnGenerate").addEventListener("click", ()=>{
   let drop = null;
 
   if(mode === "single"){
-    // apply smart DNA if enabled
     if(sel.smartArchetype) applyArchetypeDNA(DATA, sel.archetype);
 
     const prompt = buildSinglePrompt(sel);
@@ -1837,6 +1932,8 @@ $("btnGenerate").addEventListener("click", ()=>{
       dropName:"",
       dropTheme:"",
       quoteReference:sel.quote,
+      genre:sel.genre || "",
+      subGenre:sel.subGenre || "",
       prompt,
       caption: content?.caption || "",
       hook: content?.hook || "",
@@ -1862,6 +1959,8 @@ $("btnGenerate").addEventListener("click", ()=>{
       dropName:"",
       dropTheme:"",
       quoteReference:sel.quote,
+      genre:s.genre || "",
+      subGenre:s.subGenre || "",
       prompt,
       caption: content?.caption || "",
       hook: content?.hook || "",
@@ -1876,7 +1975,7 @@ $("btnGenerate").addEventListener("click", ()=>{
 
     $("output").textContent = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nSUB-GENRE\n${r.subGenre}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
   }
@@ -1885,9 +1984,10 @@ $("btnGenerate").addEventListener("click", ()=>{
     if(!sel.quote){ alert("Paste a quote for Carousel Generator."); return; }
     rows = buildCarousel4(DATA);
 
-    const postCaption = `POST CAPTION\n${buildContent(sel).caption}\n\nCOMMENT HOOK\n${buildContent(sel).hook}\n\nHASHTAGS\n${buildContent(sel).hashtags}\n\n`;
+    const post = buildContent(getSelections());
+    const postCaption = `POST CAPTION\n${post.caption}\n\nCOMMENT HOOK\n${post.hook}\n\nHASHTAGS\n${post.hashtags}\n\n`;
     const slides = rows.map((r, idx)=>{
-      return `SLIDE ${idx+1}\n${r.slideText}\n\nPROMPT\n${r.prompt}`;
+      return `SLIDE ${idx+1}\n${r.slideText}\n\nGENRE\n${r.genre}\nSUB-GENRE\n${r.subGenre}\n\nPROMPT\n${r.prompt}`;
     }).join("\n\n---\n\n");
 
     $("output").textContent = postCaption + "\n" + slides;
@@ -1896,10 +1996,9 @@ $("btnGenerate").addEventListener("click", ()=>{
   if(mode === "pack10"){
     if(!sel.quote){ alert("Paste a quote for 10-Pack."); return; }
     rows = buildPackN(DATA, 10, "Pack");
-
     $("output").textContent = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nSUB-GENRE\n${r.subGenre}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
   }
@@ -1907,10 +2006,9 @@ $("btnGenerate").addEventListener("click", ()=>{
   if(mode === "pack30"){
     drop = buildDrop(DATA);
     rows = drop.rows;
-
     $("output").textContent = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nSUB-GENRE\n${r.subGenre}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
   }
@@ -1922,7 +2020,7 @@ $("btnGenerate").addEventListener("click", ()=>{
     const header = `DROP NAME\n${drop.dropName}\n\nDROP THEME\n${drop.dropTheme}\n\nQUOTE (optional)\n${drop.quoteReference || "(none)"}\n\n=== OUTPUT ===\n`;
     const body = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nSUB-GENRE\n${r.subGenre}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
 
@@ -1942,6 +2040,8 @@ $("btnGenerate").addEventListener("click", ()=>{
         dropName:"",
         dropTheme:"",
         quoteReference:"",
+        genre:s.genre || "",
+        subGenre:s.subGenre || "",
         prompt,
         caption: content?.caption || "",
         hook: content?.hook || "",
@@ -1952,7 +2052,7 @@ $("btnGenerate").addEventListener("click", ()=>{
 
     $("output").textContent = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nSUB-GENRE\n${r.subGenre}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
   }
@@ -2023,7 +2123,7 @@ $("btnLoadDrop").addEventListener("click", ()=>{
   const header = `DROP NAME\n${drop.dropName}\n\nDROP THEME\n${drop.dropTheme}\n\nQUOTE (optional)\n${drop.quoteReference || "(none)"}\n\n=== OUTPUT ===\n`;
   const body = drop.rows.map(r=>{
     return sel.contentMode
-      ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+      ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nSUB-GENRE\n${r.subGenre}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
       : `${r.label}\n${r.prompt}`;
   }).join("\n\n---\n\n");
 
@@ -2047,16 +2147,14 @@ $("btnDeleteDrop").addEventListener("click", ()=>{
 
 $("btnExportDropLibrary").addEventListener("click", ()=>{
   const payload = {
-    version: "readerverse_drop_library_v1_4",
+    version: "readerverse_drop_library_v1_5",
     exportedAt: new Date().toISOString(),
     drops: DROP_LIB
   };
   downloadText("readerverse_drop_library.json", JSON.stringify(payload, null, 2));
 });
 
-$("btnImportDropLibrary").addEventListener("click", ()=>{
-  $("importDropLibFile").click();
-});
+$("btnImportDropLibrary").addEventListener("click", ()=>{ $("importDropLibFile").click(); });
 
 $("importDropLibFile").addEventListener("change", async (e)=>{
   const file = e.target.files?.[0];
@@ -2109,6 +2207,8 @@ $("btnLoadPreset").addEventListener("click", ()=>{
     dropName:"",
     dropTheme:"",
     quoteReference:s.quote,
+    genre:s.genre || "",
+    subGenre:s.subGenre || "",
     prompt,
     caption: content?.caption || "",
     hook: content?.hook || "",
@@ -2130,7 +2230,7 @@ $("btnDeletePreset").addEventListener("click", ()=>{
 });
 
 $("btnExportPresets").addEventListener("click", ()=>{
-  const payload = { version:"readerverse_presets_v1_4", exportedAt:new Date().toISOString(), presets: PRESETS };
+  const payload = { version:"readerverse_presets_v1_5", exportedAt:new Date().toISOString(), presets: PRESETS };
   downloadText("readerverse_presets.json", JSON.stringify(payload, null, 2));
 });
 
@@ -2206,6 +2306,7 @@ refreshDropLibSelect();
     }
   });
 })();
+
 </script>
 </body>
 </html>
