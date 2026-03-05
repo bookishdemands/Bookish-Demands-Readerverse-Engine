@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Bookish Demands Readerverse Engine</title>
+  <style>
+    :root{
+      --bg:#0c0c10;
+      --panel:#151523;
+      --panel2:#1c1c2e;
+      --text:#f2f2f7;
+      --muted:#b7b7c9;
+      --accent:#E0009A; /* Bookish Demands magenta */
+      --accent2:#7c3aed;
+      --line:#2a2a3f;
+      --good:#22c55e;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", "Noto Sans", "Liberation Sans", sans-serif;
+      background: radial-gradient(1200px 700px at 20% 0%, rgba(224,0,154,.18), transparent 60%),
+                  radial-gradient(1000px 700px at 85% 10%, rgba(124,58,237,.12), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+    }
+    header{
+      padding:24px 18px 10px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(21,21,35,.85), rgba(12,12,16,.35));
+      position:sticky;
+      top:0;
+      z-index:5;
+      backdrop-filter: blur(10px);
+    }
+    .wrap{ max-width:1200px; margin:0 auto; }
+    h1{
+      margin:0;
+      font-size:20px;
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .pill{
+      display:inline-block;
+      padding:4px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      color:var(--muted);
+      font-size:12px;
+      margin-top:10px;
+    }
+    main{ padding:18px; }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+      header{ position:relative; }
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(21,21,35,.95), rgba(21,21,35,.75));
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+    }
+    .card h2{
+      margin:0 0 10px;
+      font-size:14px;
+      color:#fff;
+      letter-spacing:.2px;
+    }
+    .row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    @media (max-width: 720px){
+      .row{ grid-template-columns: 1fr; }
+    }
+    label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin:0 0 6px;
+    }
+    select, input[type="text"], textarea{
+      width:100%;
+      padding:10px 10px;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background: var(--panel2);
+      color: var(--text);
+      outline:none;
+    }
+    textarea{ min-height:86px; resize:vertical; }
+    .btnrow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:10px;
+    }
+    button{
+      border:0;
+      border-radius:12px;
+      padding:10px 12px;
+      background: var(--panel2);
+      border:1px solid var(--line);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:600;
+      font-size:13px;
+    }
+    button.primary{
+      background: linear-gradient(90deg, rgba(224,0,154,1), rgba(124,58,237,1));
+      border:0;
+    }
+    button.good{ border-color: rgba(34,197,94,.55); }
+    button.warn{ border-color: rgba(245,158,11,.55); }
+    button.bad{ border-color: rgba(239,68,68,.55); }
+    button:active{ transform: translateY(1px); }
+    .toggle{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding:10px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background: rgba(28,28,46,.65);
+      margin-top:10px;
+    }
+    .toggle input{ transform: scale(1.2); }
+    .note{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.4;
+      margin-top:10px;
+    }
+    .out{
+      background: #0b0b13;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      margin-top:10px;
+    }
+    .out pre{
+      margin:0;
+      white-space:pre-wrap;
+      word-break:break-word;
+      font-size:12.5px;
+      color:#f7f7ff;
+      line-height:1.45;
+    }
+    .divider{
+      height:1px;
+      background: var(--line);
+      margin:12px 0;
+    }
+    .small{
+      font-size:12px;
+      color:var(--muted);
+    }
+    .kbd{
+      display:inline-block;
+      padding:2px 8px;
+      border:1px solid var(--line);
+      border-bottom-width:2px;
+      border-radius:8px;
+      background:#0f0f18;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .chip{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background: rgba(28,28,46,.55);
+      font-size:12px;
+      color:var(--muted);
+    }
+    .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Bookish Demands Readerverse Engine</h1>
+    <div class="sub">Stable, browser-based prompt generator for your glam reader character universe — reactions, packs, presets, exports.</div>
+    <div class="pill">Trademark-safe language: uses “e-reader” (not “Kindle”).</div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="grid">
+
+    <!-- LEFT: Builder -->
+    <section class="card">
+      <h2>Prompt Builder</h2>
+
+      <div class="row">
+        <div>
+          <label for="mode">Generator Mode</label>
+          <select id="mode">
+            <option value="single">Single Character</option>
+            <option value="pack4">Reaction Pack (4)</option>
+            <option value="pack10">10-Pack From Quote</option>
+            <option value="batch5">Generate 5 Characters (Random)</option>
+          </select>
+        </div>
+        <div>
+          <label for="matchStrength">Matching Strength</label>
+          <select id="matchStrength">
+            <option value="balanced">Balanced</option>
+            <option value="ontheme">On-theme</option>
+            <option value="super">Super on-theme</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="toggle">
+        <input id="carouselMode" type="checkbox" checked />
+        <label for="carouselMode" style="margin:0;color:var(--text);font-size:13px;">Carousel / Sticker Composition Mode</label>
+        <span class="small">(centered, clean background, big expression)</span>
+      </div>
+
+      <div class="toggle">
+        <input id="noText" type="checkbox" checked />
+        <label for="noText" style="margin:0;color:var(--text);font-size:13px;">Force “NO TEXT” in prompt</label>
+        <span class="small">(recommended)</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <div>
+          <label for="quoteInput">Quote (for matching / packs)</label>
+          <textarea id="quoteInput" placeholder="Paste quote here (optional for Single Character)."></textarea>
+        </div>
+        <div>
+          <label for="customCategory">Custom Category (optional)</label>
+          <input id="customCategory" type="text" placeholder="Example: 'Tropes: enemies to lovers' or your own tags"/>
+          <div class="note">This gets appended to the prompt as a custom line. Good for tropes, vibe notes, drop names.</div>
+        </div>
+      </div>
+
+      <div class="btnrow">
+        <button class="primary" id="btnMatch">Match Character to Quote</button>
+        <button class="good" id="btnRandom">One-Click Random Character</button>
+        <button class="warn" id="btnGenerate">Build Prompt Output</button>
+        <button id="btnCopy">Copy Prompt</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <div>
+          <label for="archetype">Reader Archetype</label>
+          <select id="archetype"></select>
+        </div>
+        <div>
+          <label for="expression">Expression</label>
+          <select id="expression"></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="micro">Micro Expression</label>
+          <select id="micro"></select>
+        </div>
+        <div>
+          <label for="reaction">Reader Reaction</label>
+          <select id="reaction"></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="mood">Reader Mood</label>
+          <select id="mood"></select>
+        </div>
+        <div>
+          <label for="attitude">Attitude / Personality</label>
+          <select id="attitude"></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="pose">Pose</label>
+          <select id="pose"></select>
+        </div>
+        <div>
+          <label for="poseAtt">Pose Attitude</label>
+          <select id="poseAtt"></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="complexion">Melanated Complexion</label>
+          <select id="complexion"></select>
+        </div>
+        <div>
+          <label for="faceShape">Face Shape</label>
+          <select id="faceShape"></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="hair">Hair</label>
+          <select id="hair"></select>
+        </div>
+        <div>
+          <label for="makeup">Makeup</label>
+          <select id="makeup"></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="nails">Nails</label>
+          <select id="nails"></select>
+        </div>
+        <div>
+          <label for="outfit">Outfit</label>
+          <select id="outfit"></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="accessories">Jewelry / Accessories</label>
+          <select id="accessories"></select>
+        </div>
+        <div>
+          <label for="prop">Bookish Props</label>
+          <select id="prop"></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="background">Background</label>
+          <select id="background"></select>
+        </div>
+        <div>
+          <label for="scene">Scene</label>
+          <select id="scene"></select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="palette">Palette</label>
+          <select id="palette"></select>
+        </div>
+        <div>
+          <label for="composition">Composition</label>
+          <select id="composition"></select>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2>Quick Add (Build your vault on the fly)</h2>
+      <div class="row">
+        <div>
+          <label for="addTarget">Add to…</label>
+          <select id="addTarget">
+            <option value="archetype">Archetype</option>
+            <option value="expression">Expression</option>
+            <option value="micro">Micro Expression</option>
+            <option value="reaction">Reaction</option>
+            <option value="mood">Mood</option>
+            <option value="attitude">Attitude</option>
+            <option value="pose">Pose</option>
+            <option value="poseAtt">Pose Attitude</option>
+            <option value="complexion">Complexion</option>
+            <option value="faceShape">Face Shape</option>
+            <option value="hair">Hair</option>
+            <option value="makeup">Makeup</option>
+            <option value="nails">Nails</option>
+            <option value="outfit">Outfit</option>
+            <option value="accessories">Accessories</option>
+            <option value="prop">Prop</option>
+            <option value="background">Background</option>
+            <option value="scene">Scene</option>
+            <option value="palette">Palette</option>
+            <option value="composition">Composition</option>
+          </select>
+        </div>
+        <div>
+          <label for="addValue">New option text</label>
+          <input id="addValue" type="text" placeholder="Type a new option then click Add"/>
+        </div>
+      </div>
+      <div class="btnrow">
+        <button id="btnAddOption">Add Option</button>
+        <button class="bad" id="btnResetDefaults">Reset to Defaults</button>
+      </div>
+      <div class="note">“Reset to Defaults” restores the original lists (but keeps your saved presets exported separately).</div>
+
+    </section>
+
+    <!-- RIGHT: Output + Presets/Export -->
+    <aside class="card">
+      <h2>Prompt Output</h2>
+      <div class="out"><pre id="output">(Click “Build Prompt Output”)</pre></div>
+
+      <div class="btnrow">
+        <button id="btnExportTXT">Export TXT</button>
+        <button id="btnExportCSV">Export CSV</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2>Presets</h2>
+      <div class="row">
+        <div>
+          <label for="presetName">Preset name</label>
+          <input id="presetName" type="text" placeholder="Example: Petty Reader — Side Eye"/>
+        </div>
+        <div>
+          <label for="presetSelect">Saved presets</label>
+          <select id="presetSelect"></select>
+        </div>
+      </div>
+
+      <div class="btnrow">
+        <button class="good" id="btnSavePreset">Save Preset</button>
+        <button id="btnLoadPreset">Load Preset</button>
+        <button class="bad" id="btnDeletePreset">Delete Preset</button>
+      </div>
+
+      <div class="btnrow">
+        <button id="btnExportPresets">Export Presets (JSON)</button>
+        <button id="btnImportPresets">Import Presets (JSON)</button>
+      </div>
+      <input id="importFile" type="file" accept="application/json" style="display:none"/>
+
+      <div class="divider"></div>
+
+      <h2>What you can make fast</h2>
+      <div class="chips">
+        <span class="chip">Sticker packs</span>
+        <span class="chip">Reader reaction carousels</span>
+        <span class="chip">E-reader insert art prompts</span>
+        <span class="chip">Character packs</span>
+        <span class="chip">Meme graphics</span>
+      </div>
+
+      <div class="note">
+        Tip: Use <span class="kbd">Reaction Pack (4)</span> for carousels and <span class="kbd">10-Pack</span> for full sticker sets.
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<script>
+/* =========================
+   Readerverse Engine v1.0
+   Single-file: stable + hostable
+========================= */
+
+const STORAGE_KEY_DATA = "readerverse_data_v1";
+const STORAGE_KEY_PRESETS = "readerverse_presets_v1";
+
+/* ====== DEFAULT VAULTS (edit anytime) ====== */
+const DEFAULTS = {
+  archetype: [
+    "Petty Reader",
+    "Soft Girl Menace",
+    "Delusional But Calculated",
+    "Controlled Chaos Reader",
+    "Urban Book Club President",
+    "Plot Twist Detective",
+    "Dark Romance Delulu",
+    "Morally Gray Enjoyer",
+    "Audiobook Multitasker",
+    "Late Night Reader",
+    "Book Hangover Survivor",
+    "Villain Defender",
+    "Main Character Agenda",
+    "High Standards Only",
+    "Emotionally Attached Reader",
+    "One More Chapter Liar",
+    "Red Flag Collector (Fiction Only)",
+    "Slow Burn Survivor",
+    "The Book Was Better",
+    "Reader With Expensive Taste"
+  ],
+  expression: [
+    "dramatic side-eye",
+    "unimpressed deadpan",
+    "slow blink judgment",
+    "wide shocked eyes",
+    "dramatic gasp",
+    "smug knowing smirk",
+    "mischievous grin",
+    "chaotic laugh",
+    "dreamy delulu smile",
+    "soft knowing smile",
+    "dangerous smirk",
+    "confident main character smirk"
+  ],
+  micro: [
+    "one eyebrow raised",
+    "half-lidded unimpressed gaze",
+    "slow blink",
+    "chin slightly lifted",
+    "tiny smirk corner",
+    "head tilted judgmentally",
+    "eyes widened slightly",
+    "subtle lip pout",
+    "side glance with dramatic lashes",
+    "soft squint like she knows the tea"
+  ],
+  reaction: [
+    "suspicious side-eye reaction",
+    "unimpressed reader reaction",
+    "plot twist shock reaction",
+    "dramatic gasp reaction",
+    "laughing at the chaos reaction",
+    "“I knew it” smug reaction",
+    "“this man is unhinged” reaction",
+    "book club gossip reaction",
+    "emotionally damaged reaction",
+    "feral romance reader reaction"
+  ],
+  mood: [
+    "controlled chaos mood",
+    "plot twist panic mood",
+    "feral dark romance mood",
+    "late night binge reading mood",
+    "book hangover mood",
+    "romance high mood",
+    "judging the characters mood",
+    "petty commentary mood",
+    "soft cozy mood",
+    "revenge arc mood"
+  ],
+  attitude: [
+    "quietly petty",
+    "bossy main character energy",
+    "delusional but calculated",
+    "soft voice hard leverage",
+    "high standards energy",
+    "chaotic reader energy",
+    "villain apologist energy",
+    "morally gray enjoyer energy",
+    "unbothered & booked",
+    "emotionally invested"
+  ],
+  pose: [
+    "arms crossed unimpressed",
+    "hand on hip confident",
+    "leaning slightly with attitude",
+    "looking over shoulder",
+    "finger on chin analyzing",
+    "hands near face shocked",
+    "hands raised dramatic reaction",
+    "peace sign selfie",
+    "phone in hand reaction",
+    "clutching book dramatically"
+  ],
+  poseAtt: [
+    "slow blink like she’s judging you",
+    "leaning with shoulder popped attitude",
+    "hair flip moment",
+    "calm but dangerous eyes",
+    "smug ‘told you so’ stance",
+    "dramatic gasp stance",
+    "gossiping like she has tea",
+    "unbothered posture",
+    "feral excitement posture",
+    "soft menace posture"
+  ],
+  complexion: [
+    "deep espresso skin tone (cool undertone)",
+    "deep espresso skin tone (warm undertone)",
+    "rich mahogany complexion (neutral)",
+    "warm cocoa brown complexion (golden undertone)",
+    "golden honey brown complexion (warm)",
+    "radiant caramel complexion (golden)",
+    "deep bronze complexion (warm)",
+    "deep rich brown skin (neutral glow)",
+    "dark chocolate complexion (cool)",
+    "deep walnut complexion (neutral)"
+  ],
+  faceShape: [
+    "heart face shape",
+    "oval face shape",
+    "soft round face shape",
+    "diamond face shape (softened)",
+    "square face shape (softened)",
+    "oval-heart hybrid face"
+  ],
+  hair: [
+    "long glossy glam waves",
+    "voluminous curly glam hair",
+    "sleek straight silk press hair",
+    "sleek blunt bob",
+    "high curly ponytail",
+    "long box braids",
+    "goddess braids",
+    "half-up glam ponytail",
+    "messy glam bun",
+    "deep side part Hollywood waves"
+  ],
+  makeup: [
+    "soft glam makeup",
+    "editorial glam makeup",
+    "glossy lip glam",
+    "bold wing liner glam",
+    "smokey eye glam",
+    "sparkly Y2K shimmer eyeshadow",
+    "rich girl natural glam",
+    "night-out glam"
+  ],
+  nails: [
+    "long coffin acrylic nails (glossy pink)",
+    "long stiletto acrylic nails (chrome)",
+    "short almond nails (nude gloss)",
+    "rhinestone accent nails",
+    "glitter French tip nails",
+    "matte nude acrylic nails",
+    "high-shine cherry red nails",
+    "pearly white glossy nails"
+  ],
+  outfit: [
+    "luxury streetwear outfit",
+    "soft girl aesthetic outfit",
+    "dark romance glam outfit",
+    "editorial glam fashion",
+    "rich girl casual outfit",
+    "Y2K glam doll outfit",
+    "cozy reader outfit",
+    "night-out glam outfit"
+  ],
+  accessories: [
+    "oversized gold hoop earrings + layered gold necklaces",
+    "gold hoops + chunky chain necklace",
+    "sparkly hair cuffs + hoops",
+    "dainty gold jewelry stack",
+    "bold statement earrings + glossy lip highlight",
+    "choker necklace + hoops",
+    "stacked bracelets + rings",
+    "nose ring + hoops (subtle)"
+  ],
+  prop: [
+    "holding an e-reader",
+    "holding an open romance novel dramatically",
+    "holding an annotated book with tabs",
+    "holding a phone like she just read something shocking",
+    "holding iced coffee + open book",
+    "wearing headphones listening to an audiobook",
+    "holding a stack of books",
+    "holding a reading journal + pen"
+  ],
+  background: [
+    "vibrant hot pink glam background",
+    "sparkle gradient glam background",
+    "bubblegum pop art background",
+    "luxury marble background with gold accents",
+    "clean sticker background (minimal)",
+    "soft pink gradient with twinkle stars",
+    "dark glam gradient with magenta rim glow",
+    "comic pop art halftone background"
+  ],
+  scene: [
+    "reading at 3AM under a blanket",
+    "dramatic plot twist moment",
+    "cozy luxury bedroom reading",
+    "coffee shop reading aesthetic",
+    "book club gossip moment",
+    "late-night audiobook binge",
+    "annotating and highlighting scene",
+    "scrolling reactions to a chapter reveal"
+  ],
+  palette: [
+    "matte black + electric magenta + bone",
+    "hot pink + black + gold",
+    "bubblegum pink + cream + gold",
+    "black + magenta glow + charcoal",
+    "champagne gold + black + blush",
+    "neon magenta + violet + black",
+    "soft pink + ivory + espresso",
+    "crimson + gunmetal + ivory"
+  ],
+  composition: [
+    "clean centered portrait, sticker-friendly framing",
+    "waist-up character, big expression, minimal clutter",
+    "close-up face focus, glossy editorial lighting",
+    "three-quarter pose, centered composition",
+    "full sticker composition, clean negative space"
+  ]
+};
+
+/* ====== DATA STATE ====== */
+function loadData(){
+  const raw = localStorage.getItem(STORAGE_KEY_DATA);
+  if(!raw) return structuredClone(DEFAULTS);
+  try{
+    const parsed = JSON.parse(raw);
+    // merge to ensure new default keys exist
+    return { ...structuredClone(DEFAULTS), ...parsed };
+  }catch{
+    return structuredClone(DEFAULTS);
+  }
+}
+function saveData(data){
+  localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(data));
+}
+function resetData(){
+  localStorage.removeItem(STORAGE_KEY_DATA);
+}
+
+/* ====== PRESETS STATE ====== */
+function loadPresets(){
+  const raw = localStorage.getItem(STORAGE_KEY_PRESETS);
+  if(!raw) return {};
+  try{ return JSON.parse(raw) || {}; }catch{ return {}; }
+}
+function savePresets(p){
+  localStorage.setItem(STORAGE_KEY_PRESETS, JSON.stringify(p));
+}
+
+/* ====== HELPERS ====== */
+const $ = (id)=>document.getElementById(id);
+const pick = (arr)=>arr[Math.floor(Math.random()*arr.length)];
+const normalize = (s)=>String(s||"").toLowerCase();
+
+function fillSelect(id, arr){
+  const el = $(id);
+  el.innerHTML = "";
+  arr.forEach(v=>{
+    const opt = document.createElement("option");
+    opt.value = v;
+    opt.textContent = v;
+    el.appendChild(opt);
+  });
+}
+function getSelections(){
+  return {
+    mode: $("mode").value,
+    matchStrength: $("matchStrength").value,
+    carouselMode: $("carouselMode").checked,
+    noText: $("noText").checked,
+    quote: $("quoteInput").value.trim(),
+    customCategory: $("customCategory").value.trim(),
+
+    archetype: $("archetype").value,
+    expression: $("expression").value,
+    micro: $("micro").value,
+    reaction: $("reaction").value,
+    mood: $("mood").value,
+    attitude: $("attitude").value,
+    pose: $("pose").value,
+    poseAtt: $("poseAtt").value,
+    complexion: $("complexion").value,
+    faceShape: $("faceShape").value,
+    hair: $("hair").value,
+    makeup: $("makeup").value,
+    nails: $("nails").value,
+    outfit: $("outfit").value,
+    accessories: $("accessories").value,
+    prop: $("prop").value,
+    background: $("background").value,
+    scene: $("scene").value,
+    palette: $("palette").value,
+    composition: $("composition").value
+  };
+}
+
+/* ====== BASE PROMPT (STYLE LOCK) ====== */
+function basePrompt(){
+  // This matches the viral Grok look you showed: glam doll + pink + jewelry + polished sticker aesthetic.
+  return [
+    "high-end Y2K glam doll illustration",
+    "Bratz inspired beauty cartoon illustration",
+    "ultra feminine melanated character",
+    "smooth airbrushed complexion",
+    "large almond shaped eyes with dramatic lashes",
+    "glossy full lips",
+    "softly contoured cheeks",
+    "glam beauty aesthetic",
+    "premium sticker illustration style",
+    "soft glow lighting",
+    "sparkle highlights",
+    "editorial beauty lighting",
+    "ultra polished high quality digital illustration"
+  ].join(", ");
+}
+
+/* ====== PROMPT ASSEMBLY ====== */
+function buildSinglePrompt(sel){
+  const parts = [];
+
+  parts.push(basePrompt());
+  parts.push(sel.complexion);
+  parts.push(sel.faceShape);
+
+  // Styling anchors
+  parts.push(sel.hair);
+  parts.push(sel.makeup);
+  parts.push(sel.nails);
+  parts.push(sel.outfit);
+  parts.push(sel.accessories);
+
+  // Character logic
+  parts.push(sel.archetype + " reader character");
+  parts.push(sel.expression + " expression");
+  parts.push(sel.micro + " micro-expression");
+  parts.push(sel.reaction);
+  parts.push(sel.mood);
+  parts.push(sel.attitude);
+
+  // Pose + props + setting
+  parts.push(sel.pose + " pose");
+  parts.push(sel.poseAtt);
+  parts.push(sel.prop);
+  parts.push(sel.scene);
+  parts.push(sel.background);
+  parts.push("palette: " + sel.palette);
+  parts.push(sel.composition);
+
+  // Carousel/sticker mode: ensure minimal clutter, centered, clean background bias
+  if(sel.carouselMode){
+    parts.push("centered composition, clean background, large expressive face, sticker-friendly framing, minimal background clutter");
+  }
+
+  // Custom category
+  if(sel.customCategory){
+    parts.push("custom notes: " + sel.customCategory);
+  }
+
+  if(sel.noText){
+    parts.push("no text, no watermark, no logo");
+  }
+
+  return parts.filter(Boolean).join(", ");
+}
+
+/* ====== RANDOMIZE ====== */
+function randomizeAll(data){
+  $("archetype").value = pick(data.archetype);
+  $("expression").value = pick(data.expression);
+  $("micro").value = pick(data.micro);
+  $("reaction").value = pick(data.reaction);
+  $("mood").value = pick(data.mood);
+  $("attitude").value = pick(data.attitude);
+  $("pose").value = pick(data.pose);
+  $("poseAtt").value = pick(data.poseAtt);
+  $("complexion").value = pick(data.complexion);
+  $("faceShape").value = pick(data.faceShape);
+  $("hair").value = pick(data.hair);
+  $("makeup").value = pick(data.makeup);
+  $("nails").value = pick(data.nails);
+  $("outfit").value = pick(data.outfit);
+  $("accessories").value = pick(data.accessories);
+  $("prop").value = pick(data.prop);
+  $("background").value = pick(data.background);
+  $("scene").value = pick(data.scene);
+  $("palette").value = pick(data.palette);
+  $("composition").value = pick(data.composition);
+}
+
+/* ====== QUOTE MATCHER (RULES) ====== */
+function matchToQuote(data, quoteRaw, strength){
+  const quote = normalize(quoteRaw);
+  const has = (...words)=>words.some(w=>quote.includes(w));
+
+  // default pick helpers (balanced vs super)
+  const intensity = strength; // balanced | ontheme | super
+
+  // Start from a sensible base
+  let target = {
+    archetype: "Controlled Chaos Reader",
+    expression: "confident main character smirk",
+    micro: "chin slightly lifted",
+    reaction: "laughing at the chaos reaction",
+    mood: "controlled chaos mood",
+    attitude: "delusional but calculated",
+    pose: "hand on hip confident",
+    poseAtt: "unbothered posture",
+    prop: "holding an e-reader",
+    scene: "cozy luxury bedroom reading",
+    background: "vibrant hot pink glam background",
+    palette: "hot pink + black + gold",
+    composition: "clean centered portrait, sticker-friendly framing"
+  };
+
+  // A) Side-eye / humble brag / proved me right / unbothered
+  if(has("humble","quietly","proved me right","prove me right","told you","i knew it","unbothered","as expected","mmhmm","sure","okay then","watching")){
+    target.archetype = "Petty Reader";
+    target.expression = "dramatic side-eye";
+    target.micro = "one eyebrow raised";
+    target.reaction = "suspicious side-eye reaction";
+    target.mood = "petty commentary mood";
+    target.attitude = "quietly petty";
+    target.pose = "arms crossed unimpressed";
+    target.poseAtt = "slow blink like she’s judging you";
+    target.prop = "holding a phone like she just read something shocking";
+    target.scene = "scrolling reactions to a chapter reveal";
+    target.background = "vibrant hot pink glam background";
+    target.palette = "hot pink + black + gold";
+  }
+
+  // B) Shock / twist / betrayal
+  if(has("plot twist","wait","what","betrayal","shocked","gasp","jaw dropped","screaming","can’t believe","cant believe","insane","wild","twist")){
+    target.archetype = "Plot Twist Detective";
+    target.expression = "wide shocked eyes";
+    target.micro = "eyes widened slightly";
+    target.reaction = "plot twist shock reaction";
+    target.mood = "plot twist panic mood";
+    target.attitude = "emotionally invested";
+    target.pose = (intensity==="super") ? "hands raised dramatic reaction" : "hands near face shocked";
+    target.poseAtt = "dramatic gasp stance";
+    target.prop = "holding an open romance novel dramatically";
+    target.scene = "dramatic plot twist moment";
+    target.background = "comic pop art halftone background";
+    target.palette = "neon magenta + violet + black";
+  }
+
+  // C) Dark romance / villain / unhinged / possessive
+  if(has("villain","unhinged","toxic","obsessed","mine","possessive","ruin me","morally gray","morally grey","therapy","dangerous")){
+    target.archetype = "Dark Romance Delulu";
+    target.expression = "dangerous smirk";
+    target.micro = "half-lidded unimpressed gaze";
+    target.reaction = "“this man is unhinged” reaction";
+    target.mood = "feral dark romance mood";
+    target.attitude = "villain apologist energy";
+    target.pose = "looking over shoulder";
+    target.poseAtt = "calm but dangerous eyes";
+    target.prop = "holding an open romance novel dramatically";
+    target.scene = "dramatic plot twist moment";
+    target.background = "dark glam gradient with magenta rim glow";
+    target.palette = "matte black + electric magenta + bone";
+  }
+
+  // D) Soft / healing / cozy
+  if(has("soft","healing","cozy","comfort","peace","gentle","safe","calm")){
+    target.archetype = "Late Night Reader";
+    target.expression = "soft knowing smile";
+    target.micro = "side glance with dramatic lashes";
+    target.reaction = "unimpressed reader reaction";
+    target.mood = "soft cozy mood";
+    target.attitude = "unbothered & booked";
+    target.pose = "leaning slightly with attitude";
+    target.poseAtt = "soft menace posture";
+    target.prop = "holding iced coffee + open book";
+    target.scene = "coffee shop reading aesthetic";
+    target.background = "soft pink gradient with twinkle stars";
+    target.palette = "soft pink + ivory + espresso";
+  }
+
+  // Strength tweaks: “super on-theme” pushes drama
+  if(intensity==="super"){
+    // push more dramatic expressions if already in twist/dark buckets
+    if(target.mood.includes("plot twist")){
+      target.expression = "dramatic gasp";
+      target.micro = "eyes widened slightly";
+      target.pose = "hands raised dramatic reaction";
+    }
+    if(target.mood.includes("feral dark romance")){
+      target.expression = "dangerous smirk";
+      target.poseAtt = "hair flip moment";
+    }
+    if(target.mood.includes("petty")){
+      target.micro = "head tilted judgmentally";
+    }
+  }
+
+  // Apply matched values only if they exist in vaults (fallback to closest defaults)
+  const safeSet = (id, val, arr)=>{ if(arr.includes(val)) $(id).value = val; };
+  safeSet("archetype", target.archetype, data.archetype);
+  safeSet("expression", target.expression, data.expression);
+  safeSet("micro", target.micro, data.micro);
+  safeSet("reaction", target.reaction, data.reaction);
+  safeSet("mood", target.mood, data.mood);
+  safeSet("attitude", target.attitude, data.attitude);
+  safeSet("pose", target.pose, data.pose);
+  safeSet("poseAtt", target.poseAtt, data.poseAtt);
+  safeSet("prop", target.prop, data.prop);
+  safeSet("scene", target.scene, data.scene);
+  safeSet("background", target.background, data.background);
+  safeSet("palette", target.palette, data.palette);
+  safeSet("composition", target.composition, data.composition);
+
+  // Keep complexion/face/hair/makeup/nails/outfit/accessories randomized but cohesive:
+  $("complexion").value = pick(data.complexion);
+  $("faceShape").value = pick(data.faceShape);
+  $("hair").value = pick(data.hair);
+  $("makeup").value = pick(data.makeup);
+  $("nails").value = pick(data.nails);
+  $("outfit").value = pick(data.outfit);
+  $("accessories").value = pick(data.accessories);
+}
+
+/* ====== PACK GENERATORS ====== */
+function buildPack4(data, sel){
+  // 4 canonical reactions
+  const types = [
+    { name:"Shock Reaction Reader", set:()=> {
+      $("archetype").value = data.archetype.includes("Plot Twist Detective") ? "Plot Twist Detective" : pick(data.archetype);
+      $("expression").value = data.expression.includes("wide shocked eyes") ? "wide shocked eyes" : pick(data.expression);
+      $("micro").value = data.micro.includes("eyes widened slightly") ? "eyes widened slightly" : pick(data.micro);
+      $("reaction").value = data.reaction.includes("plot twist shock reaction") ? "plot twist shock reaction" : pick(data.reaction);
+      $("mood").value = data.mood.includes("plot twist panic mood") ? "plot twist panic mood" : pick(data.mood);
+      $("pose").value = data.pose.includes("hands near face shocked") ? "hands near face shocked" : pick(data.pose);
+      $("poseAtt").value = data.poseAtt.includes("dramatic gasp stance") ? "dramatic gasp stance" : pick(data.poseAtt);
+      $("prop").value = data.prop.includes("holding an open romance novel dramatically") ? "holding an open romance novel dramatically" : pick(data.prop);
+      $("background").value = data.background.includes("comic pop art halftone background") ? "comic pop art halftone background" : pick(data.background);
+      $("scene").value = data.scene.includes("dramatic plot twist moment") ? "dramatic plot twist moment" : pick(data.scene);
+    }},
+    { name:"Delulu Dark Romance Reader", set:()=> {
+      $("archetype").value = data.archetype.includes("Dark Romance Delulu") ? "Dark Romance Delulu" : pick(data.archetype);
+      $("expression").value = data.expression.includes("dangerous smirk") ? "dangerous smirk" : pick(data.expression);
+      $("micro").value = data.micro.includes("half-lidded unimpressed gaze") ? "half-lidded unimpressed gaze" : pick(data.micro);
+      $("reaction").value = data.reaction.includes("“this man is unhinged” reaction") ? "“this man is unhinged” reaction" : pick(data.reaction);
+      $("mood").value = data.mood.includes("feral dark romance mood") ? "feral dark romance mood" : pick(data.mood);
+      $("pose").value = data.pose.includes("looking over shoulder") ? "looking over shoulder" : pick(data.pose);
+      $("poseAtt").value = data.poseAtt.includes("calm but dangerous eyes") ? "calm but dangerous eyes" : pick(data.poseAtt);
+      $("prop").value = data.prop.includes("holding an open romance novel dramatically") ? "holding an open romance novel dramatically" : pick(data.prop);
+      $("background").value = data.background.includes("dark glam gradient with magenta rim glow") ? "dark glam gradient with magenta rim glow" : pick(data.background);
+      $("scene").value = data.scene.includes("dramatic plot twist moment") ? "dramatic plot twist moment" : pick(data.scene);
+    }},
+    { name:"Petty Side-Eye Reader", set:()=> {
+      $("archetype").value = data.archetype.includes("Petty Reader") ? "Petty Reader" : pick(data.archetype);
+      $("expression").value = data.expression.includes("dramatic side-eye") ? "dramatic side-eye" : pick(data.expression);
+      $("micro").value = data.micro.includes("one eyebrow raised") ? "one eyebrow raised" : pick(data.micro);
+      $("reaction").value = data.reaction.includes("suspicious side-eye reaction") ? "suspicious side-eye reaction" : pick(data.reaction);
+      $("mood").value = data.mood.includes("petty commentary mood") ? "petty commentary mood" : pick(data.mood);
+      $("pose").value = data.pose.includes("arms crossed unimpressed") ? "arms crossed unimpressed" : pick(data.pose);
+      $("poseAtt").value = data.poseAtt.includes("slow blink like she’s judging you") ? "slow blink like she’s judging you" : pick(data.poseAtt);
+      $("prop").value = data.prop.includes("holding a phone like she just read something shocking") ? "holding a phone like she just read something shocking" : pick(data.prop);
+      $("background").value = data.background.includes("vibrant hot pink glam background") ? "vibrant hot pink glam background" : pick(data.background);
+      $("scene").value = data.scene.includes("scrolling reactions to a chapter reveal") ? "scrolling reactions to a chapter reveal" : pick(data.scene);
+    }},
+    { name:"Feral Romance Reader", set:()=> {
+      $("archetype").value = data.archetype.includes("Morally Gray Enjoyer") ? "Morally Gray Enjoyer" : pick(data.archetype);
+      $("expression").value = data.expression.includes("mischievous grin") ? "mischievous grin" : pick(data.expression);
+      $("micro").value = data.micro.includes("tiny smirk corner") ? "tiny smirk corner" : pick(data.micro);
+      $("reaction").value = data.reaction.includes("feral romance reader reaction") ? "feral romance reader reaction" : pick(data.reaction);
+      $("mood").value = data.mood.includes("romance high mood") ? "romance high mood" : pick(data.mood);
+      $("pose").value = data.pose.includes("clutching book dramatically") ? "clutching book dramatically" : pick(data.pose);
+      $("poseAtt").value = data.poseAtt.includes("feral excitement posture") ? "feral excitement posture" : pick(data.poseAtt);
+      $("prop").value = data.prop.includes("holding a stack of books") ? "holding a stack of books" : pick(data.prop);
+      $("background").value = data.background.includes("sparkle gradient glam background") ? "sparkle gradient glam background" : pick(data.background);
+      $("scene").value = data.scene.includes("late-night audiobook binge") ? "late-night audiobook binge" : pick(data.scene);
+    }},
+  ];
+
+  const saved = [];
+  const original = getSelections();
+
+  for(const t of types){
+    // randomize style details per character
+    $("complexion").value = pick(data.complexion);
+    $("faceShape").value = pick(data.faceShape);
+    $("hair").value = pick(data.hair);
+    $("makeup").value = pick(data.makeup);
+    $("nails").value = pick(data.nails);
+    $("outfit").value = pick(data.outfit);
+    $("accessories").value = pick(data.accessories);
+    $("palette").value = pick(data.palette);
+    $("composition").value = pick(data.composition);
+
+    // set reaction type
+    t.set();
+
+    const s = getSelections();
+    const prompt = buildSinglePrompt(s);
+    saved.push({ label: t.name, prompt });
+  }
+
+  // restore selections (optional)
+  applySelections(original);
+
+  return saved;
+}
+
+function buildPack10(data){
+  // 10 distinct reaction “roles”
+  const roles = [
+    "Shock Reaction Reader",
+    "Dramatic Gasp Reader",
+    "Petty Side-Eye Reader",
+    "Unimpressed Slow Blink Reader",
+    "Delulu Dark Romance Reader",
+    "Feral Romance Reader",
+    "Smug “I Knew It” Reader",
+    "Book Club Gossip Reader",
+    "Emotional Damage Reader",
+    "Revenge Arc Main Character Reader"
+  ];
+
+  const prompts = [];
+  const original = getSelections();
+
+  roles.forEach((role, idx)=>{
+    randomizeAll(data);
+
+    // Light role steering for uniqueness
+    const r = normalize(role);
+    if(r.includes("shock")){
+      $("expression").value = data.expression.includes("wide shocked eyes") ? "wide shocked eyes" : $("expression").value;
+      $("reaction").value = data.reaction.includes("plot twist shock reaction") ? "plot twist shock reaction" : $("reaction").value;
+      $("pose").value = data.pose.includes("hands near face shocked") ? "hands near face shocked" : $("pose").value;
+    }
+    if(r.includes("gasp")){
+      $("expression").value = data.expression.includes("dramatic gasp") ? "dramatic gasp" : $("expression").value;
+      $("poseAtt").value = data.poseAtt.includes("dramatic gasp stance") ? "dramatic gasp stance" : $("poseAtt").value;
+    }
+    if(r.includes("petty")){
+      $("expression").value = data.expression.includes("dramatic side-eye") ? "dramatic side-eye" : $("expression").value;
+      $("attitude").value = data.attitude.includes("quietly petty") ? "quietly petty" : $("attitude").value;
+      $("pose").value = data.pose.includes("arms crossed unimpressed") ? "arms crossed unimpressed" : $("pose").value;
+    }
+    if(r.includes("slow blink")){
+      $("expression").value = data.expression.includes("slow blink judgment") ? "slow blink judgment" : $("expression").value;
+      $("micro").value = data.micro.includes("slow blink") ? "slow blink" : $("micro").value;
+    }
+    if(r.includes("delulu")){
+      $("mood").value = data.mood.includes("feral dark romance mood") ? "feral dark romance mood" : $("mood").value;
+      $("expression").value = data.expression.includes("dangerous smirk") ? "dangerous smirk" : $("expression").value;
+    }
+    if(r.includes("feral")){
+      $("expression").value = data.expression.includes("chaotic laugh") ? "chaotic laugh" : $("expression").value;
+      $("reaction").value = data.reaction.includes("feral romance reader reaction") ? "feral romance reader reaction" : $("reaction").value;
+    }
+    if(r.includes("i knew")){
+      $("reaction").value = data.reaction.includes("“I knew it” smug reaction") ? "“I knew it” smug reaction" : $("reaction").value;
+      $("expression").value = data.expression.includes("smug knowing smirk") ? "smug knowing smirk" : $("expression").value;
+    }
+    if(r.includes("gossip")){
+      $("reaction").value = data.reaction.includes("book club gossip reaction") ? "book club gossip reaction" : $("reaction").value;
+      $("poseAtt").value = data.poseAtt.includes("gossiping like she has tea") ? "gossiping like she has tea" : $("poseAtt").value;
+    }
+    if(r.includes("emotional")){
+      $("reaction").value = data.reaction.includes("emotionally damaged reaction") ? "emotionally damaged reaction" : $("reaction").value;
+      $("mood").value = data.mood.includes("book hangover mood") ? "book hangover mood" : $("mood").value;
+    }
+    if(r.includes("revenge")){
+      $("mood").value = data.mood.includes("revenge arc mood") ? "revenge arc mood" : $("mood").value;
+      $("attitude").value = data.attitude.includes("bossy main character energy") ? "bossy main character energy" : $("attitude").value;
+      $("expression").value = data.expression.includes("confident main character smirk") ? "confident main character smirk" : $("expression").value;
+    }
+
+    const s = getSelections();
+    const prompt = buildSinglePrompt(s);
+    prompts.push({ label: `${idx+1}. ${role}`, prompt });
+  });
+
+  applySelections(original);
+  return prompts;
+}
+
+function applySelections(sel){
+  const ids = [
+    "archetype","expression","micro","reaction","mood","attitude","pose","poseAtt",
+    "complexion","faceShape","hair","makeup","nails","outfit","accessories","prop",
+    "background","scene","palette","composition"
+  ];
+  ids.forEach(id=>{
+    if(sel[id] && $(id)){
+      $(id).value = sel[id];
+    }
+  });
+  if(typeof sel.carouselMode === "boolean") $("carouselMode").checked = sel.carouselMode;
+  if(typeof sel.noText === "boolean") $("noText").checked = sel.noText;
+  if(sel.quote !== undefined) $("quoteInput").value = sel.quote;
+  if(sel.customCategory !== undefined) $("customCategory").value = sel.customCategory;
+  if(sel.matchStrength) $("matchStrength").value = sel.matchStrength;
+  if(sel.mode) $("mode").value = sel.mode;
+}
+
+/* ====== EXPORTS ====== */
+function downloadText(filename, text){
+  const blob = new Blob([text], {type:"text/plain;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function escapeCSV(value){
+  const s = String(value ?? "");
+  if(/[",\n]/.test(s)) return `"${s.replace(/"/g,'""')}"`;
+  return s;
+}
+
+function buildCSV(rows){
+  const headers = ["label","quoteReference","prompt"];
+  const lines = [headers.join(",")];
+  rows.forEach(r=>{
+    lines.push([escapeCSV(r.label||""), escapeCSV(r.quoteReference||""), escapeCSV(r.prompt||"")].join(","));
+  });
+  return lines.join("\n");
+}
+
+/* ====== PRESETS ====== */
+function refreshPresetSelect(presets){
+  const sel = $("presetSelect");
+  sel.innerHTML = "";
+  const names = Object.keys(presets).sort((a,b)=>a.localeCompare(b));
+  const blank = document.createElement("option");
+  blank.value = ""; blank.textContent = "— Select —";
+  sel.appendChild(blank);
+
+  names.forEach(name=>{
+    const opt = document.createElement("option");
+    opt.value = name;
+    opt.textContent = name;
+    sel.appendChild(opt);
+  });
+}
+
+/* ====== INIT ====== */
+let DATA = loadData();
+let PRESETS = loadPresets();
+
+function init(){
+  // fill dropdowns
+  fillSelect("archetype", DATA.archetype);
+  fillSelect("expression", DATA.expression);
+  fillSelect("micro", DATA.micro);
+  fillSelect("reaction", DATA.reaction);
+  fillSelect("mood", DATA.mood);
+  fillSelect("attitude", DATA.attitude);
+  fillSelect("pose", DATA.pose);
+  fillSelect("poseAtt", DATA.poseAtt);
+  fillSelect("complexion", DATA.complexion);
+  fillSelect("faceShape", DATA.faceShape);
+  fillSelect("hair", DATA.hair);
+  fillSelect("makeup", DATA.makeup);
+  fillSelect("nails", DATA.nails);
+  fillSelect("outfit", DATA.outfit);
+  fillSelect("accessories", DATA.accessories);
+  fillSelect("prop", DATA.prop);
+  fillSelect("background", DATA.background);
+  fillSelect("scene", DATA.scene);
+  fillSelect("palette", DATA.palette);
+  fillSelect("composition", DATA.composition);
+
+  refreshPresetSelect(PRESETS);
+
+  // default output
+  $("output").textContent = "(Click “Build Prompt Output”)";
+}
+
+init();
+
+/* ====== BUTTONS ====== */
+$("btnRandom").addEventListener("click", ()=>{
+  randomizeAll(DATA);
+  const s = getSelections();
+  $("output").textContent = buildSinglePrompt(s);
+});
+
+$("btnMatch").addEventListener("click", ()=>{
+  const quote = $("quoteInput").value.trim();
+  if(!quote){
+    alert("Paste a quote first (or switch mode to Single Character and use Random).");
+    return;
+  }
+  matchToQuote(DATA, quote, $("matchStrength").value);
+  const s = getSelections();
+  $("output").textContent = buildSinglePrompt(s);
+});
+
+$("btnGenerate").addEventListener("click", ()=>{
+  const sel = getSelections();
+  const mode = sel.mode;
+
+  if(mode === "single"){
+    $("output").textContent = buildSinglePrompt(sel);
+    return;
+  }
+
+  const quote = sel.quote;
+  if((mode === "pack4" || mode === "pack10") && !quote){
+    alert("Paste a quote first for Reaction Packs.");
+    return;
+  }
+
+  // if quote matching is desired, run matcher once to set a coherent base, then generate
+  matchToQuote(DATA, quote, sel.matchStrength);
+
+  let rows = [];
+  if(mode === "pack4"){
+    const pack = buildPack4(DATA, getSelections());
+    rows = pack.map(p=>({ label: p.label, quoteReference: quote, prompt: p.prompt }));
+  }else if(mode === "pack10"){
+    const pack = buildPack10(DATA);
+    rows = pack.map(p=>({ label: p.label, quoteReference: quote, prompt: p.prompt }));
+  }else if(mode === "batch5"){
+    const original = getSelections();
+    rows = [];
+    for(let i=0;i<5;i++){
+      randomizeAll(DATA);
+      const s = getSelections();
+      rows.push({ label: `Random ${i+1}`, quoteReference: "", prompt: buildSinglePrompt(s) });
+    }
+    applySelections(original);
+  }
+
+  // display nicely
+  const text = rows.map(r=>`${r.label}\n${r.prompt}`).join("\n\n---\n\n");
+  $("output").textContent = text;
+
+  // store lastRows for export
+  window.__lastRows = rows;
+});
+
+$("btnCopy").addEventListener("click", async ()=>{
+  const text = $("output").textContent || "";
+  if(!text.trim()){ alert("Nothing to copy yet."); return; }
+  try{
+    await navigator.clipboard.writeText(text);
+    alert("Copied!");
+  }catch{
+    alert("Copy failed. Try selecting the text and copying manually.");
+  }
+});
+
+$("btnExportTXT").addEventListener("click", ()=>{
+  const text = $("output").textContent || "";
+  if(!text.trim()){ alert("Nothing to export yet."); return; }
+  downloadText("readerverse_output.txt", text);
+});
+
+$("btnExportCSV").addEventListener("click", ()=>{
+  const rows = window.__lastRows || [{label:"Single", quoteReference: $("quoteInput").value.trim(), prompt: $("output").textContent || ""}];
+  const csv = buildCSV(rows);
+  downloadText("readerverse_output.csv", csv);
+});
+
+/* ====== QUICK ADD OPTION ====== */
+$("btnAddOption").addEventListener("click", ()=>{
+  const target = $("addTarget").value;
+  const val = $("addValue").value.trim();
+  if(!val){ alert("Type a new option first."); return; }
+  if(!DATA[target]){ alert("Invalid target."); return; }
+
+  // prevent duplicates (case-insensitive)
+  const exists = DATA[target].some(x=>normalize(x)===normalize(val));
+  if(exists){
+    alert("That option already exists in this list.");
+    return;
+  }
+
+  DATA[target].push(val);
+  // refresh the one select
+  fillSelect(target, DATA[target]);
+  $(target).value = val;
+  $("addValue").value = "";
+
+  saveData(DATA);
+});
+
+$("btnResetDefaults").addEventListener("click", ()=>{
+  if(!confirm("Reset lists to defaults? This will remove any custom-added options (presets remain).")) return;
+  resetData();
+  DATA = loadData();
+  init();
+});
+
+/* ====== PRESETS: SAVE/LOAD/DELETE ====== */
+$("btnSavePreset").addEventListener("click", ()=>{
+  const name = $("presetName").value.trim();
+  if(!name){ alert("Name your preset first."); return; }
+  const sel = getSelections();
+  // Save only the builder fields (not output)
+  PRESETS[name] = {
+    ...sel,
+    // reduce noise: keep output-specific fields out if any
+  };
+  savePresets(PRESETS);
+  refreshPresetSelect(PRESETS);
+  $("presetSelect").value = name;
+  alert("Preset saved!");
+});
+
+$("btnLoadPreset").addEventListener("click", ()=>{
+  const name = $("presetSelect").value;
+  if(!name){ alert("Select a preset first."); return; }
+  const preset = PRESETS[name];
+  applySelections(preset);
+  $("presetName").value = name;
+  $("output").textContent = buildSinglePrompt(getSelections());
+});
+
+$("btnDeletePreset").addEventListener("click", ()=>{
+  const name = $("presetSelect").value;
+  if(!name){ alert("Select a preset first."); return; }
+  if(!confirm(`Delete preset "${name}"?`)) return;
+  delete PRESETS[name];
+  savePresets(PRESETS);
+  refreshPresetSelect(PRESETS);
+  $("presetName").value = "";
+  alert("Deleted.");
+});
+
+$("btnExportPresets").addEventListener("click", ()=>{
+  const payload = {
+    version: "readerverse_presets_v1",
+    exportedAt: new Date().toISOString(),
+    presets: PRESETS
+  };
+  downloadText("readerverse_presets.json", JSON.stringify(payload, null, 2));
+});
+
+$("btnImportPresets").addEventListener("click", ()=>{
+  $("importFile").click();
+});
+
+$("importFile").addEventListener("change", async (e)=>{
+  const file = e.target.files?.[0];
+  if(!file) return;
+  try{
+    const text = await file.text();
+    const parsed = JSON.parse(text);
+    const imported = parsed.presets || parsed;
+    if(typeof imported !== "object"){ throw new Error("Invalid format"); }
+    PRESETS = { ...PRESETS, ...imported };
+    savePresets(PRESETS);
+    refreshPresetSelect(PRESETS);
+    alert("Presets imported!");
+  }catch(err){
+    alert("Import failed. Make sure it’s a JSON export from Readerverse.");
+  }finally{
+    $("importFile").value = "";
+  }
+});
+
+/* ====== INIT lastRows ====== */
+window.__lastRows = [];
+
+</script>
+</body>
+</html>
