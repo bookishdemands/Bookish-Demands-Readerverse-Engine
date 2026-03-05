@@ -151,20 +151,25 @@
       margin-top:8px;
     }
     .out{
-      background: #0b0b13;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-      margin-top:10px;
-    }
+  background:#0b0b13;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px;
+  margin-top:10px;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.02) inset,
+    0 10px 30px rgba(0,0,0,.35),
+    0 0 25px rgba(224,0,154,.05);
+}
     .out pre{
-      margin:0;
-      white-space:pre-wrap;
-      word-break:break-word;
-      font-size:12.5px;
-      color:#f7f7ff;
-      line-height:1.45;
-    }
+  margin:0;
+  white-space:pre-wrap;
+  word-break:break-word;
+  font-size:12.8px;
+  color:#f7f7ff;
+  line-height:1.55;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
     .divider{
       height:1px;
       background: var(--line);
@@ -393,7 +398,7 @@
       </div>
 
       <div class="btnrow">
-        <button class="primary" id="btnGenerate">Build Output</button>
+        <button class="primary" id="btnGenerate">Generate Readerverse Content</button>
         <button class="good" id="btnRandom">One-Click Random Character</button>
         <button id="btnCopy">Copy Output</button>
       </div>
@@ -605,7 +610,11 @@
     <!-- RIGHT -->
     <aside class="card">
       <h2>Output</h2>
-      <div class="out"><pre id="output">(Click “Build Output”)</pre></div>
+      <h2>Output <span class="badge">Prompt + Content</span></h2>
+
+<div class="out">
+  <pre id="output">(Click “Build Output”)</pre>
+</div>
 
       <div class="btnrow">
         <button id="btnExportTXT">Export TXT</button>
