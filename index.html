@@ -11,7 +11,7 @@
       --panel2:#1c1c2e;
       --text:#f2f2f7;
       --muted:#b7b7c9;
-      --accent:#E0009A; /* Bookish Demands magenta */
+      --accent:#E0009A;
       --accent2:#7c3aed;
       --line:#2a2a3f;
       --good:#22c55e;
@@ -195,8 +195,8 @@
 <body>
 <header>
   <div class="wrap">
-    <h1>Bookish Demands Readerverse Engine <span class="badge">v1.1</span></h1>
-    <div class="sub">Stable, browser-based prompt generator — now with 30-pack drops, content mode, and full Drop Builder.</div>
+    <h1>Bookish Demands Readerverse Engine <span class="badge">v1.2</span></h1>
+    <div class="sub">Now includes Drop Library (save/load full drops), plus 30-pack, content mode, and Drop Builder.</div>
     <div class="pill">Trademark-safe language: uses “e-reader” (not “Kindle”).</div>
   </div>
 </header>
@@ -238,14 +238,14 @@
         <div>
           <label for="dropName">Drop Name (auto or custom)</label>
           <input id="dropName" type="text" placeholder="Example: Delusional But Calculated — Volume 1"/>
-          <div class="note">If blank, Readerverse will auto-name your drop based on theme + vibe.</div>
+          <div class="note">If blank, Readerverse auto-names your drop based on theme + quote usage.</div>
         </div>
       </div>
 
       <div class="toggle">
         <input id="contentMode" type="checkbox" checked />
         <label for="contentMode" style="margin:0;color:var(--text);font-size:13px;">Content Generator Mode</label>
-        <span class="small">(adds caption + hook + hashtags per prompt)</span>
+        <span class="small">(caption + hook + hashtags per prompt)</span>
       </div>
 
       <div class="toggle">
@@ -270,7 +270,7 @@
         <div>
           <label for="customCategory">Custom Category / Notes (optional)</label>
           <input id="customCategory" type="text" placeholder="Example: Tropes, drop era, vibe notes"/>
-          <div class="note">This gets appended to the prompt. Great for tropes + collection naming.</div>
+          <div class="note">Appends to prompt as “custom notes: …”</div>
         </div>
       </div>
 
@@ -420,6 +420,7 @@
             <option value="scene">Scene</option>
             <option value="palette">Palette</option>
             <option value="composition">Composition</option>
+            <option value="dropTheme">Drop Theme</option>
           </select>
         </div>
         <div>
@@ -431,10 +432,10 @@
         <button id="btnAddOption">Add Option</button>
         <button class="bad" id="btnResetDefaults">Reset to Defaults</button>
       </div>
-      <div class="note">Reset restores original lists (presets remain exportable).</div>
+      <div class="note">Reset restores original lists (presets + drop library remain exportable).</div>
     </section>
 
-    <!-- RIGHT: Output + Presets/Export -->
+    <!-- RIGHT: Output + Presets + Drop Library -->
     <aside class="card">
       <h2>Output</h2>
       <div class="out"><pre id="output">(Click “Build Output”)</pre></div>
@@ -444,6 +445,33 @@
         <button id="btnExportCSV">Export CSV</button>
         <button id="btnExportDropJSON">Export Drop JSON</button>
       </div>
+
+      <div class="divider"></div>
+
+      <h2>Drop Library</h2>
+
+      <div class="row">
+        <div>
+          <label for="dropLibSelect">Saved Drops</label>
+          <select id="dropLibSelect"></select>
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <div class="small">Saves in your browser (localStorage). Export JSON to back it up.</div>
+        </div>
+      </div>
+
+      <div class="btnrow">
+        <button class="good" id="btnSaveDrop">Save Current Drop</button>
+        <button id="btnLoadDrop">Load Drop</button>
+        <button class="bad" id="btnDeleteDrop">Delete Drop</button>
+      </div>
+
+      <div class="btnrow">
+        <button id="btnExportDropLibrary">Export Drop Library (JSON)</button>
+        <button id="btnImportDropLibrary">Import Drop Library (JSON)</button>
+      </div>
+      <input id="importDropLibFile" type="file" accept="application/json" style="display:none"/>
 
       <div class="divider"></div>
 
@@ -483,7 +511,7 @@
       </div>
 
       <div class="note">
-        Tip: Use <span class="kbd">Drop Builder</span> to generate a whole pack with names + prompts + export files in one click.
+        Tip: Use <span class="kbd">Drop Builder</span> → then hit <span class="kbd">Save Current Drop</span> so you can reopen it anytime.
       </div>
     </aside>
 
@@ -492,15 +520,15 @@
 
 <script>
 /* =========================
-   Readerverse Engine v1.1
-   Adds:
-   - 30-pack mode
-   - Content Generator Mode (caption + hook + hashtags)
-   - Drop Builder (theme → pack names + prompts + exports)
+   Readerverse Engine v1.2
+   Adds Drop Library:
+   - Save/Load/Delete full drops
+   - Export/Import drop library JSON
 ========================= */
 
-const STORAGE_KEY_DATA = "readerverse_data_v1_1";
-const STORAGE_KEY_PRESETS = "readerverse_presets_v1_1";
+const STORAGE_KEY_DATA = "readerverse_data_v1_2";
+const STORAGE_KEY_PRESETS = "readerverse_presets_v1_2";
+const STORAGE_KEY_DROP_LIBRARY = "readerverse_drop_library_v1_2";
 
 /* ====== DEFAULT VAULTS ====== */
 const DEFAULTS = {
@@ -756,12 +784,8 @@ function loadData(){
     return structuredClone(DEFAULTS);
   }
 }
-function saveData(data){
-  localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(data));
-}
-function resetData(){
-  localStorage.removeItem(STORAGE_KEY_DATA);
-}
+function saveData(data){ localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(data)); }
+function resetData(){ localStorage.removeItem(STORAGE_KEY_DATA); }
 
 /* ====== PRESETS ====== */
 function loadPresets(){
@@ -769,8 +793,16 @@ function loadPresets(){
   if(!raw) return {};
   try{ return JSON.parse(raw) || {}; }catch{ return {}; }
 }
-function savePresets(p){
-  localStorage.setItem(STORAGE_KEY_PRESETS, JSON.stringify(p));
+function savePresets(p){ localStorage.setItem(STORAGE_KEY_PRESETS, JSON.stringify(p)); }
+
+/* ====== DROP LIBRARY ====== */
+function loadDropLibrary(){
+  const raw = localStorage.getItem(STORAGE_KEY_DROP_LIBRARY);
+  if(!raw) return {};
+  try{ return JSON.parse(raw) || {}; }catch{ return {}; }
+}
+function saveDropLibrary(lib){
+  localStorage.setItem(STORAGE_KEY_DROP_LIBRARY, JSON.stringify(lib));
 }
 
 /* ====== HELPERS ====== */
@@ -788,7 +820,40 @@ function fillSelect(id, arr){
     el.appendChild(opt);
   });
 }
+function escapeCSV(value){
+  const s = String(value ?? "");
+  if(/[",\n]/.test(s)) return `"${s.replace(/"/g,'""')}"`;
+  return s;
+}
+function downloadText(filename, text){
+  const blob = new Blob([text], {type:"text/plain;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+function buildCSV(rows){
+  const headers = ["label","dropName","dropTheme","quoteReference","prompt","caption","hook","hashtags"];
+  const lines = [headers.join(",")];
+  rows.forEach(r=>{
+    lines.push([
+      escapeCSV(r.label||""),
+      escapeCSV(r.dropName||""),
+      escapeCSV(r.dropTheme||""),
+      escapeCSV(r.quoteReference||""),
+      escapeCSV(r.prompt||""),
+      escapeCSV(r.caption||""),
+      escapeCSV(r.hook||""),
+      escapeCSV(r.hashtags||"")
+    ].join(","));
+  });
+  return lines.join("\n");
+}
 
+/* ====== UI CONTROL ====== */
 function showDropControls(){
   const mode = $("mode").value;
   $("dropRow").style.display = (mode === "dropbuilder" || mode === "pack30") ? "grid" : "none";
@@ -829,8 +894,28 @@ function getSelections(){
     composition: $("composition").value
   };
 }
+function applySelections(sel){
+  const ids = [
+    "archetype","expression","micro","reaction","mood","attitude","pose","poseAtt",
+    "complexion","faceShape","hair","makeup","nails","outfit","accessories","prop",
+    "background","scene","palette","composition"
+  ];
+  ids.forEach(id=>{
+    if(sel[id] && $(id)) $(id).value = sel[id];
+  });
+  if(typeof sel.carouselMode === "boolean") $("carouselMode").checked = sel.carouselMode;
+  if(typeof sel.noText === "boolean") $("noText").checked = sel.noText;
+  if(typeof sel.contentMode === "boolean") $("contentMode").checked = sel.contentMode;
+  if(sel.quote !== undefined) $("quoteInput").value = sel.quote;
+  if(sel.customCategory !== undefined) $("customCategory").value = sel.customCategory;
+  if(sel.matchStrength) $("matchStrength").value = sel.matchStrength;
+  if(sel.mode) $("mode").value = sel.mode;
+  if(sel.dropTheme) $("dropTheme").value = sel.dropTheme;
+  if(sel.dropName !== undefined) $("dropName").value = sel.dropName;
+  showDropControls();
+}
 
-/* ====== STYLE LOCK BASE PROMPT ====== */
+/* ====== STYLE LOCK ====== */
 function basePrompt(){
   return [
     "high-end Y2K glam doll illustration",
@@ -849,8 +934,8 @@ function basePrompt(){
   ].join(", ");
 }
 
-/* ====== CAPTION/HASH GENERATOR ====== */
-function buildContent(sel, label){
+/* ====== CONTENT MODE ====== */
+function buildContent(sel){
   const q = sel.quote || "";
   const arche = sel.archetype || "Reader";
   const mood = sel.mood || "bookish";
@@ -865,7 +950,6 @@ function buildContent(sel, label){
     `Readerverse check-in: ${arche}.`,
     `If you get it, you get it. ${arche} edition.`
   ];
-
   const hooks = [
     "Be honest… what would your face be right here?",
     "Drop your reaction type in the comments 👇",
@@ -873,27 +957,16 @@ function buildContent(sel, label){
     "Tag your book bestie who would scream at this scene.",
     "This is the part where I start speed-reading and spiraling."
   ];
-
   const hashtags = [
-    "#BookishDemands",
-    "#Readerverse",
-    "#BookTok",
-    "#Bookstagram",
-    "#RomanceReaders",
-    "#DarkRomance",
-    "#ReadingCommunity",
-    "#BookishHumor",
-    "#EReaderGirlies",
-    "#ReaderReactions",
-    "#StickerShop",
-    "#DigitalDownloads"
+    "#BookishDemands","#Readerverse","#BookTok","#Bookstagram",
+    "#RomanceReaders","#DarkRomance","#ReadingCommunity","#BookishHumor",
+    "#EReaderGirlies","#ReaderReactions","#StickerShop","#DigitalDownloads"
   ];
 
-  // Lightly tailor hashtags based on quote keywords
   const t = normalize(q);
   if(t.includes("plot twist") || t.includes("twist")) hashtags.push("#PlotTwist");
   if(t.includes("villain") || t.includes("morally")) hashtags.push("#MorallyGrey");
-  if(t.includes("obsessed") || t.includes("mine") || t.includes("possessive")) hashtags.push("#ObsessedMMC");
+  if(t.includes("obsessed") || t.includes("mine") || t.includes("possessive") || t.includes("ruin")) hashtags.push("#ObsessedMMC");
   if(theme) hashtags.push("#" + theme.replace(/\s+/g,""));
 
   return {
@@ -903,10 +976,9 @@ function buildContent(sel, label){
   };
 }
 
-/* ====== PROMPT ASSEMBLY ====== */
+/* ====== PROMPT BUILD ====== */
 function buildSinglePrompt(sel){
   const parts = [];
-
   parts.push(basePrompt());
   parts.push(sel.complexion);
   parts.push(sel.faceShape);
@@ -941,7 +1013,6 @@ function buildSinglePrompt(sel){
   if(sel.noText){
     parts.push("no text, no watermark, no logo");
   }
-
   return parts.filter(Boolean).join(", ");
 }
 
@@ -1057,12 +1128,8 @@ function matchToQuote(data, quoteRaw, strength){
       target.micro = "eyes widened slightly";
       target.pose = "hands raised dramatic reaction";
     }
-    if(target.mood.includes("feral dark romance")){
-      target.poseAtt = "hair flip moment";
-    }
-    if(target.mood.includes("petty")){
-      target.micro = "head tilted judgmentally";
-    }
+    if(target.mood.includes("feral dark romance")) target.poseAtt = "hair flip moment";
+    if(target.mood.includes("petty")) target.micro = "head tilted judgmentally";
   }
 
   const safeSet = (id, val, arr)=>{ if(arr.includes(val)) $(id).value = val; };
@@ -1080,7 +1147,7 @@ function matchToQuote(data, quoteRaw, strength){
   safeSet("palette", target.palette, data.palette);
   safeSet("composition", target.composition, data.composition);
 
-  // keep the rest randomized so packs don't look identical
+  // keep style varied
   $("complexion").value = pick(data.complexion);
   $("faceShape").value = pick(data.faceShape);
   $("hair").value = pick(data.hair);
@@ -1090,31 +1157,111 @@ function matchToQuote(data, quoteRaw, strength){
   $("accessories").value = pick(data.accessories);
 }
 
-/* ====== APPLY SELECTIONS ====== */
-function applySelections(sel){
-  const ids = [
-    "archetype","expression","micro","reaction","mood","attitude","pose","poseAtt",
-    "complexion","faceShape","hair","makeup","nails","outfit","accessories","prop",
-    "background","scene","palette","composition"
-  ];
-  ids.forEach(id=>{
-    if(sel[id] && $(id)){
-      $(id).value = sel[id];
+/* ====== DROP BUILDER ====== */
+function autoDropName(theme, quote){
+  const vibe = ["Volume 1","Edition","Pack","Drop","Set"];
+  const tag = quote ? " — Quote-Driven" : "";
+  return `${theme} ${pick(vibe)}${tag}`;
+}
+function themeSteer(themeNorm){
+  const t = normalize(themeNorm);
+  if(t.includes("petty")){
+    $("archetype").value = "Petty Reader";
+    $("mood").value = "petty commentary mood";
+    $("attitude").value = "quietly petty";
+    $("expression").value = "dramatic side-eye";
+  } else if(t.includes("after dark") || t.includes("morally") || t.includes("loyalty")){
+    $("archetype").value = "Dark Romance Delulu";
+    $("mood").value = "feral dark romance mood";
+    $("attitude").value = "villain apologist energy";
+    $("expression").value = "dangerous smirk";
+  } else if(t.includes("plot twist")){
+    $("archetype").value = "Plot Twist Detective";
+    $("mood").value = "plot twist panic mood";
+    $("attitude").value = "emotionally invested";
+    $("expression").value = "wide shocked eyes";
+  } else if(t.includes("controlled") || t.includes("chaos")){
+    $("archetype").value = "Controlled Chaos Reader";
+    $("mood").value = "controlled chaos mood";
+    $("attitude").value = "delusional but calculated";
+    $("expression").value = "smug knowing smirk";
+  } else if(t.includes("audiobook")){
+    $("archetype").value = "Audiobook Multitasker";
+    $("mood").value = "late night binge reading mood";
+    $("prop").value = "wearing headphones listening to an audiobook";
+    $("expression").value = "chaotic laugh";
+  } else if(t.includes("soft girl")){
+    $("archetype").value = "Soft Girl Menace";
+    $("mood").value = "soft cozy mood";
+    $("attitude").value = "soft voice hard leverage";
+    $("expression").value = "soft knowing smile";
+  } else if(t.includes("urban")){
+    $("archetype").value = "Urban Book Club President";
+    $("mood").value = "controlled chaos mood";
+    $("attitude").value = "bossy main character energy";
+    $("expression").value = "confident main character smirk";
+  } else if(t.includes("feral")){
+    $("archetype").value = "Morally Gray Enjoyer";
+    $("mood").value = "romance high mood";
+    $("attitude").value = "chaotic reader energy";
+    $("expression").value = "mischievous grin";
+  } else if(t.includes("delusional")){
+    $("archetype").value = "Delusional But Calculated";
+    $("mood").value = "romance high mood";
+    $("attitude").value = "delusional but calculated";
+    $("expression").value = "dreamy delulu smile";
+  }
+}
+function buildDrop(data){
+  const sel = getSelections();
+  const theme = sel.dropTheme;
+  const quote = sel.quote;
+  const name = sel.dropName || autoDropName(theme, quote);
+
+  const original = getSelections();
+  themeSteer(theme);
+
+  const rows = [];
+  for(let i=0;i<30;i++){
+    randomizeAll(data);
+    themeSteer(theme);
+    if(quote) matchToQuote(data, quote, sel.matchStrength);
+
+    if(i % 3 !== 0){
+      $("palette").value = sel.matchStrength === "super"
+        ? "matte black + electric magenta + bone"
+        : pick(data.palette);
     }
-  });
-  if(typeof sel.carouselMode === "boolean") $("carouselMode").checked = sel.carouselMode;
-  if(typeof sel.noText === "boolean") $("noText").checked = sel.noText;
-  if(typeof sel.contentMode === "boolean") $("contentMode").checked = sel.contentMode;
-  if(sel.quote !== undefined) $("quoteInput").value = sel.quote;
-  if(sel.customCategory !== undefined) $("customCategory").value = sel.customCategory;
-  if(sel.matchStrength) $("matchStrength").value = sel.matchStrength;
-  if(sel.mode) $("mode").value = sel.mode;
-  if(sel.dropTheme) $("dropTheme").value = sel.dropTheme;
-  if(sel.dropName !== undefined) $("dropName").value = sel.dropName;
-  showDropControls();
+
+    const s = getSelections();
+    const prompt = buildSinglePrompt(s);
+    const content = s.contentMode ? buildContent(s) : null;
+
+    rows.push({
+      label: `Drop ${i+1}`,
+      dropName: name,
+      dropTheme: theme,
+      quoteReference: quote,
+      prompt,
+      caption: content?.caption || "",
+      hook: content?.hook || "",
+      hashtags: content?.hashtags || ""
+    });
+  }
+
+  applySelections(original);
+
+  return {
+    id: crypto?.randomUUID ? crypto.randomUUID() : ("drop_" + Date.now() + "_" + Math.random().toString(16).slice(2)),
+    dropName: name,
+    dropTheme: theme,
+    quoteReference: quote,
+    createdAt: new Date().toISOString(),
+    rows
+  };
 }
 
-/* ====== PACKS ====== */
+/* ====== PACK HELPERS ====== */
 function buildPack4(data){
   const quote = $("quoteInput").value.trim();
   const original = getSelections();
@@ -1173,7 +1320,6 @@ function buildPack4(data){
   ];
 
   roles.forEach(r=>{
-    // randomize style so they don't look like clones
     $("complexion").value = pick(data.complexion);
     $("faceShape").value = pick(data.faceShape);
     $("hair").value = pick(data.hair);
@@ -1188,10 +1334,12 @@ function buildPack4(data){
 
     const s = getSelections();
     const prompt = buildSinglePrompt(s);
-    const content = s.contentMode ? buildContent(s, r.label) : null;
+    const content = s.contentMode ? buildContent(s) : null;
 
     rows.push({
       label: r.label,
+      dropName: "",
+      dropTheme: "",
       quoteReference: quote,
       prompt,
       caption: content?.caption || "",
@@ -1211,16 +1359,16 @@ function buildPackN(data, n, labelPrefix){
 
   for(let i=0;i<n;i++){
     randomizeAll(data);
-
-    // If quote exists, lightly match each item so pack stays cohesive
     if(quote) matchToQuote(data, quote, $("matchStrength").value);
 
     const s = getSelections();
     const prompt = buildSinglePrompt(s);
-    const content = s.contentMode ? buildContent(s, `${labelPrefix} ${i+1}`) : null;
+    const content = s.contentMode ? buildContent(s) : null;
 
     rows.push({
       label: `${labelPrefix} ${i+1}`,
+      dropName: "",
+      dropTheme: "",
       quoteReference: quote,
       prompt,
       caption: content?.caption || "",
@@ -1233,156 +1381,11 @@ function buildPackN(data, n, labelPrefix){
   return rows;
 }
 
-/* ====== DROP BUILDER ====== */
-function autoDropName(theme, quote){
-  const vibe = [
-    "Volume 1",
-    "Edition",
-    "Pack",
-    "Drop",
-    "Set"
-  ];
-  const tag = quote ? " — Quote-Driven" : "";
-  return `${theme} ${pick(vibe)}${tag}`;
-}
+/* ====== INIT ====== */
+let DATA = loadData();
+let PRESETS = loadPresets();
+let DROP_LIB = loadDropLibrary();
 
-function buildDrop(data){
-  const sel = getSelections();
-  const theme = sel.dropTheme;
-  const quote = sel.quote;
-  const name = sel.dropName || autoDropName(theme, quote);
-
-  // theme steering (keeps the pack feeling like ONE drop)
-  const themeSteer = (themeNorm)=>{
-    const t = normalize(themeNorm);
-    if(t.includes("petty")){
-      $("archetype").value = "Petty Reader";
-      $("mood").value = "petty commentary mood";
-      $("attitude").value = "quietly petty";
-      $("expression").value = "dramatic side-eye";
-    } else if(t.includes("after dark") || t.includes("morally") || t.includes("loyalty")){
-      $("archetype").value = "Dark Romance Delulu";
-      $("mood").value = "feral dark romance mood";
-      $("attitude").value = "villain apologist energy";
-      $("expression").value = "dangerous smirk";
-    } else if(t.includes("plot twist")){
-      $("archetype").value = "Plot Twist Detective";
-      $("mood").value = "plot twist panic mood";
-      $("attitude").value = "emotionally invested";
-      $("expression").value = "wide shocked eyes";
-    } else if(t.includes("controlled") || t.includes("chaos")){
-      $("archetype").value = "Controlled Chaos Reader";
-      $("mood").value = "controlled chaos mood";
-      $("attitude").value = "delusional but calculated";
-      $("expression").value = "smug knowing smirk";
-    } else if(t.includes("audiobook")){
-      $("archetype").value = "Audiobook Multitasker";
-      $("mood").value = "late night binge reading mood";
-      $("prop").value = "wearing headphones listening to an audiobook";
-      $("expression").value = "chaotic laugh";
-    } else if(t.includes("soft girl")){
-      $("archetype").value = "Soft Girl Menace";
-      $("mood").value = "soft cozy mood";
-      $("attitude").value = "soft voice hard leverage";
-      $("expression").value = "soft knowing smile";
-    } else if(t.includes("urban")){
-      $("archetype").value = "Urban Book Club President";
-      $("mood").value = "controlled chaos mood";
-      $("attitude").value = "bossy main character energy";
-      $("expression").value = "confident main character smirk";
-    } else if(t.includes("feral")){
-      $("archetype").value = "Morally Gray Enjoyer";
-      $("mood").value = "romance high mood";
-      $("attitude").value = "chaotic reader energy";
-      $("expression").value = "mischievous grin";
-    } else if(t.includes("delusional")){
-      $("archetype").value = "Delusional But Calculated";
-      $("mood").value = "romance high mood";
-      $("attitude").value = "delusional but calculated";
-      $("expression").value = "dreamy delulu smile";
-    }
-  };
-
-  const original = getSelections();
-  themeSteer(theme);
-
-  // Generate: 30 prompts (default drop size)
-  const rows = [];
-  for(let i=0;i<30;i++){
-    // cohesive but varied
-    randomizeAll(data);
-    themeSteer(theme);
-    if(quote) matchToQuote(data, quote, sel.matchStrength);
-
-    // keep palette consistent-ish by biasing to 1-2 palettes
-    if(i % 3 !== 0){
-      $("palette").value = sel.matchStrength === "super"
-        ? "matte black + electric magenta + bone"
-        : pick(data.palette);
-    }
-
-    const s = getSelections();
-    const prompt = buildSinglePrompt(s);
-    const content = s.contentMode ? buildContent(s, `Drop ${i+1}`) : null;
-
-    rows.push({
-      label: `Drop ${i+1}`,
-      quoteReference: quote,
-      prompt,
-      caption: content?.caption || "",
-      hook: content?.hook || "",
-      hashtags: content?.hashtags || "",
-      dropName: name,
-      dropTheme: theme
-    });
-  }
-
-  applySelections(original);
-
-  return {
-    dropName: name,
-    dropTheme: theme,
-    quoteReference: quote,
-    createdAt: new Date().toISOString(),
-    rows
-  };
-}
-
-/* ====== EXPORTS ====== */
-function downloadText(filename, text){
-  const blob = new Blob([text], {type:"text/plain;charset=utf-8"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url; a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}
-function escapeCSV(value){
-  const s = String(value ?? "");
-  if(/[",\n]/.test(s)) return `"${s.replace(/"/g,'""')}"`;
-  return s;
-}
-function buildCSV(rows){
-  const headers = ["label","dropName","dropTheme","quoteReference","prompt","caption","hook","hashtags"];
-  const lines = [headers.join(",")];
-  rows.forEach(r=>{
-    lines.push([
-      escapeCSV(r.label||""),
-      escapeCSV(r.dropName||""),
-      escapeCSV(r.dropTheme||""),
-      escapeCSV(r.quoteReference||""),
-      escapeCSV(r.prompt||""),
-      escapeCSV(r.caption||""),
-      escapeCSV(r.hook||""),
-      escapeCSV(r.hashtags||"")
-    ].join(","));
-  });
-  return lines.join("\n");
-}
-
-/* ====== PRESETS ====== */
 function refreshPresetSelect(presets){
   const sel = $("presetSelect");
   sel.innerHTML = "";
@@ -1390,7 +1393,6 @@ function refreshPresetSelect(presets){
   const blank = document.createElement("option");
   blank.value = ""; blank.textContent = "— Select —";
   sel.appendChild(blank);
-
   names.forEach(name=>{
     const opt = document.createElement("option");
     opt.value = name;
@@ -1399,9 +1401,29 @@ function refreshPresetSelect(presets){
   });
 }
 
-/* ====== INIT ====== */
-let DATA = loadData();
-let PRESETS = loadPresets();
+function refreshDropLibSelect(){
+  const sel = $("dropLibSelect");
+  sel.innerHTML = "";
+  const ids = Object.keys(DROP_LIB).sort((a,b)=>{
+    const da = DROP_LIB[a]?.createdAt || "";
+    const db = DROP_LIB[b]?.createdAt || "";
+    return db.localeCompare(da); // newest first
+  });
+
+  const blank = document.createElement("option");
+  blank.value = ""; blank.textContent = "— Select a saved drop —";
+  sel.appendChild(blank);
+
+  ids.forEach(id=>{
+    const d = DROP_LIB[id];
+    const opt = document.createElement("option");
+    const date = d?.createdAt ? new Date(d.createdAt).toLocaleString() : "";
+    const count = d?.rows?.length ?? 0;
+    opt.value = id;
+    opt.textContent = `${d.dropName} • ${d.dropTheme} • ${count} items • ${date}`;
+    sel.appendChild(opt);
+  });
+}
 
 function init(){
   fillSelect("dropTheme", DATA.dropTheme);
@@ -1427,12 +1449,14 @@ function init(){
   fillSelect("composition", DATA.composition);
 
   refreshPresetSelect(PRESETS);
+  refreshDropLibSelect();
   showDropControls();
+
   $("output").textContent = "(Click “Build Output”)";
 }
 init();
 
-/* ====== LAST OUTPUT STORAGE ====== */
+/* ====== LAST OUTPUT ====== */
 window.__lastRows = [];
 window.__lastDrop = null;
 
@@ -1441,13 +1465,12 @@ $("btnRandom").addEventListener("click", ()=>{
   randomizeAll(DATA);
   const s = getSelections();
   const prompt = buildSinglePrompt(s);
+  const content = s.contentMode ? buildContent(s) : null;
 
-  const content = s.contentMode ? buildContent(s, "Single") : null;
-  const out = s.contentMode
+  $("output").textContent = s.contentMode
     ? `PROMPT\n${prompt}\n\nCAPTION\n${content.caption}\n\nHOOK\n${content.hook}\n\nHASHTAGS\n${content.hashtags}`
     : prompt;
 
-  $("output").textContent = out;
   window.__lastRows = [{
     label:"Single",
     dropName:"",
@@ -1458,6 +1481,7 @@ $("btnRandom").addEventListener("click", ()=>{
     hook: content?.hook || "",
     hashtags: content?.hashtags || ""
   }];
+  window.__lastDrop = null;
 });
 
 $("btnMatch").addEventListener("click", ()=>{
@@ -1469,13 +1493,12 @@ $("btnMatch").addEventListener("click", ()=>{
   matchToQuote(DATA, quote, $("matchStrength").value);
   const s = getSelections();
   const prompt = buildSinglePrompt(s);
+  const content = s.contentMode ? buildContent(s) : null;
 
-  const content = s.contentMode ? buildContent(s, "Matched") : null;
-  const out = s.contentMode
+  $("output").textContent = s.contentMode
     ? `PROMPT\n${prompt}\n\nCAPTION\n${content.caption}\n\nHOOK\n${content.hook}\n\nHASHTAGS\n${content.hashtags}`
     : prompt;
 
-  $("output").textContent = out;
   window.__lastRows = [{
     label:"Matched",
     dropName:"",
@@ -1486,29 +1509,24 @@ $("btnMatch").addEventListener("click", ()=>{
     hook: content?.hook || "",
     hashtags: content?.hashtags || ""
   }];
+  window.__lastDrop = null;
 });
 
 $("btnGenerate").addEventListener("click", ()=>{
   const sel = getSelections();
   const mode = sel.mode;
 
-  // validate quote for modes that need it
-  if((mode === "pack4" || mode === "pack10" || mode === "pack30" || mode === "dropbuilder") && !sel.quote && mode !== "dropbuilder"){
-    alert("Paste a quote first for Packs. (Drop Builder can work without a quote too.)");
-    return;
-  }
-
   let rows = [];
   let drop = null;
 
   if(mode === "single"){
     const prompt = buildSinglePrompt(sel);
-    const content = sel.contentMode ? buildContent(sel, "Single") : null;
-    const out = sel.contentMode
+    const content = sel.contentMode ? buildContent(sel) : null;
+
+    $("output").textContent = sel.contentMode
       ? `PROMPT\n${prompt}\n\nCAPTION\n${content.caption}\n\nHOOK\n${content.hook}\n\nHASHTAGS\n${content.hashtags}`
       : prompt;
 
-    $("output").textContent = out;
     rows = [{
       label:"Single",
       dropName:"",
@@ -1522,63 +1540,75 @@ $("btnGenerate").addEventListener("click", ()=>{
   }
 
   if(mode === "pack4"){
+    if(!sel.quote){ alert("Paste a quote for Reaction Pack (4)."); return; }
     rows = buildPack4(DATA);
     $("output").textContent = rows.map(r=>{
-      const block = sel.contentMode
+      return sel.contentMode
         ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
-      return block;
     }).join("\n\n---\n\n");
   }
 
   if(mode === "pack10"){
+    if(!sel.quote){ alert("Paste a quote for 10-Pack."); return; }
     rows = buildPackN(DATA, 10, "Pack");
     $("output").textContent = rows.map(r=>{
-      const block = sel.contentMode
+      return sel.contentMode
         ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
-      return block;
     }).join("\n\n---\n\n");
   }
 
   if(mode === "pack30"){
-    // theme-biased 30-pack
-    const original = getSelections();
-    // set theme steering via Drop Builder but without naming overhead
+    // 30-pack uses full drop logic
     drop = buildDrop(DATA);
-    rows = drop.rows.map((r)=>({
-      ...r,
-      dropName: drop.dropName,
-      dropTheme: drop.dropTheme
-    }));
+    rows = drop.rows;
 
     $("output").textContent = rows.map(r=>{
-      const block = sel.contentMode
+      return sel.contentMode
         ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
-      return block;
     }).join("\n\n---\n\n");
-
-    applySelections(original);
   }
 
   if(mode === "dropbuilder"){
     drop = buildDrop(DATA);
-    rows = drop.rows.map(r=>({
-      ...r,
-      dropName: drop.dropName,
-      dropTheme: drop.dropTheme
-    }));
+    rows = drop.rows;
 
-    // show header + body
     const header = `DROP NAME\n${drop.dropName}\n\nDROP THEME\n${drop.dropTheme}\n\nQUOTE (optional)\n${drop.quoteReference || "(none)"}\n\n=== OUTPUT ===\n`;
     const body = rows.map(r=>{
-      const block = sel.contentMode
+      return sel.contentMode
         ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
-      return block;
     }).join("\n\n---\n\n");
+
     $("output").textContent = header + "\n" + body;
+  }
+
+  if(mode === "batch5"){
+    rows = [];
+    for(let i=0;i<5;i++){
+      randomizeAll(DATA);
+      const s = getSelections();
+      const prompt = buildSinglePrompt(s);
+      const content = s.contentMode ? buildContent(s) : null;
+
+      rows.push({
+        label:`Random ${i+1}`,
+        dropName:"",
+        dropTheme:"",
+        quoteReference:"",
+        prompt,
+        caption: content?.caption || "",
+        hook: content?.hook || "",
+        hashtags: content?.hashtags || ""
+      });
+    }
+    $("output").textContent = rows.map(r=>{
+      return sel.contentMode
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        : `${r.label}\n${r.prompt}`;
+    }).join("\n\n---\n\n");
   }
 
   window.__lastRows = rows;
@@ -1604,12 +1634,8 @@ $("btnExportTXT").addEventListener("click", ()=>{
 
 $("btnExportCSV").addEventListener("click", ()=>{
   const rows = window.__lastRows || [];
-  if(!rows.length){
-    alert("Nothing to export yet. Build Output first.");
-    return;
-  }
-  const csv = buildCSV(rows);
-  downloadText("readerverse_output.csv", csv);
+  if(!rows.length){ alert("Nothing to export yet. Build Output first."); return; }
+  downloadText("readerverse_output.csv", buildCSV(rows));
 });
 
 $("btnExportDropJSON").addEventListener("click", ()=>{
@@ -1621,34 +1647,136 @@ $("btnExportDropJSON").addEventListener("click", ()=>{
   downloadText("readerverse_drop.json", JSON.stringify(drop, null, 2));
 });
 
+/* ====== DROP LIBRARY ACTIONS ====== */
+$("btnSaveDrop").addEventListener("click", ()=>{
+  const drop = window.__lastDrop;
+  if(!drop){
+    alert("Generate a drop first (Drop Builder or 30-Pack), then save it.");
+    return;
+  }
+  DROP_LIB[drop.id] = drop;
+  saveDropLibrary(DROP_LIB);
+  refreshDropLibSelect();
+  $("dropLibSelect").value = drop.id;
+  alert("Drop saved to library!");
+});
+
+$("btnLoadDrop").addEventListener("click", ()=>{
+  const id = $("dropLibSelect").value;
+  if(!id){ alert("Select a saved drop first."); return; }
+  const drop = DROP_LIB[id];
+  if(!drop){ alert("That drop wasn’t found."); return; }
+
+  // Load theme/name/quote into UI
+  $("dropTheme").value = drop.dropTheme || DEFAULTS.dropTheme[0];
+  $("dropName").value = drop.dropName || "";
+  $("quoteInput").value = drop.quoteReference || "";
+
+  // Set mode to dropbuilder for display style
+  $("mode").value = "dropbuilder";
+  showDropControls();
+
+  // Render output immediately
+  const sel = getSelections();
+  const header = `DROP NAME\n${drop.dropName}\n\nDROP THEME\n${drop.dropTheme}\n\nQUOTE (optional)\n${drop.quoteReference || "(none)"}\n\n=== OUTPUT ===\n`;
+  const body = drop.rows.map(r=>{
+    return sel.contentMode
+      ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+      : `${r.label}\n${r.prompt}`;
+  }).join("\n\n---\n\n");
+
+  $("output").textContent = header + "\n" + body;
+
+  window.__lastDrop = drop;
+  window.__lastRows = drop.rows;
+  alert("Drop loaded!");
+});
+
+$("btnDeleteDrop").addEventListener("click", ()=>{
+  const id = $("dropLibSelect").value;
+  if(!id){ alert("Select a saved drop first."); return; }
+  const drop = DROP_LIB[id];
+  if(!confirm(`Delete drop "${drop?.dropName || id}" from your library?`)) return;
+  delete DROP_LIB[id];
+  saveDropLibrary(DROP_LIB);
+  refreshDropLibSelect();
+  alert("Deleted.");
+});
+
+$("btnExportDropLibrary").addEventListener("click", ()=>{
+  const payload = {
+    version: "readerverse_drop_library_v1_2",
+    exportedAt: new Date().toISOString(),
+    drops: DROP_LIB
+  };
+  downloadText("readerverse_drop_library.json", JSON.stringify(payload, null, 2));
+});
+
+$("btnImportDropLibrary").addEventListener("click", ()=>{
+  $("importDropLibFile").click();
+});
+
+$("importDropLibFile").addEventListener("change", async (e)=>{
+  const file = e.target.files?.[0];
+  if(!file) return;
+  try{
+    const text = await file.text();
+    const parsed = JSON.parse(text);
+    const imported = parsed.drops || parsed;
+    if(typeof imported !== "object") throw new Error("Invalid format");
+    DROP_LIB = { ...DROP_LIB, ...imported };
+    saveDropLibrary(DROP_LIB);
+    refreshDropLibSelect();
+    alert("Drop library imported!");
+  }catch{
+    alert("Import failed. Use the Readerverse drop library JSON export.");
+  }finally{
+    $("importDropLibFile").value = "";
+  }
+});
+
 /* ====== QUICK ADD OPTION ====== */
 $("btnAddOption").addEventListener("click", ()=>{
   const target = $("addTarget").value;
   const val = $("addValue").value.trim();
   if(!val){ alert("Type a new option first."); return; }
   if(!DATA[target]){ alert("Invalid target."); return; }
-
   const exists = DATA[target].some(x=>normalize(x)===normalize(val));
-  if(exists){
-    alert("That option already exists in this list.");
-    return;
-  }
+  if(exists){ alert("That option already exists."); return; }
 
   DATA[target].push(val);
   fillSelect(target, DATA[target]);
   $(target).value = val;
   $("addValue").value = "";
   saveData(DATA);
+
+  // If adding new drop theme, refresh selector too
+  if(target === "dropTheme") fillSelect("dropTheme", DATA.dropTheme);
 });
 
 $("btnResetDefaults").addEventListener("click", ()=>{
-  if(!confirm("Reset lists to defaults? This will remove custom-added options (presets remain).")) return;
+  if(!confirm("Reset lists to defaults? This removes custom vault additions. Presets + Drop Library remain.")) return;
   resetData();
   DATA = loadData();
   init();
 });
 
 /* ====== PRESETS ====== */
+function refreshPresetSelect(presets){
+  const sel = $("presetSelect");
+  sel.innerHTML = "";
+  const names = Object.keys(presets).sort((a,b)=>a.localeCompare(b));
+  const blank = document.createElement("option");
+  blank.value = ""; blank.textContent = "— Select —";
+  sel.appendChild(blank);
+  names.forEach(name=>{
+    const opt = document.createElement("option");
+    opt.value = name;
+    opt.textContent = name;
+    sel.appendChild(opt);
+  });
+}
+
 $("btnSavePreset").addEventListener("click", ()=>{
   const name = $("presetName").value.trim();
   if(!name){ alert("Name your preset first."); return; }
@@ -1669,10 +1797,23 @@ $("btnLoadPreset").addEventListener("click", ()=>{
 
   const s = getSelections();
   const prompt = buildSinglePrompt(s);
-  const content = s.contentMode ? buildContent(s, "Preset") : null;
+  const content = s.contentMode ? buildContent(s) : null;
+
   $("output").textContent = s.contentMode
     ? `PROMPT\n${prompt}\n\nCAPTION\n${content.caption}\n\nHOOK\n${content.hook}\n\nHASHTAGS\n${content.hashtags}`
     : prompt;
+
+  window.__lastRows = [{
+    label:"Preset",
+    dropName:"",
+    dropTheme:"",
+    quoteReference:s.quote,
+    prompt,
+    caption: content?.caption || "",
+    hook: content?.hook || "",
+    hashtags: content?.hashtags || ""
+  }];
+  window.__lastDrop = null;
 });
 
 $("btnDeletePreset").addEventListener("click", ()=>{
@@ -1687,18 +1828,10 @@ $("btnDeletePreset").addEventListener("click", ()=>{
 });
 
 $("btnExportPresets").addEventListener("click", ()=>{
-  const payload = {
-    version: "readerverse_presets_v1_1",
-    exportedAt: new Date().toISOString(),
-    presets: PRESETS
-  };
+  const payload = { version:"readerverse_presets_v1_2", exportedAt:new Date().toISOString(), presets: PRESETS };
   downloadText("readerverse_presets.json", JSON.stringify(payload, null, 2));
 });
-
-$("btnImportPresets").addEventListener("click", ()=>{
-  $("importFile").click();
-});
-
+$("btnImportPresets").addEventListener("click", ()=> $("importFile").click());
 $("importFile").addEventListener("change", async (e)=>{
   const file = e.target.files?.[0];
   if(!file) return;
@@ -1706,21 +1839,22 @@ $("importFile").addEventListener("change", async (e)=>{
     const text = await file.text();
     const parsed = JSON.parse(text);
     const imported = parsed.presets || parsed;
-    if(typeof imported !== "object"){ throw new Error("Invalid format"); }
+    if(typeof imported !== "object") throw new Error("Invalid");
     PRESETS = { ...PRESETS, ...imported };
     savePresets(PRESETS);
     refreshPresetSelect(PRESETS);
     alert("Presets imported!");
-  }catch(err){
-    alert("Import failed. Make sure it’s a Readerverse presets JSON export.");
+  }catch{
+    alert("Import failed. Use Readerverse presets JSON export.");
   }finally{
     $("importFile").value = "";
   }
 });
 
-/* ====== THEME DEFAULT ====== */
+/* ====== STARTUP ====== */
 $("dropTheme").value = DEFAULTS.dropTheme[0];
 showDropControls();
+refreshDropLibSelect();
 
 </script>
 </body>
