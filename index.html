@@ -1384,6 +1384,7 @@ function basePrompt(){
     "glossy full lips",
     "softly contoured cheeks",
     "glam beauty aesthetic",
+    "exactly two hands, one left hand and one right hand only, no extra hands, no duplicated limbs",
     "premium sticker illustration style",
     "sparkle highlights",
     "ultra polished high quality digital illustration"
@@ -1672,16 +1673,17 @@ parts.push(sel.poseAtt);
 parts.push(sel.prop);
 
 if(sel.prop){
-  parts.push("hands correctly holding the prop, natural finger placement, clean hand anatomy");
+  parts.push("both hands holding the prop naturally, one hand on each side of the object, natural finger placement, clean hand anatomy");
 }
-parts.push("correct human anatomy, natural hand proportions, no extra fingers");
+  parts.push("exactly two hands, one left hand and one right hand only, no extra hands, no duplicated limbs");
+  parts.push("correct human anatomy, natural hand proportions, no extra fingers");
   
 const propText = normalize(sel.prop || "");
 if(propText.includes("book") || propText.includes("e-reader") || propText.includes("kindle")){
   parts.push("book or e-reader clearly visible, correctly aligned in both hands, readable object shape, no warped edges");
 }
 
-parts.push("clear silhouette, prop not blocking the face");
+parts.push("clear silhouette, prop below face level, not blocking the face");
 parts.push(sel.scene);
   parts.push(sel.background);
   const bg = (sel.background || "").toLowerCase();
