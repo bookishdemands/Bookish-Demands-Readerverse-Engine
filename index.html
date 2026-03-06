@@ -1372,7 +1372,7 @@ function buildContent(sel){
   const rx = sel.reaction || "reaction";
   const theme = sel.dropTheme || "";
   const genre = sel.genre || "";
-  const sub = sel.trope || "";
+  const trope = sel.trope || "";
 
   const captions = [
     `${arche} energy: ${att}.`,
@@ -1446,8 +1446,8 @@ if(genre && genreTagMap[genre]){
  hashtags.push(...genreTagMap[genre]);
 }
 
-if(sub){
- hashtags.push("#" + sub.replace(/[^a-z0-9]+/gi,""));
+if(trope){
+ hashtags.push("#" + trope.replace(/[^a-z0-9]+/gi,""));
 }
 
   const t = normalize(q);
