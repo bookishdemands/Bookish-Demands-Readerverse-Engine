@@ -1038,7 +1038,7 @@ const DEFAULTS = {
 
   prop: [
     "holding an e-reader",
-    "holding an open romance novel dramatically",
+    "holding an open book with stylized illustrated artwork on the pages"
     "holding an annotated book with tabs",
     "holding a phone like she just read something shocking",
     "holding iced coffee + open book",
@@ -1089,12 +1089,17 @@ const DEFAULTS = {
   ],
 
   composition: [
-    "clean centered portrait, sticker-friendly framing",
-    "waist-up character, big expression, minimal clutter",
-    "close-up face focus, glossy editorial lighting",
-    "three-quarter pose, centered composition",
-    "full sticker composition, clean negative space"
-  ]
+  "close-up portrait (face focus, big expression)",
+  "head + shoulders (beauty portrait)",
+  "chest-up (classic sticker framing)",
+  "waist-up / upper half (hands + prop visible)",
+  "three-quarter body (thigh-up, more outfit visible)",
+  "full body (head-to-toe, feet visible)",
+  "dynamic full body (walking pose / action stance)",
+  "seated full body (chair/couch, legs visible)",
+  "over-the-shoulder (turning pose, attitude)",
+  "two-shot framing (for future couples / besties)"
+]
 };
 
 /* ====== ARCHETYPE DNA MAP ====== */
@@ -1126,7 +1131,7 @@ const ARCHETYPE_DNA = {
     lighting: "subtle magenta rim light",
     background: "dark glam gradient with magenta rim glow",
     paletteBias: ["matte black + electric magenta + bone","oxblood + matte black + antique gold"],
-    prop: "holding an open romance novel dramatically",
+    prop: "holding an open book with stylized illustrated artwork on the pages dramatically",
     scene: "dramatic plot twist moment"
   },
   "Plot Twist Detective": {
@@ -1141,7 +1146,7 @@ const ARCHETYPE_DNA = {
     lighting: "high contrast dramatic lighting",
     background: "comic pop art halftone background",
     paletteBias: ["neon magenta + violet + black","aqua + hot pink + black"],
-    prop: "holding an open romance novel dramatically",
+    prop: "holding an open book with stylized illustrated artwork on the pages dramatically",
     scene: "dramatic plot twist moment"
   },
   "Morally Gray Enjoyer": {
@@ -1322,10 +1327,44 @@ function buildContent(sel){
     "Tag your book bestie who would scream at this scene.",
     "This is the part where I start speed-reading and spiraling."
   ];
-  const hashtags = [
-    "#BookishDemands","#Readerverse","#BookTok","#Bookstagram",
-    "#ReadingCommunity","#BookishHumor","#ReaderReactions","#DigitalDownloads"
-  ];
+  const brandTags = [
+ "#BookishDemands",
+ "#Readerverse"
+];
+
+const discoveryTags = [
+ "#BookTok",
+ "#Bookstagram",
+ "#ReadingCommunity",
+ "#ReaderLife",
+ "#BookishCommunity"
+];
+
+const genreTagMap = {
+ "Dark Romance": ["#DarkRomance", "#DarkRomanceBooks", "#MorallyGreyMMC"],
+ "Urban Fiction": ["#UrbanFiction", "#UrbanBookTok", "#StreetLit"],
+ "Thriller / Suspense": ["#ThrillerBooks", "#ThrillerReader"],
+ "Mystery": ["#MysteryBooks", "#Whodunit"],
+ "Fantasy": ["#FantasyBooks", "#FantasyReader"],
+ "Paranormal Romance": ["#ParanormalRomance", "#SupernaturalRomance"],
+ "Sci-Fi Romance": ["#SciFiRomance"],
+ "Contemporary Romance": ["#ContemporaryRomance"],
+ "Romantic Comedy": ["#RomComBooks"],
+ "Historical Romance": ["#HistoricalRomance"]
+};
+
+let hashtags = [
+ ...brandTags,
+ ...discoveryTags
+];
+
+if(genre && genreTagMap[genre]){
+ hashtags.push(...genreTagMap[genre]);
+}
+
+if(sub){
+ hashtags.push("#" + sub.replace(/[^a-z0-9]+/gi,""));
+}
 
   const t = normalize(q);
   if(t.includes("plot twist") || t.includes("twist")) hashtags.push("#PlotTwist");
@@ -1475,9 +1514,44 @@ function applyArchetypeDNA(data, archetypeName){
 /* ====== PROMPT BUILD ====== */
 function buildSinglePrompt(sel){
   const parts = [];
-  parts.push(basePrompt());
+parts.push(
+"stylized glam cartoon beauty illustration, high-end digital sticker art, luxury beauty editorial style, fashion-forward styling, detailed clothing textures"
+);
 
+parts.push("highly polished character illustration, crisp linework, vibrant colors");
+  
+parts.push(
+"clean centered composition, single character focus, expressive reaction face, sticker-friendly framing, minimal background clutter"
+);
+
+parts.push(
+"pure white or transparent background, bold sticker outline, minimal background detail"
+);
+
+parts.push(
+"illustration style not realism, smooth cartoon shading, minimal skin texture, balanced lighting, polished color harmony, symmetrical facial features, large expressive eyes, dramatic lashes, glossy lips, glam beauty illustration aesthetic, detailed hairline, clean edges and baby hairs, defined braids and textured hair strands"
+);
+  parts.push(basePrompt());
+  parts.push("character fully visible when full-body composition is selected");
   parts.push(sel.complexion);
+  // composition-specific steering
+const comp = normalize(sel.composition);
+
+if(comp.includes("full body") || comp.includes("head-to-toe") || comp.includes("feet")){
+  parts.push("full body, head-to-toe framing, feet visible, no cropping");
+}
+
+if(comp.includes("three-quarter") || comp.includes("thigh-up")){
+  parts.push("three-quarter framing, thighs visible, include outfit details");
+}
+
+if(comp.includes("waist-up") || comp.includes("upper half")){
+  parts.push("waist-up framing, hands and book/prop visible");
+}
+
+if(comp.includes("close-up") || comp.includes("face focus")){
+  parts.push("close-up face framing, emphasize eyes and expression");
+}
   parts.push(sel.bodyType);
   parts.push(sel.faceShape);
 
@@ -1492,6 +1566,7 @@ function buildSinglePrompt(sel){
   parts.push(sel.nailDesign);
 
   parts.push(sel.outfit);
+  parts.push("outfit clearly visible, clothing details sharp and consistent");
   parts.push(sel.accessories);
 
   parts.push(sel.archetype + " reader character");
@@ -1506,16 +1581,47 @@ function buildSinglePrompt(sel){
   if(sel.subGenre) parts.push("sub-genre: " + sel.subGenre);
 
   parts.push(sel.pose + " pose");
-  parts.push(sel.poseAtt);
-  parts.push(sel.prop);
-  parts.push(sel.scene);
-  parts.push(sel.background);
-  parts.push("palette: " + sel.palette);
-  parts.push(sel.composition);
+parts.push(sel.poseAtt);
+parts.push(sel.prop);
 
+if(sel.prop){
+  parts.push("hands correctly holding the prop, natural finger placement, clean hand anatomy");
+}
+parts.push("correct human anatomy, natural hand proportions, no extra fingers");
+  
+const propText = normalize(sel.prop || "");
+if(propText.includes("book") || propText.includes("e-reader") || propText.includes("kindle")){
+  parts.push("book or e-reader clearly visible, correctly aligned in both hands, readable object shape, no warped edges");
+}
+
+parts.push("clear silhouette, prop not blocking the face");
+parts.push(sel.scene);
+  parts.push(sel.background);
+  const bg = (sel.background || "").toLowerCase();
+  const stickerBg = bg.includes("transparent") || bg.includes("pure white");
+
+if(!stickerBg){
+  parts.push("color palette guidance (apply to outfit and background accents only): " + sel.palette + ", do not tint skin or entire image");
+  parts.push(sel.composition);
+  // ✅ composition-specific steering (respects full-body / waist-up / close-up)
+const comp = normalize(sel.composition);
+
+if(comp.includes("full body") || comp.includes("head-to-toe") || comp.includes("feet")){
+  parts.push("full body, head-to-toe framing, feet visible, no cropping");
+} else if(comp.includes("three-quarter") || comp.includes("thigh")){
+  parts.push("three-quarter body framing, thighs visible, outfit clearly visible");
+} else if(comp.includes("waist-up") || comp.includes("upper half")){
+  parts.push("waist-up framing, hands and prop visible");
+} else if(comp.includes("head + shoulders") || comp.includes("beauty portrait")){
+  parts.push("head-and-shoulders portrait framing");
+} else if(comp.includes("close-up") || comp.includes("face focus")){
+  parts.push("close-up face framing, emphasize eyes and expression");
+}
   if(sel.carouselMode){
-    parts.push("centered composition, clean background, large expressive face, sticker-friendly framing, minimal background clutter");
-  }
+  parts.push(
+    "sticker constraints: clean cutout, bold outline, minimal background clutter, subject centered, avoid cropping important features"
+  );
+}
 
   if(sel.customCategory){
     parts.push("custom notes: " + sel.customCategory);
@@ -1535,6 +1641,7 @@ function buildSinglePrompt(sel){
     parts.push(sel.negativePrompt);
   }
 
+  parts.push("clean die-cut sticker aesthetic, crisp outline, subject fully visible");
   return parts.filter(Boolean).join(", ");
 }
 
