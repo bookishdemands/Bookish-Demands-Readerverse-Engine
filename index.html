@@ -1779,7 +1779,6 @@ function matchToQuote(data, quoteRaw, strength){
   }
   $("archetype").value = arche;
 
-  /* ✅ NEW: quote → genre */
   let genrePick = "Romance (General)";
   let tropePick = $("trope").value || "Slow Burn";
 
@@ -1819,17 +1818,6 @@ function matchToQuote(data, quoteRaw, strength){
       $("palette").value = pick(dna.paletteBias);
     }
   }
-
-  $("complexion").value = pick(data.complexion);
-  $("bodyType").value = pick(data.bodyType);
-  $("faceShape").value = pick(data.faceShape);
-  $("hairColor").value = pick(data.hairColor);
-  $("hair").value = pick(data.hair);
-  $("makeup").value = pick(data.makeup);
-  $("nailShape").value = pick(data.nailShape);
-  $("nailDesign").value = pick(data.nailDesign);
-  $("outfit").value = pick(data.outfit);
-  $("accessories").value = pick(data.accessories);
 }
 
 /* ====== CAROUSEL TEXT BUILDER ====== */
@@ -2138,8 +2126,8 @@ $("btnGenerate").addEventListener("click", ()=>{
     const content = sel.contentMode ? buildContent(sel) : null;
 
     $("output").textContent = sel.contentMode
-      ? `PROMPT\n${prompt}\n\nCAPTION\n${content.caption}\n\nHOOK\n${content.hook}\n\nHASHTAGS\n${content.hashtags}`
-      : prompt;
+  ? `PROMPT\n${prompt}\n\n====================\n\n${formatContentBlock(content)}`
+  : `PROMPT\n${prompt}`;
     
     rows = [{
       label:"Single",
@@ -2294,10 +2282,18 @@ $("btnCopyPromptOnly").addEventListener("click", async ()=>{
     return;
   }
 
-  const promptOnly = text.split("\n\n====================\n\n")[0];
+  let promptOnly = text;
+
+  if(text.includes("\n\nCAPTION\n")){
+    promptOnly = text.split("\n\nCAPTION\n")[0];
+  } else if(text.includes("\n\nCONTENT\n")){
+    promptOnly = text.split("\n\nCONTENT\n")[0];
+  } else if(text.includes("\n\n====================\n\n")){
+    promptOnly = text.split("\n\n====================\n\n")[0];
+  }
 
   try{
-    await navigator.clipboard.writeText(promptOnly);
+    await navigator.clipboard.writeText(promptOnly.trim());
     alert("Prompt copied!");
   }catch{
     alert("Copy failed. Try selecting the text and copying manually.");
