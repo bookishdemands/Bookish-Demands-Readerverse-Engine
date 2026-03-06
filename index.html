@@ -359,6 +359,12 @@ Sticker Outline
         <span class="note" style="margin:0;">(recommended)</span>
       </div>
 
+      <div class="toggle">
+  <input id="lockCharacter" type="checkbox" />
+  <label for="lockCharacter" style="margin:0;color:var(--text);font-size:13px;">Lock Character Identity</label>
+  <span class="note" style="margin:0;">(keeps face, hair, skin tone, and beauty details consistent)</span>
+</div>
+      
       <div class="divider"></div>
 
       <div class="row">
@@ -1481,7 +1487,7 @@ function getSelections(){
     carouselMode: $("carouselMode").checked,
     noText: $("noText").checked,
     stickerOutline: $("stickerOutline").checked,
-
+    lockCharacter: $("lockCharacter").checked,
     carouselTitleStyle: $("carouselTitleStyle").value,
 
     quote: $("quoteInput").value.trim(),
@@ -1506,7 +1512,6 @@ function getSelections(){
 
     pose: $("pose").value,
     poseAtt: $("poseAtt").value,
-
     complexion: $("complexion").value,
     bodyType: $("bodyType").value,
     faceShape: $("faceShape").value,
@@ -1705,6 +1710,9 @@ if(comp.includes("full body") || comp.includes("head-to-toe") || comp.includes("
 
 /* ====== RANDOMIZE ====== */
 function randomizeAll(data){
+  const lockIdentity = $("lockCharacter")?.checked;
+
+  // Always-randomized fields
   $("archetype").value = pick(data.archetype);
   $("expression").value = pick(data.expression);
   $("micro").value = pick(data.micro);
@@ -1712,23 +1720,11 @@ function randomizeAll(data){
   $("mood").value = pick(data.mood);
   $("attitude").value = pick(data.attitude);
 
-  /* ✅ NEW */
   $("genre").value = pick(data.genre);
   $("trope").value = pick(data.trope);
 
   $("pose").value = pick(data.pose);
   $("poseAtt").value = pick(data.poseAtt);
-
-  $("complexion").value = pick(data.complexion);
-  $("bodyType").value = pick(data.bodyType);
-  $("faceShape").value = pick(data.faceShape);
-  $("extras").value = pick(data.extras);
-
-  $("hairColor").value = pick(data.hairColor);
-  $("hair").value = pick(data.hair);
-
-  $("makeup").value = pick(data.makeup);
-  $("lighting").value = pick(data.lighting);
 
   $("nailShape").value = pick(data.nailShape);
   $("nailDesign").value = pick(data.nailDesign);
@@ -1742,6 +1738,21 @@ function randomizeAll(data){
   $("palette").value = pick(data.palette);
   $("composition").value = pick(data.composition);
 
+  // Only randomize identity traits if character lock is OFF
+  if(!lockIdentity){
+    $("complexion").value = pick(data.complexion);
+    $("bodyType").value = pick(data.bodyType);
+    $("faceShape").value = pick(data.faceShape);
+    $("extras").value = pick(data.extras);
+
+    $("hairColor").value = pick(data.hairColor);
+    $("hair").value = pick(data.hair);
+
+    $("makeup").value = pick(data.makeup);
+    $("lighting").value = pick(data.lighting);
+  }
+
+  // Smart archetype can still steer expression/pose/etc.
   if($("smartArchetype").checked){
     applyArchetypeDNA(data, $("archetype").value);
   }
