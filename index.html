@@ -295,6 +295,17 @@
       <h2>Builder</h2>
 
       <div class="row">
+  <div>
+    <label for="builderView">Builder View</label>
+    <select id="builderView">
+      <option value="quick" selected>Quick Generate</option>
+      <option value="full">Full Builder</option>
+    </select>
+  </div>
+  <div></div>
+</div>
+
+      <div class="row">
         <div>
           <label for="mode">Generator Mode</label>
           <select id="mode">
@@ -418,18 +429,32 @@ Sticker Outline
       <div class="divider"></div>
 
       <!-- Core dropdowns -->
+<div class="row">
+  <div>
+    <label for="archetype">Reader Archetype</label>
+    <select id="archetype"></select>
+  </div>
+  <div>
+    <label for="genre">Genre</label>
+    <select id="genre"></select>
+  </div>
+</div>
       <div class="row">
-        <div>
-          <label for="archetype">Reader Archetype</label>
-          <select id="archetype"></select>
-        </div>
+  <div>
+    <label for="trope">Trope</label>
+    <select id="trope"></select>
+  </div>
+  <div></div>
+</div>
+      
+<div id="advancedBuilderWrap">
+
+  <div class="row">
         <div>
           <label for="expression">Expression</label>
           <select id="expression"></select>
         </div>
       </div>
-
-      <div class="row">
         <div>
           <label for="micro">Micro Expression</label>
           <select id="micro"></select>
@@ -569,7 +594,7 @@ Sticker Outline
         </div>
         <div></div>
       </div>
-
+</div>
       <div class="divider"></div>
 
       <h2>Quick Add (build your vault on the fly)</h2>
@@ -1341,7 +1366,16 @@ function showDropControls(){
   const mode = $("mode").value;
   $("dropRow").style.display = (mode === "dropbuilder" || mode === "pack30") ? "grid" : "none";
 }
-$("mode").addEventListener("change", showDropControls);
+function showBuilderView(){
+  const view = $("builderView")?.value || "full";
+  const advancedWrap = $("advancedBuilderWrap");
+  if(!advancedWrap) return;
+
+  advancedWrap.style.display = (view === "quick") ? "none" : "block";
+}
+  
+  $("mode").addEventListener("change", showDropControls);
+  $("builderView").addEventListener("change", showBuilderView);
 
 /* ====== BASE STYLE LOCK ====== */
 function basePrompt(){
@@ -1566,6 +1600,7 @@ function applySelections(sel){
   if(sel.carouselTitleStyle) $("carouselTitleStyle").value = sel.carouselTitleStyle;
 
   showDropControls();
+  showBuilderView();
 }
 
 /* ====== SMART ARCHETYPE DNA APPLY ====== */
