@@ -2140,22 +2140,6 @@ $("btnGenerate").addEventListener("click", ()=>{
     $("output").textContent = sel.contentMode
       ? `PROMPT\n${prompt}\n\nCAPTION\n${content.caption}\n\nHOOK\n${content.hook}\n\nHASHTAGS\n${content.hashtags}`
       : prompt;
-
-  const text = $("output").textContent || "";
-  if(!text.trim()){
-    alert("Nothing to copy yet.");
-    return;
-  }
-
-  const promptOnly = text.split("\n\n====================\n\n")[0];
-
-  try{
-    await navigator.clipboard.writeText(promptOnly);
-    alert("Prompt copied!");
-  }catch{
-    alert("Copy failed. Try selecting the text and copying manually.");
-  }
-});
     
     rows = [{
       label:"Single",
