@@ -1038,7 +1038,7 @@ const DEFAULTS = {
 
   prop: [
     "holding an e-reader",
-    "holding an open book with stylized illustrated artwork on the pages"
+    "holding an open book with stylized illustrated artwork on the pages",
     "holding an annotated book with tabs",
     "holding a phone like she just read something shocking",
     "holding iced coffee + open book",
@@ -1517,41 +1517,19 @@ function buildSinglePrompt(sel){
 parts.push(
 "stylized glam cartoon beauty illustration, high-end digital sticker art, luxury beauty editorial style, fashion-forward styling, detailed clothing textures"
 );
-
 parts.push("highly polished character illustration, crisp linework, vibrant colors");
-  
 parts.push(
 "clean centered composition, single character focus, expressive reaction face, sticker-friendly framing, minimal background clutter"
 );
-
 parts.push(
 "pure white or transparent background, bold sticker outline, minimal background detail"
 );
-
 parts.push(
 "illustration style not realism, smooth cartoon shading, minimal skin texture, balanced lighting, polished color harmony, symmetrical facial features, large expressive eyes, dramatic lashes, glossy lips, glam beauty illustration aesthetic, detailed hairline, clean edges and baby hairs, defined braids and textured hair strands"
 );
   parts.push(basePrompt());
   parts.push("character fully visible when full-body composition is selected");
-  parts.push(sel.complexion);
-  // composition-specific steering
-const comp = normalize(sel.composition);
-
-if(comp.includes("full body") || comp.includes("head-to-toe") || comp.includes("feet")){
-  parts.push("full body, head-to-toe framing, feet visible, no cropping");
-}
-
-if(comp.includes("three-quarter") || comp.includes("thigh-up")){
-  parts.push("three-quarter framing, thighs visible, include outfit details");
-}
-
-if(comp.includes("waist-up") || comp.includes("upper half")){
-  parts.push("waist-up framing, hands and book/prop visible");
-}
-
-if(comp.includes("close-up") || comp.includes("face focus")){
-  parts.push("close-up face framing, emphasize eyes and expression");
-}
+  
   parts.push(sel.bodyType);
   parts.push(sel.faceShape);
 
@@ -1602,6 +1580,7 @@ parts.push(sel.scene);
 
 if(!stickerBg){
   parts.push("color palette guidance (apply to outfit and background accents only): " + sel.palette + ", do not tint skin or entire image");
+}
   parts.push(sel.composition);
   // ✅ composition-specific steering (respects full-body / waist-up / close-up)
 const comp = normalize(sel.composition);
@@ -1626,21 +1605,17 @@ if(comp.includes("full body") || comp.includes("head-to-toe") || comp.includes("
   if(sel.customCategory){
     parts.push("custom notes: " + sel.customCategory);
   }
-
   if(sel.customAddons){
     parts.push("add-ons: " + sel.customAddons);
   }
-
   parseCustomCategoryLines(sel.customCategories).forEach(x => parts.push(x));
 
   if(sel.noText){
     parts.push("no text, no watermark, no logo");
   }
-
   if(sel.negativePrompt){
     parts.push(sel.negativePrompt);
   }
-
   parts.push("clean die-cut sticker aesthetic, crisp outline, subject fully visible");
   return parts.filter(Boolean).join(", ");
 }
