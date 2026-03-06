@@ -1233,7 +1233,15 @@ const normalize = (s)=>String(s||"").toLowerCase();
 function fillSelect(id, arr){
   const el = $(id);
   if(!el) return;
+
   el.innerHTML = "";
+
+  // add NONE option
+  const none = document.createElement("option");
+  none.value = "";
+  none.textContent = "None";
+  el.appendChild(none);
+
   arr.forEach(v=>{
     const opt = document.createElement("option");
     opt.value = v;
