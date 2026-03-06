@@ -578,7 +578,7 @@ Sticker Outline
             <option value="mood">Mood</option>
             <option value="attitude">Attitude</option>
             <option value="genre">Genre</option>
-            <option value="subGenre">Sub-Genre</option>
+            <option value="trope">Trope</option>
             <option value="pose">Pose</option>
             <option value="poseAtt">Pose Attitude</option>
             <option value="complexion">Complexion</option>
@@ -698,9 +698,9 @@ Sticker Outline
   /* =========================
    Readerverse Engine v1.5
    Adds:
-   - Genre + Sub-Genre dropdowns
+   - Genre + Trope dropdowns
    - Quote → genre matching
-   - Genre/Sub-genre included in prompt output
+   - Genre/Trope included in prompt output
    - Genre hashtags added
 ========================= */
 
@@ -735,7 +735,7 @@ const DEFAULTS = {
     "Dark Romance",
     "Urban Fiction",
     "Street Lit",
-    "Reverse Harem / Why Choose"
+    "Reverse Harem / Why Choose",
     "Thriller / Suspense",
     "Mystery",
     "Fantasy",
@@ -776,7 +776,7 @@ const DEFAULTS = {
     "Kingpin Romance",
     "Ride or Die Romance",
     "Trap Romance",
-    "Street Loyalty"
+    "Street Loyalty",
     "Book Club Drama",
     "Spicy Comedy",
     "Slow Burn",
@@ -1311,7 +1311,7 @@ function downloadText(filename, text){
   URL.revokeObjectURL(url);
 }
 function buildCSV(rows){
-  const headers = ["label","dropName","dropTheme","quoteReference","genre","subGenre","prompt","caption","hook","hashtags","slideText"];
+  const headers = ["label","dropName","dropTheme","quoteReference","genre","trope","prompt","caption","hook","hashtags","slideText"];
   const lines = [headers.join(",")];
   rows.forEach(r=>{
     lines.push([
@@ -1320,7 +1320,7 @@ function buildCSV(rows){
       escapeCSV(r.dropTheme||""),
       escapeCSV(r.quoteReference||""),
       escapeCSV(r.genre||""),
-      escapeCSV(r.subGenre||""),
+      escapeCSV(r.trope||""),
       escapeCSV(r.prompt||""),
       escapeCSV(r.caption||""),
       escapeCSV(r.hook||""),
@@ -1347,7 +1347,7 @@ function basePrompt(){
     "hand-drawn look with clean linework",
     "smooth airbrushed complexion",
     "large almond shaped eyes with dramatic lashes",
-    "eyes naturally aligned, both pupils looking in the same direction, balanced gaze direction",
+    "eyes naturally aligned, symmetrical eye placement, both pupils looking in the same direction, natural gaze direction, no cross-eye focus, no misaligned pupils",
     "glossy full lips",
     "softly contoured cheeks",
     "glam beauty aesthetic",
@@ -1366,7 +1366,7 @@ function buildContent(sel){
   const rx = sel.reaction || "reaction";
   const theme = sel.dropTheme || "";
   const genre = sel.genre || "";
-  const sub = sel.subGenre || "";
+  const sub = sel.trope || "";
 
   const captions = [
     `${arche} energy: ${att}.`,
@@ -1411,7 +1411,7 @@ const genreTagMap = {
  "Sci-Fi Romance": ["#SciFiRomance"],
  "Contemporary Romance": ["#ContemporaryRomance"],
  "Romantic Comedy": ["#RomComBooks"],
- "Historical Romance": ["#HistoricalRomance"]
+ "Historical Romance": ["#HistoricalRomance"],
   "Monster Romance": [
   "#MonsterRomance",
   "#MonsterRomanceBooks",
@@ -1451,7 +1451,7 @@ if(sub){
   if(theme) hashtags.push("#" + theme.replace(/\s+/g,""));
 
   if(genre) hashtags.push("#" + genre.replace(/[^a-z0-9]+/gi,""));
-  if(sub) hashtags.push("#" + sub.replace(/[^a-z0-9]+/gi,""));
+  if(trope) hashtags.push("#" + trope.replace(/[^a-z0-9]+/gi,""));
 
   return {
     caption: pick(captions) + (q ? `\n\n“${q}”` : ""),
@@ -1770,7 +1770,7 @@ function matchToQuote(data, quoteRaw, strength){
 
   /* ✅ NEW: quote → genre */
   let genrePick = "Romance (General)";
-  let tropePick = $("subGenre").value || "Slow Burn";
+  let tropePick = $("trope").value || "Slow Burn";
 
   if(has("murder","killer","blood","crime","case","detective","alibi","evidence","suspect","serial")){
     genrePick = "Thriller / Suspense";
@@ -2093,7 +2093,7 @@ $("btnRandom").addEventListener("click", ()=>{
   const prompt = buildSinglePrompt(s);
   const content = s.contentMode ? buildContent(s) : null;
 
-  $("output").textContent = sel.contentMode
+  $("output").textContent = s.contentMode
   ? `PROMPT\n${prompt}\n\n====================\n\n${formatContentBlock(content)}`
   : `PROMPT\n${prompt}`;
 
@@ -2130,7 +2130,6 @@ $("btnGenerate").addEventListener("click", ()=>{
       ? `PROMPT\n${prompt}\n\nCAPTION\n${content.caption}\n\nHOOK\n${content.hook}\n\nHASHTAGS\n${content.hashtags}`
       : prompt;
 
-$("btnCopyPromptOnly").addEventListener("click", async ()=>{
   const text = $("output").textContent || "";
   if(!text.trim()){
     alert("Nothing to copy yet.");
@@ -2218,7 +2217,7 @@ $("btnCopyPromptOnly").addEventListener("click", async ()=>{
     rows = buildPackN(DATA, 10, "Pack");
     $("output").textContent = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nSUB-GENRE\n${r.subGenre}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
   }
@@ -2228,7 +2227,7 @@ $("btnCopyPromptOnly").addEventListener("click", async ()=>{
     rows = drop.rows;
     $("output").textContent = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nSUB-GENRE\n${r.subGenre}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
   }
@@ -2261,7 +2260,7 @@ $("btnCopyPromptOnly").addEventListener("click", async ()=>{
         dropTheme:"",
         quoteReference:"",
         genre:s.genre || "",
-        subGenre:s.subGenre || "",
+        trope:s.trope || "",
         prompt,
         caption: content?.caption || "",
         hook: content?.hook || "",
@@ -2272,7 +2271,7 @@ $("btnCopyPromptOnly").addEventListener("click", async ()=>{
 
     $("output").textContent = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nSUB-GENRE\n${r.subGenre}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
   }
@@ -2287,6 +2286,24 @@ $("btnCopy").addEventListener("click", async ()=>{
   try{
     await navigator.clipboard.writeText(text);
     alert("Copied!");
+  }catch{
+    alert("Copy failed. Try selecting the text and copying manually.");
+  }
+});
+
+$("btnCopyPromptOnly").addEventListener("click", async ()=>{
+  const text = $("output").textContent || "";
+
+  if(!text.trim()){
+    alert("Nothing to copy yet.");
+    return;
+  }
+
+  const promptOnly = text.split("\n\n====================\n\n")[0];
+
+  try{
+    await navigator.clipboard.writeText(promptOnly);
+    alert("Prompt copied!");
   }catch{
     alert("Copy failed. Try selecting the text and copying manually.");
   }
@@ -2343,7 +2360,7 @@ $("btnLoadDrop").addEventListener("click", ()=>{
   const header = `DROP NAME\n${drop.dropName}\n\nDROP THEME\n${drop.dropTheme}\n\nQUOTE (optional)\n${drop.quoteReference || "(none)"}\n\n=== OUTPUT ===\n`;
   const body = drop.rows.map(r=>{
     return sel.contentMode
-      ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nSUB-GENRE\n${r.subGenre}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+      ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
       : `${r.label}\n${r.prompt}`;
   }).join("\n\n---\n\n");
 
