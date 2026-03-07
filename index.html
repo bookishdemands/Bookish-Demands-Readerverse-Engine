@@ -1372,25 +1372,33 @@ function showBuilderView(){
   $("builderView").addEventListener("change", showBuilderView);
 
 /* ====== BASE STYLE LOCK ====== */
-function basePrompt(){
+function styleCore(){
   return [
-    "high-end Y2K glam doll illustration",
-    "Bratz inspired beauty cartoon illustration",
-    "ultra feminine melanated character",
-    "hand-drawn look with clean linework",
-    "smooth airbrushed complexion",
-    "large almond shaped eyes with dramatic lashes",
-    "eyes naturally aligned, symmetrical eye placement, both pupils looking in the same direction, natural gaze direction, no cross-eye focus, no misaligned pupils",
-    "glossy full lips",
-    "softly contoured cheeks",
-    "glam beauty aesthetic",
-    "exactly two hands, one left hand and one right hand only, no extra hands, no duplicated limbs",
-    "premium sticker illustration style",
-    "sparkle highlights",
-    "ultra polished high quality digital illustration"
+    "hand-drawn glam cartoon beauty illustration",
+    "polished digital character art",
+    "feminine melanated doll aesthetic",
+    "bold clean linework",
+    "smooth controlled gradient shading",
+    "vibrant polished colors",
+    "attention-grabbing beauty illustration",
+    "sticker-friendly composition"
   ].join(", ");
 }
 
+function faceDNA(){
+  return [
+    "large almond-shaped eyes with lifted outer corners",
+    "dramatic top lashes",
+    "minimal lower lashes",
+    "bright catchlights in the eyes",
+    "sculpted high-arched brows",
+    "soft heart-shaped face",
+    "small softly defined nose with glossy highlight",
+    "full glossy lips with defined cupid's bow",
+    "clean symmetrical facial proportions",
+    "deliberate baby hairs when visible"
+  ].join(", ");
+}
 /* ====== CONTENT MODE ====== */
 function buildContent(sel){
   const q = sel.quote || "";
@@ -1621,98 +1629,155 @@ function applyArchetypeDNA(data, archetypeName){
   }
 }
 
+function compositionRules(sel){
+  const comp = (sel.composition || "").toLowerCase();
+
+  if(comp.includes("full body") || comp.includes("head-to-toe") || comp.includes("feet")){
+    return "full body framing, head-to-toe, feet visible, no cropping";
+  }
+
+  if(comp.includes("three-quarter") || comp.includes("thigh")){
+    return "three-quarter body framing, thighs visible, outfit clearly visible";
+  }
+
+  if(comp.includes("waist-up") || comp.includes("upper half")){
+    return "waist-up framing, hands and prop visible";
+  }
+
+  if(comp.includes("head + shoulders") || comp.includes("beauty portrait")){
+    return "head-and-shoulders beauty portrait";
+  }
+
+  if(comp.includes("close-up") || comp.includes("face focus")){
+    return "close-up portrait, emphasis on eyes and expression";
+  }
+
+  return "clean centered character composition";
+}
+
+  /* ====== QUALITY GUARDRAILS ====== */
+function qualityGuardrails(sel){
+  const rules = [
+    "exactly two eyes",
+    "exactly one nose",
+    "exactly one mouth",
+    "no cross-eyed gaze",
+    "no misaligned pupils",
+    "no distorted anatomy",
+    "no duplicated features",
+    "no cluttered background",
+    "no random text",
+    "no watermark",
+    "no logo"
+  ];
+
+  if(sel.prop){
+    rules.push(
+      "exactly two hands if hands are visible",
+      "natural hand placement",
+      "no duplicated limbs",
+      "no warped fingers"
+    );
+  }
+
+  return rules.join(", ");
+}
+
+  /* ====== SIGNATURE FACE GEOMETRY ====== */
+function signatureGeometry(){
+  return [
+    "signature glam doll facial proportions",
+    "very large almond-shaped eyes occupying a large portion of the face",
+    "slightly lifted outer eye corners",
+    "thick dramatic top lashes",
+    "small softly defined nose",
+    "full rounded lips slightly larger on the bottom lip",
+    "high arched brows placed above the eye socket",
+    "smooth rounded cheek structure"
+  ].join(", ");
+}
+
+  /* ====== LINE STYLE LOCK ====== */
+function lineStyle(){
+  return [
+    "clean confident linework",
+    "thick outer contour lines",
+    "thin interior facial lines",
+    "smooth polished illustration lines",
+    "deliberate hand-drawn line variation"
+  ].join(", ");
+}
+
+  /* ====== HAND-DRAWN FINISH ====== */
+function handDrawnFinish(){
+  return [
+    "subtle hand-drawn illustration feel",
+    "slight natural line variation",
+    "deliberate stylized facial construction",
+    "artist-drawn beauty character feel",
+    "less synthetic polish, more illustrated charm",
+    "controlled stylization rather than plastic smoothness"
+  ].join(", ");
+}
 /* ====== PROMPT BUILD ====== */
 function buildSinglePrompt(sel){
   const parts = [];
-parts.push(
-"stylized glam cartoon beauty illustration, high-end digital sticker art, luxury beauty editorial style, fashion-forward styling, detailed clothing textures"
-);
-parts.push("highly polished character illustration, crisp linework, vibrant colors");
-parts.push(
-"clean centered composition, single character focus, expressive reaction face, sticker-friendly framing, minimal background clutter"
-);
-parts.push(
-"pure white or transparent background, bold sticker outline, minimal background detail"
-);
-parts.push(
-"illustration style not realism, smooth cartoon shading, minimal skin texture, balanced lighting, polished color harmony, symmetrical facial features, large expressive eyes, dramatic lashes, glossy lips, glam beauty illustration aesthetic, detailed hairline, clean edges and baby hairs, defined braids and textured hair strands"
-);
-  parts.push(basePrompt());
-  parts.push("character fully visible when full-body composition is selected");
-  
+
+  // 1. Core style
+  parts.push(styleCore());
+  parts.push(faceDNA());
+  parts.push(signatureGeometry());
+  parts.push(lineStyle());
+  parts.push(handDrawnFinish());
+  // 2. Character build
+  parts.push(sel.complexion);
   parts.push(sel.bodyType);
   parts.push(sel.faceShape);
 
   parts.push(sel.hairColor);
   parts.push(sel.hair);
-
   parts.push(sel.makeup);
   parts.push(sel.extras);
-  parts.push(sel.lighting);
 
   parts.push(sel.nailShape);
   parts.push(sel.nailDesign);
 
   parts.push(sel.outfit);
-  parts.push("outfit clearly visible, clothing details sharp and consistent");
   parts.push(sel.accessories);
 
-  parts.push(sel.archetype + " reader character");
-  parts.push(sel.expression + " expression");
-  parts.push(sel.micro + " micro-expression");
+  // 3. Expression + attitude
+  parts.push(sel.expression);
+  parts.push(sel.micro);
   parts.push(sel.reaction);
   parts.push(sel.mood);
   parts.push(sel.attitude);
 
-  /* ✅ NEW */
-  if(sel.genre) parts.push("genre: " + sel.genre);
-  if(sel.trope) parts.push("trope: " + sel.trope);
+  // 4. Pose
+  parts.push(sel.pose);
+  parts.push(sel.poseAtt);
 
-  parts.push(sel.pose + " pose");
-parts.push(sel.poseAtt);
-parts.push(sel.prop);
+  // 5. Prop + scene
+  if(sel.prop) parts.push(sel.prop);
+  if(sel.scene) parts.push(sel.scene);
 
-if(sel.prop){
-  parts.push("both hands holding the prop naturally, one hand on each side of the object, natural finger placement, clean hand anatomy");
-}
-  parts.push("exactly two hands, one left hand and one right hand only, no extra hands, no duplicated limbs");
-  parts.push("correct human anatomy, natural hand proportions, no extra fingers");
-  
-const propText = normalize(sel.prop || "");
-if(propText.includes("book") || propText.includes("e-reader") || propText.includes("kindle")){
-  parts.push("book or e-reader clearly visible, correctly aligned in both hands, readable object shape, no warped edges");
-}
+  // 6. Background + palette
+  if(sel.background) parts.push(sel.background);
+  if(sel.palette) parts.push("color palette accents: " + sel.palette);
 
-parts.push("clear silhouette, prop below face level, not blocking the face");
-parts.push(sel.scene);
-  parts.push(sel.background);
-  const bg = (sel.background || "").toLowerCase();
-  const stickerBg = bg.includes("transparent") || bg.includes("pure white");
+  // 7. Composition
+  if(sel.composition) parts.push(sel.composition);
+  parts.push(compositionRules(sel));
 
-if(!stickerBg){
-  parts.push("color palette guidance (apply to outfit and background accents only): " + sel.palette + ", do not tint skin or entire image");
-}
-  parts.push(sel.composition);
-  // ✅ composition-specific steering (respects full-body / waist-up / close-up)
-const comp = normalize(sel.composition);
-
-if(comp.includes("full body") || comp.includes("head-to-toe") || comp.includes("feet")){
-  parts.push("full body, head-to-toe framing, feet visible, no cropping");
-} else if(comp.includes("three-quarter") || comp.includes("thigh")){
-  parts.push("three-quarter body framing, thighs visible, outfit clearly visible");
-} else if(comp.includes("waist-up") || comp.includes("upper half")){
-  parts.push("waist-up framing, hands and prop visible");
-} else if(comp.includes("head + shoulders") || comp.includes("beauty portrait")){
-  parts.push("head-and-shoulders portrait framing");
-} else if(comp.includes("close-up") || comp.includes("face focus")){
-  parts.push("close-up face framing, emphasize eyes and expression");
-}
+  // 8. Sticker handling
   if(sel.carouselMode){
-  parts.push(
-    "sticker constraints: clean cutout, bold outline, minimal background clutter, subject centered, avoid cropping important features"
-  );
-}
+    parts.push("centered composition, clear silhouette, minimal background clutter");
+  }
 
+  if(sel.stickerOutline){
+    parts.push("clean die-cut sticker border");
+  }
+
+  // 9. Custom notes
   if(sel.customCategory){
     parts.push("custom notes: " + sel.customCategory);
   }
@@ -1721,17 +1786,19 @@ if(comp.includes("full body") || comp.includes("head-to-toe") || comp.includes("
   }
   parseCustomCategoryLines(sel.customCategories).forEach(x => parts.push(x));
 
+  // 10. Text restrictions
   if(sel.noText){
     parts.push("no text, no watermark, no logo");
   }
+
+  // 11. Negative prompt
   if(sel.negativePrompt){
     parts.push(sel.negativePrompt);
   }
-  if(sel.stickerOutline){
-  parts.push("clean die-cut sticker aesthetic, crisp white sticker border outline, subject fully visible");
-}else{
-  parts.push("clean illustration aesthetic, no sticker border, clean edges");
-}
+
+  // 12. Cleanup guardrails
+  parts.push(qualityGuardrails(sel));
+
   return parts.filter(Boolean).join(", ");
 }
 
