@@ -434,17 +434,6 @@ Sticker Outline
     <label for="archetype">Reader Archetype</label>
     <select id="archetype"></select>
   </div>
-  <div>
-    <label for="genre">Genre</label>
-    <select id="genre"></select>
-  </div>
-</div>
-
-<div class="row">
-  <div>
-    <label for="trope">Trope</label>
-    <select id="trope"></select>
-  </div>
   <div></div>
 </div>
 
@@ -602,8 +591,6 @@ Sticker Outline
             <option value="reaction">Reaction</option>
             <option value="mood">Mood</option>
             <option value="attitude">Attitude</option>
-            <option value="genre">Genre</option>
-            <option value="trope">Trope</option>
             <option value="pose">Pose</option>
             <option value="poseAtt">Pose Attitude</option>
             <option value="complexion">Complexion</option>
@@ -752,66 +739,6 @@ const DEFAULTS = {
     "Urban Book Club",
     "Feral Romance Reader",
     "Soft Girl Menace"
-  ],
-
-  /* ✅ NEW */
-  genre: [
-    "Romance (General)",
-    "Dark Romance",
-    "Urban Fiction",
-    "Street Lit",
-    "Reverse Harem / Why Choose",
-    "Thriller / Suspense",
-    "Mystery",
-    "Fantasy",
-    "Paranormal Romance",
-    "Monster Romance",
-    "Sci-Fi Romance",
-    "Contemporary Romance",
-    "Romantic Comedy",
-    "Historical Romance",
-    "YA / NA",
-    "Cozy Fantasy",
-    "Nonfiction (Bookish Lifestyle)"
-  ],
-  /* ✅ NEW */
-  trope: [
-    "Enemies to Lovers",
-    "Friends to Lovers",
-    "Morally Grey MMC",
-    "Forced Proximity",
-    "Billionaire / Wealth",
-    "Possessive / Protective",
-    "Second Chance",
-    "Workplace Romance",
-    "Marriage of Convenience",
-    "Forbidden Romance",
-    "Small Town",
-    "Sports Romance",
-    "Vampire / Demon / Witch",
-    "Fae / Kingdom / Magic",
-    "Magical Bookshop",
-    "Witch Cottage",
-    "Soft Magic",
-    "Cozy Village",
-    "Serial Killer / Cat & Mouse",
-    "Detective / Case File",
-    "Hood Love / Street Romance",
-    "Kingpin Romance",
-    "Ride or Die Romance",
-    "Trap Romance",
-    "Street Loyalty",
-    "Book Club Drama",
-    "Spicy Comedy",
-    "Slow Burn",
-    "Monster Boyfriend",
-    "Alien Romance",
-    "Demon Lover",
-    "Shadow Daddy",
-    "Tentacle Romance",
-    "Academy Reverse Harem",
-    "Paranormal Reverse Harem",
-    "Dark Why Choose"
   ],
 
   archetype: [
@@ -1335,7 +1262,7 @@ function downloadText(filename, text){
   URL.revokeObjectURL(url);
 }
 function buildCSV(rows){
-  const headers = ["label","dropName","dropTheme","quoteReference","genre","trope","prompt","caption","hook","hashtags","slideText"];
+  const headers = ["label","dropName","dropTheme","quoteReference","prompt","caption","hook","hashtags","slideText"];
   const lines = [headers.join(",")];
   rows.forEach(r=>{
     lines.push([
@@ -1343,8 +1270,6 @@ function buildCSV(rows){
       escapeCSV(r.dropName||""),
       escapeCSV(r.dropTheme||""),
       escapeCSV(r.quoteReference||""),
-      escapeCSV(r.genre||""),
-      escapeCSV(r.trope||""),
       escapeCSV(r.prompt||""),
       escapeCSV(r.caption||""),
       escapeCSV(r.hook||""),
@@ -1407,9 +1332,8 @@ function buildContent(sel){
   const att = sel.attitude || "unbothered";
   const rx = sel.reaction || "reaction";
   const theme = sel.dropTheme || "";
-  const genre = sel.genre || "";
-  const trope = sel.trope || "";
-
+  ];
+  
   const captions = [
     `${arche} energy: ${att}.`,
     `Me reading this like: ${rx}.`,
@@ -1542,10 +1466,6 @@ function getSelections(){
     mood: $("mood").value,
     attitude: $("attitude").value,
 
-    /* ✅ NEW */
-    genre: $("genre").value,
-    trope: $("trope").value,
-
     pose: $("pose").value,
     poseAtt: $("poseAtt").value,
     complexion: $("complexion").value,
@@ -1574,7 +1494,6 @@ function getSelections(){
 function applySelections(sel){
   const ids = [
     "archetype","expression","micro","reaction","mood","attitude",
-    "genre","trope",
     "pose","poseAtt",
     "complexion","bodyType","faceShape","extras",
     "hairColor","hair","makeup","lighting",
@@ -1719,6 +1638,11 @@ function handDrawnFinish(){
     "controlled stylization rather than plastic smoothness"
   ].join(", ");
 }
+
+  function isNeutralBackground(bg){
+  const b = (bg || "").toLowerCase();
+  return b.includes("white") || b.includes("transparent");
+}
 /* ====== PROMPT BUILD ====== */
 function buildSinglePrompt(sel){
   const parts = [];
@@ -1761,8 +1685,21 @@ function buildSinglePrompt(sel){
   if(sel.scene) parts.push(sel.scene);
 
   // 6. Background + palette
-  if(sel.background) parts.push(sel.background);
-  if(sel.palette) parts.push("color palette accents: " + sel.palette);
+
+if(sel.background){
+
+  parts.push(sel.background);
+
+  if(!isNeutralBackground(sel.background)){
+    parts.push("subtle background lighting accents");
+  }
+
+}
+
+if(sel.palette){
+  parts.push("cohesive color palette applied to outfit, nails, accessories, and background accents: " + sel.palette);
+  parts.push("preserve natural skin tone, do not color-cast the skin");
+}
 
   // 7. Composition
   if(sel.composition) parts.push(sel.composition);
@@ -1770,12 +1707,15 @@ function buildSinglePrompt(sel){
 
   // 8. Sticker handling
   if(sel.carouselMode){
-    parts.push("centered composition, clear silhouette, minimal background clutter");
-  }
+    parts.push("centered character composition, clear silhouette, minimal background clutter");
 
   if(sel.stickerOutline){
     parts.push("clean die-cut sticker border");
   }
+
+  if(sel.background && sel.background.toLowerCase().includes("transparent")){
+  parts.push("isolated character, clean silhouette, no background elements");
+}
 
   // 9. Custom notes
   if(sel.customCategory){
@@ -1813,9 +1753,6 @@ function randomizeAll(data){
   $("reaction").value = pick(data.reaction);
   $("mood").value = pick(data.mood);
   $("attitude").value = pick(data.attitude);
-
-  $("genre").value = pick(data.genre);
-  $("trope").value = pick(data.trope);
 
   $("pose").value = pick(data.pose);
   $("poseAtt").value = pick(data.poseAtt);
@@ -1872,35 +1809,6 @@ function matchToQuote(data, quoteRaw, strength){
     arche = "Morally Gray Enjoyer";
   }
   $("archetype").value = arche;
-
-  let genrePick = "Romance (General)";
-  let tropePick = $("trope").value || "Slow Burn";
-
-  if(has("murder","killer","blood","crime","case","detective","alibi","evidence","suspect","serial")){
-    genrePick = "Thriller / Suspense";
-    tropePick = "Detective / Case File";
-  } else if(has("plot twist","twist","betrayal","secret","double life","exposed")){
-    genrePick = "Mystery";
-    tropePick = "Detective / Case File";
-  } else if(has("witch","vampire","demon","curse","coven","spell","hex","paranormal")){
-    genrePick = "Paranormal Romance";
-    tropePick = "Vampire / Demon / Witch";
-  } else if(has("fae","kingdom","magic","dragon","sword","realm","court")){
-    genrePick = "Fantasy";
-    tropePick = "Fae / Kingdom / Magic";
-  } else if(has("street","hood","trap","boss","hustle","city","ride or die")){
-    genrePick = "Urban Fiction";
-    tropePick = "Hood Love / Street Romance";
-  } else if(has("billionaire","rich","heir","penthouse","luxury","ceo","mogul")){
-    genrePick = "Dark Romance";
-    tropePick = "Billionaire / Wealth";
-  } else if(has("enemies","hate","can’t stand","rivals")){
-    genrePick = "Romance (General)";
-    tropePick = "Enemies to Lovers";
-  }
-
-  if(data.genre.includes(genrePick)) $("genre").value = genrePick;
-  if(data.trope.includes(tropePick)) $("trope").value = tropePick;
 
   if($("smartArchetype").checked){
     applyArchetypeDNA(data, arche);
@@ -1964,8 +1872,6 @@ function buildDrop(data){
       dropName: name,
       dropTheme: theme,
       quoteReference: quote,
-      genre: s.genre || "",
-      trope: s.trope || "",
       prompt,
       caption: content?.caption || "",
       hook: content?.hook || "",
@@ -2014,8 +1920,6 @@ function buildReactionPack4(data){
       dropName:"",
       dropTheme:"",
       quoteReference: quote,
-      genre: s.genre || "",
-      trope: s.trope || "",
       prompt,
       caption: content?.caption || "",
       hook: content?.hook || "",
@@ -2062,8 +1966,6 @@ function buildPackN(data, n, labelPrefix){
       dropName:"",
       dropTheme:"",
       quoteReference: quote,
-      genre: s.genre || "",
-      trope: s.trope || "",
       prompt,
       caption: content?.caption || "",
       hook: content?.hook || "",
@@ -2130,10 +2032,6 @@ function init(){
   fillSelect("mood", DATA.mood);
   fillSelect("attitude", DATA.attitude);
 
-  /* ✅ NEW */
-  fillSelect("genre", DATA.genre);
-  fillSelect("trope", DATA.trope);
-
   fillSelect("pose", DATA.pose);
   fillSelect("poseAtt", DATA.poseAtt);
 
@@ -2196,8 +2094,6 @@ $("btnRandom").addEventListener("click", ()=>{
     dropName:"",
     dropTheme:"",
     quoteReference:s.quote,
-    genre:s.genre || "",
-    trope:s.trope || "",
     prompt,
     caption: content?.caption || "",
     hook: content?.hook || "",
@@ -2229,8 +2125,6 @@ $("btnGenerate").addEventListener("click", ()=>{
       dropName:"",
       dropTheme:"",
       quoteReference:sel.quote,
-      genre:sel.genre || "",
-      trope:sel.trope || "",
       prompt,
       caption: content?.caption || "",
       hook: content?.hook || "",
@@ -2256,8 +2150,6 @@ $("btnGenerate").addEventListener("click", ()=>{
       dropName:"",
       dropTheme:"",
       quoteReference:sel.quote,
-      genre:s.genre || "",
-      trope:s.trope || "",
       prompt,
       caption: content?.caption || "",
       hook: content?.hook || "",
@@ -2272,7 +2164,7 @@ $("btnGenerate").addEventListener("click", ()=>{
 
     $("output").textContent = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
   }
@@ -2284,7 +2176,7 @@ $("btnGenerate").addEventListener("click", ()=>{
     const post = buildContent(getSelections());
     const postCaption = `POST CAPTION\n${post.caption}\n\nCOMMENT HOOK\n${post.hook}\n\nHASHTAGS\n${post.hashtags}\n\n`;
     const slides = rows.map((r, idx)=>{
-      return `SLIDE ${idx+1}\n${r.slideText}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nPROMPT\n${r.prompt}`;
+      return `SLIDE ${idx+1}\n${r.slideText}\n\nPROMPT\n${r.prompt}`;
     }).join("\n\n---\n\n");
 
     $("output").textContent = postCaption + "\n" + slides;
@@ -2295,7 +2187,7 @@ $("btnGenerate").addEventListener("click", ()=>{
     rows = buildPackN(DATA, 10, "Pack");
     $("output").textContent = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
   }
@@ -2305,7 +2197,7 @@ $("btnGenerate").addEventListener("click", ()=>{
     rows = drop.rows;
     $("output").textContent = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
   }
@@ -2317,7 +2209,7 @@ $("btnGenerate").addEventListener("click", ()=>{
     const header = `DROP NAME\n${drop.dropName}\n\nDROP THEME\n${drop.dropTheme}\n\nQUOTE (optional)\n${drop.quoteReference || "(none)"}\n\n=== OUTPUT ===\n`;
     const body = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
 
@@ -2337,8 +2229,6 @@ $("btnGenerate").addEventListener("click", ()=>{
         dropName:"",
         dropTheme:"",
         quoteReference:"",
-        genre:s.genre || "",
-        trope:s.trope || "",
         prompt,
         caption: content?.caption || "",
         hook: content?.hook || "",
@@ -2349,7 +2239,7 @@ $("btnGenerate").addEventListener("click", ()=>{
 
     $("output").textContent = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
   }
@@ -2446,7 +2336,7 @@ $("btnLoadDrop").addEventListener("click", ()=>{
   const header = `DROP NAME\n${drop.dropName}\n\nDROP THEME\n${drop.dropTheme}\n\nQUOTE (optional)\n${drop.quoteReference || "(none)"}\n\n=== OUTPUT ===\n`;
   const body = drop.rows.map(r=>{
     return sel.contentMode
-      ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+      ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
       : `${r.label}\n${r.prompt}`;
   }).join("\n\n---\n\n");
 
@@ -2530,8 +2420,6 @@ $("btnLoadPreset").addEventListener("click", ()=>{
     dropName:"",
     dropTheme:"",
     quoteReference:s.quote,
-    genre:s.genre || "",
-    trope:s.trope || "",
     prompt,
     caption: content?.caption || "",
     hook: content?.hook || "",
