@@ -311,7 +311,7 @@
           <select id="mode">
             <option value="single">Single Character</option>
             <option value="match">Match Character to Quote</option>
-            <option value="archetype4">Archetype Pack (4)</option>
+            <option value="expression4">Archetype Pack (4)</option>
             <option value="carousel4">Carousel Generator (4 slides)</option>
             <option value="pack10">10-Pack From Quote</option>
             <option value="pack30">30-Pack (Full Product Drop)</option>
@@ -1429,18 +1429,13 @@ function compositionRules(sel){
 
   /* ====== QUALITY GUARDRAILS ====== */
 function qualityGuardrails(sel){
-  return [
+  const rules = [
     "no text, no watermark, no logo",
     "exactly two eyes, exactly one nose, exactly one mouth",
     "no cross-eyed gaze, no misaligned pupils",
     "no distorted anatomy, no duplicated features",
-    "no cluttered background",
-    "exactly two hands if hands are visible",
-    "natural hand placement",
-    "no duplicated limbs",
-    "no warped fingers"
-  ].join(", ");
-}
+    "no cluttered background"
+  ];
 
   if(sel.prop){
     rules.push(
