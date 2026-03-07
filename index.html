@@ -274,7 +274,7 @@
       <br><br>
       Made for:
       <br>• Content creators
-      <br>• Romance readers & trope lovers
+      <br>• Bookish Culture Besties
       <br>• E-reader + physical book lovers
       <br>• DIY / journal / craft girlies
       <br>• Anybody building a bookish brand 💅🏾
@@ -385,7 +385,7 @@ Sticker Outline
         </div>
         <div>
           <label for="customCategory">Custom Notes (optional)</label>
-          <input id="customCategory" type="text" placeholder="Example: trope tags, vibe notes, drop era"/>
+          <input id="customCategory" type="text" placeholder="Example: vibe notes, reader energy, drop era"/>
           <div class="note">Appends as “custom notes: …”</div>
         </div>
       </div>
@@ -697,7 +697,7 @@ Sticker Outline
         <span class="chip">E-reader insert prompts</span>
         <span class="chip">Character packs</span>
         <span class="chip">Caption + hook output</span>
-        <span class="chip">Multi-genre packs</span>
+        <span class="chip">Multi-archetypes packs</span>
       </div>
       <div class="note">Best workflow: paste quote → <b>Reaction Pack</b> or <b>Carousel</b> → export CSV.</div>
     </aside>
@@ -706,15 +706,6 @@ Sticker Outline
 </main>
 
 <script>
-
-  /* =========================
-   Readerverse Engine v1.5
-   Adds:
-   - Genre + Trope dropdowns
-   - Quote → genre matching
-   - Genre/Trope included in prompt output
-   - Genre hashtags added
-========================= */
 
 /* ====== OPTIONAL ACCESS GATE SETTINGS ====== */
 const ACCESS_GATE_ENABLED = false;
@@ -1332,7 +1323,6 @@ function buildContent(sel){
   const att = sel.attitude || "unbothered";
   const rx = sel.reaction || "reaction";
   const theme = sel.dropTheme || "";
-  ];
   
   const captions = [
     `${arche} energy: ${att}.`,
@@ -1361,63 +1351,16 @@ const discoveryTags = [
  "#BookishCommunity"
 ];
 
-const genreTagMap = {
- "Dark Romance": ["#DarkRomance", "#DarkRomanceBooks", "#MorallyGreyMMC"],
- "Urban Fiction": ["#UrbanFiction", "#UrbanBookTok", "#StreetLit"],
- "Thriller / Suspense": ["#ThrillerBooks", "#ThrillerReader"],
- "Street Lit": [
-  "#StreetLit",
-  "#UrbanRomance",
-  "#HoodRomance",
-  "#TrapLove"
-],
-  "Mystery": ["#MysteryBooks", "#Whodunit"],
- "Fantasy": ["#FantasyBooks", "#FantasyReader"],
- "Paranormal Romance": ["#ParanormalRomance", "#SupernaturalRomance"],
- "Sci-Fi Romance": ["#SciFiRomance"],
- "Contemporary Romance": ["#ContemporaryRomance"],
- "Romantic Comedy": ["#RomComBooks"],
- "Historical Romance": ["#HistoricalRomance"],
-  "Monster Romance": [
-  "#MonsterRomance",
-  "#MonsterRomanceBooks",
-  "#MonsterBoyfriend"
-],
-
-"Reverse Harem / Why Choose": [
-  "#ReverseHarem",
-  "#WhyChooseRomance",
-  "#WhyChoose"
-],
-
-"Cozy Fantasy": [
-  "#CozyFantasy",
-  "#CozyFantasyBooks",
-  "#CottagecoreFantasy"
-]
-};
-
 let hashtags = [
  ...brandTags,
  ...discoveryTags
 ];
-
-if(genre && genreTagMap[genre]){
- hashtags.push(...genreTagMap[genre]);
-}
-
-if(trope){
- hashtags.push("#" + trope.replace(/[^a-z0-9]+/gi,""));
-}
 
   const t = normalize(q);
   if(t.includes("plot twist") || t.includes("twist")) hashtags.push("#PlotTwist");
   if(t.includes("villain") || t.includes("morally")) hashtags.push("#MorallyGrey");
   if(t.includes("obsessed") || t.includes("mine") || t.includes("possessive") || t.includes("ruin")) hashtags.push("#ObsessedMMC");
   if(theme) hashtags.push("#" + theme.replace(/\s+/g,""));
-
-  if(genre) hashtags.push("#" + genre.replace(/[^a-z0-9]+/gi,""));
-  if(trope) hashtags.push("#" + trope.replace(/[^a-z0-9]+/gi,""));
 
   return {
     caption: pick(captions) + (q ? `\n\n“${q}”` : ""),
@@ -1708,7 +1651,7 @@ if(sel.palette){
   // 8. Sticker handling
   if(sel.carouselMode){
     parts.push("centered character composition, clear silhouette, minimal background clutter");
-
+  }
   if(sel.stickerOutline){
     parts.push("clean die-cut sticker border");
   }
@@ -1789,7 +1732,7 @@ function randomizeAll(data){
   }
 }
 
-/* ====== QUOTE MATCHER (archetype + genre) ====== */
+/* ====== QUOTE MATCHER (archetype) ====== */
 function matchToQuote(data, quoteRaw, strength){
   const quote = normalize(quoteRaw);
   const has = (...words)=>words.some(w=>quote.includes(w));
