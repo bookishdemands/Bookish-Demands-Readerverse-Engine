@@ -270,7 +270,7 @@
     </h1>
 
     <div class="sub">
-      <strong>For reader girlies who like their books spicy and their aesthetics expensive.</strong>
+      <strong>For reader girlies who like their books with dope plots, right amount of spice, and their aesthetics expensive.</strong>
       <br><br>
       Made for:
       <br>• Content creators
@@ -311,7 +311,7 @@
           <select id="mode">
             <option value="single">Single Character</option>
             <option value="match">Match Character to Quote</option>
-            <option value="reaction4">Reaction Pack (4)</option>
+            <option value="archetype4">Archetype Pack (4)</option>
             <option value="carousel4">Carousel Generator (4 slides)</option>
             <option value="pack10">10-Pack From Quote</option>
             <option value="pack30">30-Pack (Full Product Drop)</option>
@@ -451,34 +451,15 @@ Sticker Outline
   </div>
 
   <div class="row">
-    <div>
-      <label for="reaction">Reader Reaction</label>
-      <select id="reaction"></select>
-    </div>
-    <div></div>
+  <div>
+    <label for="attitude">Attitude / Personality</label>
+    <select id="attitude"></select>
   </div>
-
-  <div class="row">
-    <div>
-      <label for="mood">Reader Mood</label>
-      <select id="mood"></select>
-    </div>
-    <div>
-      <label for="attitude">Attitude / Personality</label>
-      <select id="attitude"></select>
-    </div>
+  <div>
+    <label for="pose">Pose</label>
+    <select id="pose"></select>
   </div>
-
-  <div class="row">
-    <div>
-      <label for="pose">Pose</label>
-      <select id="pose"></select>
-    </div>
-    <div>
-      <label for="poseAtt">Pose Attitude</label>
-      <select id="poseAtt"></select>
-    </div>
-  </div>
+</div>
 
   <div class="row">
     <div>
@@ -588,11 +569,8 @@ Sticker Outline
             <option value="archetype">Archetype</option>
             <option value="expression">Expression</option>
             <option value="micro">Micro Expression</option>
-            <option value="reaction">Reaction</option>
-            <option value="mood">Mood</option>
             <option value="attitude">Attitude</option>
             <option value="pose">Pose</option>
-            <option value="poseAtt">Pose Attitude</option>
             <option value="complexion">Complexion</option>
             <option value="bodyType">Body Type</option>
             <option value="faceShape">Face Shape</option>
@@ -692,14 +670,14 @@ Sticker Outline
 
       <h2>Fast products</h2>
       <div class="chips">
-        <span class="chip">Reaction carousels</span>
+        <span class="chip">Expression carousels</span>
         <span class="chip">30-pack sticker drops</span>
         <span class="chip">E-reader insert prompts</span>
         <span class="chip">Character packs</span>
         <span class="chip">Caption + hook output</span>
         <span class="chip">Multi-archetypes packs</span>
       </div>
-      <div class="note">Best workflow: paste quote → <b>Reaction Pack</b> or <b>Carousel</b> → export CSV.</div>
+      <div class="note">Best workflow: paste quote → <b>Archetypes Pack</b> or <b>Carousel</b> → export CSV.</div>
     </aside>
 
   </div>
@@ -786,32 +764,6 @@ const DEFAULTS = {
     "soft squint like she knows the tea"
   ],
 
-  reaction: [
-    "suspicious side-eye reaction",
-    "unimpressed reader reaction",
-    "plot twist shock reaction",
-    "dramatic gasp reaction",
-    "laughing at the chaos reaction",
-    "“I knew it” smug reaction",
-    "“this man is unhinged” reaction",
-    "book club gossip reaction",
-    "emotionally damaged reaction",
-    "feral romance reader reaction"
-  ],
-
-  mood: [
-    "controlled chaos mood",
-    "plot twist panic mood",
-    "feral dark romance mood",
-    "late night binge reading mood",
-    "book hangover mood",
-    "romance high mood",
-    "judging the characters mood",
-    "petty commentary mood",
-    "soft cozy mood",
-    "revenge arc mood"
-  ],
-
   attitude: [
     "quietly petty",
     "bossy main character energy",
@@ -836,19 +788,6 @@ const DEFAULTS = {
     "peace sign selfie",
     "phone in hand reaction",
     "clutching book dramatically"
-  ],
-
-  poseAtt: [
-    "slow blink like she’s judging you",
-    "leaning with shoulder popped attitude",
-    "hair flip moment",
-    "calm but dangerous eyes",
-    "smug ‘told you so’ stance",
-    "dramatic gasp stance",
-    "gossiping like she has tea",
-    "unbothered posture",
-    "feral excitement posture",
-    "soft menace posture"
   ],
 
   complexion: [
@@ -1079,11 +1018,8 @@ const ARCHETYPE_DNA = {
   "Petty Reader": {
     expression: "dramatic side-eye",
     micro: "one eyebrow raised",
-    reaction: "suspicious side-eye reaction",
-    mood: "petty commentary mood",
     attitude: "quietly petty",
     pose: "arms crossed unimpressed",
-    poseAtt: "slow blink like she’s judging you",
     extras: "oversized glasses",
     lighting: "flash glam lighting",
     background: "pure white background (studio clean)",
@@ -1094,11 +1030,8 @@ const ARCHETYPE_DNA = {
   "Dark Romance Delulu": {
     expression: "dangerous smirk",
     micro: "half-lidded unimpressed gaze",
-    reaction: "“this man is unhinged” reaction",
-    mood: "feral dark romance mood",
     attitude: "villain apologist energy",
     pose: "looking over shoulder",
-    poseAtt: "calm but dangerous eyes",
     extras: "extra dramatic lashes",
     lighting: "subtle magenta rim light",
     background: "dark glam gradient with magenta rim glow",
@@ -1109,11 +1042,8 @@ const ARCHETYPE_DNA = {
   "Plot Twist Detective": {
     expression: "wide shocked eyes",
     micro: "eyes widened slightly",
-    reaction: "plot twist shock reaction",
-    mood: "plot twist panic mood",
     attitude: "emotionally invested",
     pose: "hands near face shocked",
-    poseAtt: "dramatic gasp stance",
     extras: "manga lashes",
     lighting: "high contrast dramatic lighting",
     background: "comic pop art halftone background",
@@ -1124,11 +1054,8 @@ const ARCHETYPE_DNA = {
   "Morally Gray Enjoyer": {
     expression: "mischievous grin",
     micro: "tiny smirk corner",
-    reaction: "feral romance reader reaction",
-    mood: "romance high mood",
     attitude: "chaotic reader energy",
     pose: "clutching book dramatically",
-    poseAtt: "feral excitement posture",
     extras: "extra dramatic lashes",
     lighting: "studio beauty lighting",
     background: "sparkle gradient glam background",
@@ -1139,11 +1066,8 @@ const ARCHETYPE_DNA = {
   "Soft Girl Menace": {
     expression: "soft knowing smile",
     micro: "chin slightly lifted",
-    reaction: "“I knew it” smug reaction",
-    mood: "soft cozy mood",
     attitude: "soft voice hard leverage",
     pose: "leaning slightly with attitude",
-    poseAtt: "soft menace posture",
     extras: "flutter lashes",
     lighting: "soft beauty lighting",
     background: "soft pink gradient with twinkle stars",
@@ -1154,11 +1078,8 @@ const ARCHETYPE_DNA = {
   "Audiobook Multitasker": {
     expression: "chaotic laugh",
     micro: "soft squint like she knows the tea",
-    reaction: "laughing at the chaos reaction",
-    mood: "late night binge reading mood",
     attitude: "unbothered & booked",
     pose: "peace sign selfie",
-    poseAtt: "leaning with shoulder popped attitude",
     extras: "none",
     lighting: "warm golden glow lighting",
     background: "bubblegum pop art background",
@@ -1303,14 +1224,13 @@ function styleCore(){
 
 function faceDNA(){
   return [
+    "signature glam doll face",
     "large almond-shaped eyes with lifted outer corners",
-    "dramatic top lashes",
-    "minimal lower lashes",
-    "bright catchlights in the eyes",
+    "dramatic top lashes and bright catchlights",
     "sculpted high-arched brows",
-    "soft heart-shaped face",
     "small softly defined nose with glossy highlight",
     "full glossy lips with defined cupid's bow",
+    "soft heart-shaped face",
     "clean symmetrical facial proportions",
     "deliberate baby hairs when visible"
   ].join(", ");
@@ -1319,18 +1239,16 @@ function faceDNA(){
 function buildContent(sel){
   const q = sel.quote || "";
   const arche = sel.archetype || "Reader";
-  const mood = sel.mood || "bookish";
   const att = sel.attitude || "unbothered";
-  const rx = sel.reaction || "reaction";
   const theme = sel.dropTheme || "";
   
   const captions = [
-    `${arche} energy: ${att}.`,
-    `Me reading this like: ${rx}.`,
-    `This chapter had me in ${mood}.`,
-    `Readerverse check-in: ${arche}.`,
-    `If you get it, you get it. ${arche} edition.`
-  ];
+  `${arche} energy: ${att}.`,
+  `Me reading this like a full ${arche}.`,
+  `Current reader state: ${att}.`,
+  `Readerverse check-in: ${arche}.`,
+  `If you get it, you get it. ${arche} edition.`
+];
   const hooks = [
     "Be honest… what would your face be right here?",
     "Drop your reaction type in the comments 👇",
@@ -1405,12 +1323,9 @@ function getSelections(){
     archetype: $("archetype").value,
     expression: $("expression").value,
     micro: $("micro").value,
-    reaction: $("reaction").value,
-    mood: $("mood").value,
     attitude: $("attitude").value,
-
     pose: $("pose").value,
-    poseAtt: $("poseAtt").value,
+    
     complexion: $("complexion").value,
     bodyType: $("bodyType").value,
     faceShape: $("faceShape").value,
@@ -1436,8 +1351,8 @@ function getSelections(){
 
 function applySelections(sel){
   const ids = [
-    "archetype","expression","micro","reaction","mood","attitude",
-    "pose","poseAtt",
+    "archetype","expression","micro","attitude",
+    "pose",
     "complexion","bodyType","faceShape","extras",
     "hairColor","hair","makeup","lighting",
     "nailShape","nailDesign",
@@ -1474,11 +1389,8 @@ function applyArchetypeDNA(data, archetypeName){
 
   safeSet("expression", dna.expression, data.expression);
   safeSet("micro", dna.micro, data.micro);
-  safeSet("reaction", dna.reaction, data.reaction);
-  safeSet("mood", dna.mood, data.mood);
   safeSet("attitude", dna.attitude, data.attitude);
   safeSet("pose", dna.pose, data.pose);
-  safeSet("poseAtt", dna.poseAtt, data.poseAtt);
   safeSet("extras", dna.extras, data.extras);
   safeSet("lighting", dna.lighting, data.lighting);
   safeSet("background", dna.background, data.background);
@@ -1548,25 +1460,17 @@ function qualityGuardrails(sel){
   /* ====== SIGNATURE FACE GEOMETRY ====== */
 function signatureGeometry(){
   return [
-    "signature glam doll facial proportions",
-    "very large almond-shaped eyes occupying a large portion of the face",
-    "slightly lifted outer eye corners",
-    "thick dramatic top lashes",
-    "small softly defined nose",
-    "full rounded lips slightly larger on the bottom lip",
-    "high arched brows placed above the eye socket",
-    "smooth rounded cheek structure"
+    "very large eyes proportioned prominently on the face",
+    "smooth rounded cheek structure",
+    "full bottom lip slightly larger than the top lip"
   ].join(", ");
 }
 
   /* ====== LINE STYLE LOCK ====== */
 function lineStyle(){
   return [
-    "clean confident linework",
-    "thick outer contour lines",
-    "thin interior facial lines",
-    "smooth polished illustration lines",
-    "deliberate hand-drawn line variation"
+    "clean confident linework with subtle hand-drawn variation",
+    "thick outer contour lines and thinner interior facial lines"
   ].join(", ");
 }
 
@@ -1574,10 +1478,6 @@ function lineStyle(){
 function handDrawnFinish(){
   return [
     "subtle hand-drawn illustration feel",
-    "slight natural line variation",
-    "deliberate stylized facial construction",
-    "artist-drawn beauty character feel",
-    "less synthetic polish, more illustrated charm",
     "controlled stylization rather than plastic smoothness"
   ].join(", ");
 }
@@ -1612,16 +1512,11 @@ function buildSinglePrompt(sel){
   parts.push(sel.outfit);
   parts.push(sel.accessories);
 
-  // 3. Expression + attitude
+  // 3. Expression + attitude + pose
   parts.push(sel.expression);
   parts.push(sel.micro);
-  parts.push(sel.reaction);
-  parts.push(sel.mood);
   parts.push(sel.attitude);
-
-  // 4. Pose
-  parts.push(sel.pose);
-  parts.push(sel.poseAtt);
+  parts.push(sel.pose)
 
   // 5. Prop + scene
   if(sel.prop) parts.push(sel.prop);
@@ -1645,19 +1540,15 @@ if(sel.palette){
 }
 
   // 7. Composition
-  if(sel.composition) parts.push(sel.composition);
   parts.push(compositionRules(sel));
 
   // 8. Sticker handling
-  if(sel.carouselMode){
-    parts.push("centered character composition, clear silhouette, minimal background clutter");
-  }
-  if(sel.stickerOutline){
-    parts.push("clean die-cut sticker border");
-  }
+  if(sel.carouselMode || sel.stickerOutline || (sel.background && sel.background.toLowerCase().includes("transparent"))){
+  parts.push("isolated centered character, clean silhouette, no background clutter");
+}
 
-  if(sel.background && sel.background.toLowerCase().includes("transparent")){
-  parts.push("isolated character, clean silhouette, no background elements");
+if(sel.stickerOutline){
+  parts.push("clean die-cut sticker border");
 }
 
   // 9. Custom notes
@@ -1693,12 +1584,9 @@ function randomizeAll(data){
   $("archetype").value = pick(data.archetype);
   $("expression").value = pick(data.expression);
   $("micro").value = pick(data.micro);
-  $("reaction").value = pick(data.reaction);
-  $("mood").value = pick(data.mood);
   $("attitude").value = pick(data.attitude);
 
   $("pose").value = pick(data.pose);
-  $("poseAtt").value = pick(data.poseAtt);
 
   $("nailShape").value = pick(data.nailShape);
   $("nailDesign").value = pick(data.nailDesign);
@@ -1836,7 +1724,7 @@ function buildDrop(data){
 }
 
 /* ====== PACKS ====== */
-function buildReactionPack4(data){
+function buildExpressionPack4(data){
   const quote = $("quoteInput").value.trim();
   const original = getSelections();
   const rows = [];
@@ -1880,7 +1768,7 @@ function buildCarousel4(data){
   const style = $("carouselTitleStyle").value;
   const titles = slideTitles(style);
 
-  const rows = buildReactionPack4(data);
+  const rows = buildExpressionPack4(data);
 
   rows.forEach((r, idx)=>{
     const title = titles[idx] || "";
@@ -1971,12 +1859,8 @@ function init(){
   fillSelect("archetype", DATA.archetype);
   fillSelect("expression", DATA.expression);
   fillSelect("micro", DATA.micro);
-  fillSelect("reaction", DATA.reaction);
-  fillSelect("mood", DATA.mood);
   fillSelect("attitude", DATA.attitude);
-
   fillSelect("pose", DATA.pose);
-  fillSelect("poseAtt", DATA.poseAtt);
 
   fillSelect("complexion", DATA.complexion);
   fillSelect("bodyType", DATA.bodyType);
@@ -2101,9 +1985,9 @@ $("btnGenerate").addEventListener("click", ()=>{
     }];
   }
 
-  if(mode === "reaction4"){
-    if(!sel.quote){ alert("Paste a quote for Reaction Pack (4)."); return; }
-    rows = buildReactionPack4(DATA);
+  if(mode === "expression4"){
+    if(!sel.quote){ alert("Paste a quote for Expression Pack (4)."); return; }
+    rows = buildExpressionPack4(DATA);
 
     $("output").textContent = rows.map(r=>{
       return sel.contentMode
