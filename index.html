@@ -1429,19 +1429,18 @@ function compositionRules(sel){
 
   /* ====== QUALITY GUARDRAILS ====== */
 function qualityGuardrails(sel){
-  const rules = [
-    "exactly two eyes",
-    "exactly one nose",
-    "exactly one mouth",
-    "no cross-eyed gaze",
-    "no misaligned pupils",
-    "no distorted anatomy",
-    "no duplicated features",
+  return [
+    "no text, no watermark, no logo",
+    "exactly two eyes, exactly one nose, exactly one mouth",
+    "no cross-eyed gaze, no misaligned pupils",
+    "no distorted anatomy, no duplicated features",
     "no cluttered background",
-    "no random text",
-    "no watermark",
-    "no logo"
-  ];
+    "exactly two hands if hands are visible",
+    "natural hand placement",
+    "no duplicated limbs",
+    "no warped fingers"
+  ].join(", ");
+}
 
   if(sel.prop){
     rules.push(
