@@ -270,18 +270,18 @@
     </h1>
 
     <div class="sub">
-      <strong>For reader girlies who like their books spicy and their aesthetics expensive.</strong>
+      <strong>For reader girlies who like their books with dope plots, right amount of spice, and their aesthetics expensive.</strong>
       <br><br>
       Made for:
       <br>• Content creators
-      <br>• Romance readers & trope lovers
+      <br>• Bookish Culture Besties
       <br>• E-reader + physical book lovers
       <br>• DIY / journal / craft girlies
       <br>• Anybody building a bookish brand 💅🏾
     </div>
 
     <div class="pill">
-      Tip: Paste a quote → run <b>Reaction Pack</b> or <b>Carousel</b> → export CSV for viral content.
+      Tip: Paste a quote → run <b>Expression Pack</b> or <b>Carousel</b> → export CSV for viral content.
     </div>
 
   </div>
@@ -311,7 +311,7 @@
           <select id="mode">
             <option value="single">Single Character</option>
             <option value="match">Match Character to Quote</option>
-            <option value="reaction4">Reaction Pack (4)</option>
+            <option value="expression4">Archetype Pack (4)</option>
             <option value="carousel4">Carousel Generator (4 slides)</option>
             <option value="pack10">10-Pack From Quote</option>
             <option value="pack30">30-Pack (Full Product Drop)</option>
@@ -385,7 +385,7 @@ Sticker Outline
         </div>
         <div>
           <label for="customCategory">Custom Notes (optional)</label>
-          <input id="customCategory" type="text" placeholder="Example: trope tags, vibe notes, drop era"/>
+          <input id="customCategory" type="text" placeholder="Example: vibe notes, reader energy, drop era"/>
           <div class="note">Appends as “custom notes: …”</div>
         </div>
       </div>
@@ -434,17 +434,6 @@ Sticker Outline
     <label for="archetype">Reader Archetype</label>
     <select id="archetype"></select>
   </div>
-  <div>
-    <label for="genre">Genre</label>
-    <select id="genre"></select>
-  </div>
-</div>
-
-<div class="row">
-  <div>
-    <label for="trope">Trope</label>
-    <select id="trope"></select>
-  </div>
   <div></div>
 </div>
 
@@ -462,34 +451,15 @@ Sticker Outline
   </div>
 
   <div class="row">
-    <div>
-      <label for="reaction">Reader Reaction</label>
-      <select id="reaction"></select>
-    </div>
-    <div></div>
+  <div>
+    <label for="attitude">Attitude / Personality</label>
+    <select id="attitude"></select>
   </div>
-
-  <div class="row">
-    <div>
-      <label for="mood">Reader Mood</label>
-      <select id="mood"></select>
-    </div>
-    <div>
-      <label for="attitude">Attitude / Personality</label>
-      <select id="attitude"></select>
-    </div>
+  <div>
+    <label for="pose">Pose</label>
+    <select id="pose"></select>
   </div>
-
-  <div class="row">
-    <div>
-      <label for="pose">Pose</label>
-      <select id="pose"></select>
-    </div>
-    <div>
-      <label for="poseAtt">Pose Attitude</label>
-      <select id="poseAtt"></select>
-    </div>
-  </div>
+</div>
 
   <div class="row">
     <div>
@@ -599,13 +569,8 @@ Sticker Outline
             <option value="archetype">Archetype</option>
             <option value="expression">Expression</option>
             <option value="micro">Micro Expression</option>
-            <option value="reaction">Reaction</option>
-            <option value="mood">Mood</option>
             <option value="attitude">Attitude</option>
-            <option value="genre">Genre</option>
-            <option value="trope">Trope</option>
             <option value="pose">Pose</option>
-            <option value="poseAtt">Pose Attitude</option>
             <option value="complexion">Complexion</option>
             <option value="bodyType">Body Type</option>
             <option value="faceShape">Face Shape</option>
@@ -705,29 +670,20 @@ Sticker Outline
 
       <h2>Fast products</h2>
       <div class="chips">
-        <span class="chip">Reaction carousels</span>
+        <span class="chip">Expression carousels</span>
         <span class="chip">30-pack sticker drops</span>
         <span class="chip">E-reader insert prompts</span>
         <span class="chip">Character packs</span>
         <span class="chip">Caption + hook output</span>
-        <span class="chip">Multi-genre packs</span>
+        <span class="chip">Multi-archetypes packs</span>
       </div>
-      <div class="note">Best workflow: paste quote → <b>Reaction Pack</b> or <b>Carousel</b> → export CSV.</div>
+      <div class="note">Best workflow: paste quote → <b>Archetypes Pack</b> or <b>Carousel</b> → export CSV.</div>
     </aside>
 
   </div>
 </main>
 
 <script>
-
-  /* =========================
-   Readerverse Engine v1.5
-   Adds:
-   - Genre + Trope dropdowns
-   - Quote → genre matching
-   - Genre/Trope included in prompt output
-   - Genre hashtags added
-========================= */
 
 /* ====== OPTIONAL ACCESS GATE SETTINGS ====== */
 const ACCESS_GATE_ENABLED = false;
@@ -752,66 +708,6 @@ const DEFAULTS = {
     "Urban Book Club",
     "Feral Romance Reader",
     "Soft Girl Menace"
-  ],
-
-  /* ✅ NEW */
-  genre: [
-    "Romance (General)",
-    "Dark Romance",
-    "Urban Fiction",
-    "Street Lit",
-    "Reverse Harem / Why Choose",
-    "Thriller / Suspense",
-    "Mystery",
-    "Fantasy",
-    "Paranormal Romance",
-    "Monster Romance",
-    "Sci-Fi Romance",
-    "Contemporary Romance",
-    "Romantic Comedy",
-    "Historical Romance",
-    "YA / NA",
-    "Cozy Fantasy",
-    "Nonfiction (Bookish Lifestyle)"
-  ],
-  /* ✅ NEW */
-  trope: [
-    "Enemies to Lovers",
-    "Friends to Lovers",
-    "Morally Grey MMC",
-    "Forced Proximity",
-    "Billionaire / Wealth",
-    "Possessive / Protective",
-    "Second Chance",
-    "Workplace Romance",
-    "Marriage of Convenience",
-    "Forbidden Romance",
-    "Small Town",
-    "Sports Romance",
-    "Vampire / Demon / Witch",
-    "Fae / Kingdom / Magic",
-    "Magical Bookshop",
-    "Witch Cottage",
-    "Soft Magic",
-    "Cozy Village",
-    "Serial Killer / Cat & Mouse",
-    "Detective / Case File",
-    "Hood Love / Street Romance",
-    "Kingpin Romance",
-    "Ride or Die Romance",
-    "Trap Romance",
-    "Street Loyalty",
-    "Book Club Drama",
-    "Spicy Comedy",
-    "Slow Burn",
-    "Monster Boyfriend",
-    "Alien Romance",
-    "Demon Lover",
-    "Shadow Daddy",
-    "Tentacle Romance",
-    "Academy Reverse Harem",
-    "Paranormal Reverse Harem",
-    "Dark Why Choose"
   ],
 
   archetype: [
@@ -868,32 +764,6 @@ const DEFAULTS = {
     "soft squint like she knows the tea"
   ],
 
-  reaction: [
-    "suspicious side-eye reaction",
-    "unimpressed reader reaction",
-    "plot twist shock reaction",
-    "dramatic gasp reaction",
-    "laughing at the chaos reaction",
-    "“I knew it” smug reaction",
-    "“this man is unhinged” reaction",
-    "book club gossip reaction",
-    "emotionally damaged reaction",
-    "feral romance reader reaction"
-  ],
-
-  mood: [
-    "controlled chaos mood",
-    "plot twist panic mood",
-    "feral dark romance mood",
-    "late night binge reading mood",
-    "book hangover mood",
-    "romance high mood",
-    "judging the characters mood",
-    "petty commentary mood",
-    "soft cozy mood",
-    "revenge arc mood"
-  ],
-
   attitude: [
     "quietly petty",
     "bossy main character energy",
@@ -918,19 +788,6 @@ const DEFAULTS = {
     "peace sign selfie",
     "phone in hand reaction",
     "clutching book dramatically"
-  ],
-
-  poseAtt: [
-    "slow blink like she’s judging you",
-    "leaning with shoulder popped attitude",
-    "hair flip moment",
-    "calm but dangerous eyes",
-    "smug ‘told you so’ stance",
-    "dramatic gasp stance",
-    "gossiping like she has tea",
-    "unbothered posture",
-    "feral excitement posture",
-    "soft menace posture"
   ],
 
   complexion: [
@@ -1161,11 +1018,8 @@ const ARCHETYPE_DNA = {
   "Petty Reader": {
     expression: "dramatic side-eye",
     micro: "one eyebrow raised",
-    reaction: "suspicious side-eye reaction",
-    mood: "petty commentary mood",
     attitude: "quietly petty",
     pose: "arms crossed unimpressed",
-    poseAtt: "slow blink like she’s judging you",
     extras: "oversized glasses",
     lighting: "flash glam lighting",
     background: "pure white background (studio clean)",
@@ -1176,11 +1030,8 @@ const ARCHETYPE_DNA = {
   "Dark Romance Delulu": {
     expression: "dangerous smirk",
     micro: "half-lidded unimpressed gaze",
-    reaction: "“this man is unhinged” reaction",
-    mood: "feral dark romance mood",
     attitude: "villain apologist energy",
     pose: "looking over shoulder",
-    poseAtt: "calm but dangerous eyes",
     extras: "extra dramatic lashes",
     lighting: "subtle magenta rim light",
     background: "dark glam gradient with magenta rim glow",
@@ -1191,11 +1042,8 @@ const ARCHETYPE_DNA = {
   "Plot Twist Detective": {
     expression: "wide shocked eyes",
     micro: "eyes widened slightly",
-    reaction: "plot twist shock reaction",
-    mood: "plot twist panic mood",
     attitude: "emotionally invested",
     pose: "hands near face shocked",
-    poseAtt: "dramatic gasp stance",
     extras: "manga lashes",
     lighting: "high contrast dramatic lighting",
     background: "comic pop art halftone background",
@@ -1206,11 +1054,8 @@ const ARCHETYPE_DNA = {
   "Morally Gray Enjoyer": {
     expression: "mischievous grin",
     micro: "tiny smirk corner",
-    reaction: "feral romance reader reaction",
-    mood: "romance high mood",
     attitude: "chaotic reader energy",
     pose: "clutching book dramatically",
-    poseAtt: "feral excitement posture",
     extras: "extra dramatic lashes",
     lighting: "studio beauty lighting",
     background: "sparkle gradient glam background",
@@ -1221,11 +1066,8 @@ const ARCHETYPE_DNA = {
   "Soft Girl Menace": {
     expression: "soft knowing smile",
     micro: "chin slightly lifted",
-    reaction: "“I knew it” smug reaction",
-    mood: "soft cozy mood",
     attitude: "soft voice hard leverage",
     pose: "leaning slightly with attitude",
-    poseAtt: "soft menace posture",
     extras: "flutter lashes",
     lighting: "soft beauty lighting",
     background: "soft pink gradient with twinkle stars",
@@ -1236,11 +1078,8 @@ const ARCHETYPE_DNA = {
   "Audiobook Multitasker": {
     expression: "chaotic laugh",
     micro: "soft squint like she knows the tea",
-    reaction: "laughing at the chaos reaction",
-    mood: "late night binge reading mood",
     attitude: "unbothered & booked",
     pose: "peace sign selfie",
-    poseAtt: "leaning with shoulder popped attitude",
     extras: "none",
     lighting: "warm golden glow lighting",
     background: "bubblegum pop art background",
@@ -1335,7 +1174,7 @@ function downloadText(filename, text){
   URL.revokeObjectURL(url);
 }
 function buildCSV(rows){
-  const headers = ["label","dropName","dropTheme","quoteReference","genre","trope","prompt","caption","hook","hashtags","slideText"];
+  const headers = ["label","dropName","dropTheme","quoteReference","prompt","caption","hook","hashtags","slideText"];
   const lines = [headers.join(",")];
   rows.forEach(r=>{
     lines.push([
@@ -1343,8 +1182,6 @@ function buildCSV(rows){
       escapeCSV(r.dropName||""),
       escapeCSV(r.dropTheme||""),
       escapeCSV(r.quoteReference||""),
-      escapeCSV(r.genre||""),
-      escapeCSV(r.trope||""),
       escapeCSV(r.prompt||""),
       escapeCSV(r.caption||""),
       escapeCSV(r.hook||""),
@@ -1372,43 +1209,44 @@ function showBuilderView(){
   $("builderView").addEventListener("change", showBuilderView);
 
 /* ====== BASE STYLE LOCK ====== */
-function basePrompt(){
+function styleCore(){
   return [
-    "high-end Y2K glam doll illustration",
-    "Bratz inspired beauty cartoon illustration",
-    "ultra feminine melanated character",
-    "hand-drawn look with clean linework",
-    "smooth airbrushed complexion",
-    "large almond shaped eyes with dramatic lashes",
-    "eyes naturally aligned, symmetrical eye placement, both pupils looking in the same direction, natural gaze direction, no cross-eye focus, no misaligned pupils",
-    "glossy full lips",
-    "softly contoured cheeks",
-    "glam beauty aesthetic",
-    "exactly two hands, one left hand and one right hand only, no extra hands, no duplicated limbs",
-    "premium sticker illustration style",
-    "sparkle highlights",
-    "ultra polished high quality digital illustration"
+    "hand-drawn glam cartoon beauty illustration",
+    "feminine melanated doll aesthetic",
+    "bold clean linework",
+    "smooth controlled gradient shading",
+    "vibrant polished colors",
+    "sticker-friendly composition"
   ].join(", ");
 }
 
+function faceDNA(){
+  return [
+    "signature glam doll face",
+    "large almond-shaped eyes with lifted outer corners",
+    "dramatic top lashes and bright catchlights",
+    "sculpted high-arched brows",
+    "small softly defined nose with glossy highlight",
+    "full glossy lips with defined cupid's bow",
+    "soft heart-shaped face",
+    "clean symmetrical facial proportions",
+    "deliberate baby hairs when visible"
+  ].join(", ");
+}
 /* ====== CONTENT MODE ====== */
 function buildContent(sel){
   const q = sel.quote || "";
   const arche = sel.archetype || "Reader";
-  const mood = sel.mood || "bookish";
   const att = sel.attitude || "unbothered";
-  const rx = sel.reaction || "reaction";
   const theme = sel.dropTheme || "";
-  const genre = sel.genre || "";
-  const trope = sel.trope || "";
-
+  
   const captions = [
-    `${arche} energy: ${att}.`,
-    `Me reading this like: ${rx}.`,
-    `This chapter had me in ${mood}.`,
-    `Readerverse check-in: ${arche}.`,
-    `If you get it, you get it. ${arche} edition.`
-  ];
+  `${arche} energy: ${att}.`,
+  `Me reading this like a full ${arche}.`,
+  `Current reader state: ${att}.`,
+  `Readerverse check-in: ${arche}.`,
+  `If you get it, you get it. ${arche} edition.`
+];
   const hooks = [
     "Be honest… what would your face be right here?",
     "Drop your reaction type in the comments 👇",
@@ -1429,63 +1267,16 @@ const discoveryTags = [
  "#BookishCommunity"
 ];
 
-const genreTagMap = {
- "Dark Romance": ["#DarkRomance", "#DarkRomanceBooks", "#MorallyGreyMMC"],
- "Urban Fiction": ["#UrbanFiction", "#UrbanBookTok", "#StreetLit"],
- "Thriller / Suspense": ["#ThrillerBooks", "#ThrillerReader"],
- "Street Lit": [
-  "#StreetLit",
-  "#UrbanRomance",
-  "#HoodRomance",
-  "#TrapLove"
-],
-  "Mystery": ["#MysteryBooks", "#Whodunit"],
- "Fantasy": ["#FantasyBooks", "#FantasyReader"],
- "Paranormal Romance": ["#ParanormalRomance", "#SupernaturalRomance"],
- "Sci-Fi Romance": ["#SciFiRomance"],
- "Contemporary Romance": ["#ContemporaryRomance"],
- "Romantic Comedy": ["#RomComBooks"],
- "Historical Romance": ["#HistoricalRomance"],
-  "Monster Romance": [
-  "#MonsterRomance",
-  "#MonsterRomanceBooks",
-  "#MonsterBoyfriend"
-],
-
-"Reverse Harem / Why Choose": [
-  "#ReverseHarem",
-  "#WhyChooseRomance",
-  "#WhyChoose"
-],
-
-"Cozy Fantasy": [
-  "#CozyFantasy",
-  "#CozyFantasyBooks",
-  "#CottagecoreFantasy"
-]
-};
-
 let hashtags = [
  ...brandTags,
  ...discoveryTags
 ];
-
-if(genre && genreTagMap[genre]){
- hashtags.push(...genreTagMap[genre]);
-}
-
-if(trope){
- hashtags.push("#" + trope.replace(/[^a-z0-9]+/gi,""));
-}
 
   const t = normalize(q);
   if(t.includes("plot twist") || t.includes("twist")) hashtags.push("#PlotTwist");
   if(t.includes("villain") || t.includes("morally")) hashtags.push("#MorallyGrey");
   if(t.includes("obsessed") || t.includes("mine") || t.includes("possessive") || t.includes("ruin")) hashtags.push("#ObsessedMMC");
   if(theme) hashtags.push("#" + theme.replace(/\s+/g,""));
-
-  if(genre) hashtags.push("#" + genre.replace(/[^a-z0-9]+/gi,""));
-  if(trope) hashtags.push("#" + trope.replace(/[^a-z0-9]+/gi,""));
 
   return {
     caption: pick(captions) + (q ? `\n\n“${q}”` : ""),
@@ -1530,16 +1321,9 @@ function getSelections(){
     archetype: $("archetype").value,
     expression: $("expression").value,
     micro: $("micro").value,
-    reaction: $("reaction").value,
-    mood: $("mood").value,
     attitude: $("attitude").value,
-
-    /* ✅ NEW */
-    genre: $("genre").value,
-    trope: $("trope").value,
-
     pose: $("pose").value,
-    poseAtt: $("poseAtt").value,
+    
     complexion: $("complexion").value,
     bodyType: $("bodyType").value,
     faceShape: $("faceShape").value,
@@ -1565,9 +1349,8 @@ function getSelections(){
 
 function applySelections(sel){
   const ids = [
-    "archetype","expression","micro","reaction","mood","attitude",
-    "genre","trope",
-    "pose","poseAtt",
+    "archetype","expression","micro","attitude",
+    "pose",
     "complexion","bodyType","faceShape","extras",
     "hairColor","hair","makeup","lighting",
     "nailShape","nailDesign",
@@ -1604,11 +1387,8 @@ function applyArchetypeDNA(data, archetypeName){
 
   safeSet("expression", dna.expression, data.expression);
   safeSet("micro", dna.micro, data.micro);
-  safeSet("reaction", dna.reaction, data.reaction);
-  safeSet("mood", dna.mood, data.mood);
   safeSet("attitude", dna.attitude, data.attitude);
   safeSet("pose", dna.pose, data.pose);
-  safeSet("poseAtt", dna.poseAtt, data.poseAtt);
   safeSet("extras", dna.extras, data.extras);
   safeSet("lighting", dna.lighting, data.lighting);
   safeSet("background", dna.background, data.background);
@@ -1621,98 +1401,147 @@ function applyArchetypeDNA(data, archetypeName){
   }
 }
 
+function compositionRules(sel){
+  const comp = (sel.composition || "").toLowerCase();
+
+  if(comp.includes("full body") || comp.includes("head-to-toe") || comp.includes("feet")){
+    return "full body framing, head-to-toe, feet visible, no cropping";
+  }
+
+  if(comp.includes("three-quarter") || comp.includes("thigh")){
+    return "three-quarter body framing, thighs visible, outfit clearly visible";
+  }
+
+  if(comp.includes("waist-up") || comp.includes("upper half")){
+    return "waist-up framing, hands and prop visible";
+  }
+
+  if(comp.includes("head + shoulders") || comp.includes("beauty portrait")){
+    return "head-and-shoulders beauty portrait";
+  }
+
+  if(comp.includes("close-up") || comp.includes("face focus")){
+    return "close-up portrait, emphasis on eyes and expression";
+  }
+
+  return "clean centered character composition";
+}
+
+  /* ====== QUALITY GUARDRAILS ====== */
+function qualityGuardrails(sel){
+  const rules = [
+    "no text, no watermark, no logo",
+    "exactly two eyes, exactly one nose, exactly one mouth",
+    "no cross-eyed gaze, no misaligned pupils",
+    "no distorted anatomy, no duplicated features",
+    "no cluttered background"
+  ];
+
+  if(sel.prop){
+    rules.push(
+      "exactly two hands if hands are visible",
+      "natural hand placement",
+      "no duplicated limbs",
+      "no warped fingers"
+    );
+  }
+
+  return rules.join(", ");
+}
+
+  /* ====== SIGNATURE FACE GEOMETRY ====== */
+function signatureGeometry(){
+  return [
+    "fuller lower lip slightly larger than the top lip"
+  ].join(", ");
+}
+
+  /* ====== LINE STYLE LOCK ====== */
+function lineStyle(){
+  return [
+    "clean confident linework with subtle hand-drawn variation",
+    "thick outer contour lines and thinner interior facial lines"
+  ].join(", ");
+}
+
+  /* ====== HAND-DRAWN FINISH ====== */
+function handDrawnFinish(){
+  return [
+    "subtle hand-drawn illustration feel",
+    "controlled stylization rather than plastic smoothness"
+  ].join(", ");
+}
+
+  function isNeutralBackground(bg){
+  const b = (bg || "").toLowerCase();
+  return b.includes("white") || b.includes("transparent");
+}
 /* ====== PROMPT BUILD ====== */
 function buildSinglePrompt(sel){
   const parts = [];
-parts.push(
-"stylized glam cartoon beauty illustration, high-end digital sticker art, luxury beauty editorial style, fashion-forward styling, detailed clothing textures"
-);
-parts.push("highly polished character illustration, crisp linework, vibrant colors");
-parts.push(
-"clean centered composition, single character focus, expressive reaction face, sticker-friendly framing, minimal background clutter"
-);
-parts.push(
-"pure white or transparent background, bold sticker outline, minimal background detail"
-);
-parts.push(
-"illustration style not realism, smooth cartoon shading, minimal skin texture, balanced lighting, polished color harmony, symmetrical facial features, large expressive eyes, dramatic lashes, glossy lips, glam beauty illustration aesthetic, detailed hairline, clean edges and baby hairs, defined braids and textured hair strands"
-);
-  parts.push(basePrompt());
-  parts.push("character fully visible when full-body composition is selected");
-  
+
+  // 1. Core style
+  parts.push(styleCore());
+  parts.push(faceDNA());
+  parts.push(signatureGeometry());
+  parts.push(lineStyle());
+  parts.push(handDrawnFinish());
+  // 2. Character build
+  parts.push(sel.complexion);
   parts.push(sel.bodyType);
   parts.push(sel.faceShape);
 
   parts.push(sel.hairColor);
   parts.push(sel.hair);
-
   parts.push(sel.makeup);
   parts.push(sel.extras);
-  parts.push(sel.lighting);
 
   parts.push(sel.nailShape);
   parts.push(sel.nailDesign);
 
   parts.push(sel.outfit);
-  parts.push("outfit clearly visible, clothing details sharp and consistent");
   parts.push(sel.accessories);
 
-  parts.push(sel.archetype + " reader character");
-  parts.push(sel.expression + " expression");
-  parts.push(sel.micro + " micro-expression");
-  parts.push(sel.reaction);
-  parts.push(sel.mood);
+  // 3. Expression + attitude + pose
+  parts.push(sel.expression);
+  parts.push(sel.micro);
   parts.push(sel.attitude);
+  parts.push(sel.pose)
 
-  /* ✅ NEW */
-  if(sel.genre) parts.push("genre: " + sel.genre);
-  if(sel.trope) parts.push("trope: " + sel.trope);
+  // 5. Prop + scene
+  if(sel.prop) parts.push(sel.prop);
+  if(sel.scene) parts.push(sel.scene);
 
-  parts.push(sel.pose + " pose");
-parts.push(sel.poseAtt);
-parts.push(sel.prop);
+  // 6. Background + palette
 
-if(sel.prop){
-  parts.push("both hands holding the prop naturally, one hand on each side of the object, natural finger placement, clean hand anatomy");
-}
-  parts.push("exactly two hands, one left hand and one right hand only, no extra hands, no duplicated limbs");
-  parts.push("correct human anatomy, natural hand proportions, no extra fingers");
-  
-const propText = normalize(sel.prop || "");
-if(propText.includes("book") || propText.includes("e-reader") || propText.includes("kindle")){
-  parts.push("book or e-reader clearly visible, correctly aligned in both hands, readable object shape, no warped edges");
-}
+if(sel.background){
 
-parts.push("clear silhouette, prop below face level, not blocking the face");
-parts.push(sel.scene);
   parts.push(sel.background);
-  const bg = (sel.background || "").toLowerCase();
-  const stickerBg = bg.includes("transparent") || bg.includes("pure white");
 
-if(!stickerBg){
-  parts.push("color palette guidance (apply to outfit and background accents only): " + sel.palette + ", do not tint skin or entire image");
-}
-  parts.push(sel.composition);
-  // ✅ composition-specific steering (respects full-body / waist-up / close-up)
-const comp = normalize(sel.composition);
+  if(!isNeutralBackground(sel.background)){
+    parts.push("subtle background lighting accents");
+  }
 
-if(comp.includes("full body") || comp.includes("head-to-toe") || comp.includes("feet")){
-  parts.push("full body, head-to-toe framing, feet visible, no cropping");
-} else if(comp.includes("three-quarter") || comp.includes("thigh")){
-  parts.push("three-quarter body framing, thighs visible, outfit clearly visible");
-} else if(comp.includes("waist-up") || comp.includes("upper half")){
-  parts.push("waist-up framing, hands and prop visible");
-} else if(comp.includes("head + shoulders") || comp.includes("beauty portrait")){
-  parts.push("head-and-shoulders portrait framing");
-} else if(comp.includes("close-up") || comp.includes("face focus")){
-  parts.push("close-up face framing, emphasize eyes and expression");
-}
-  if(sel.carouselMode){
-  parts.push(
-    "sticker constraints: clean cutout, bold outline, minimal background clutter, subject centered, avoid cropping important features"
-  );
 }
 
+if(sel.palette){
+  parts.push("cohesive color palette applied to outfit, nails, accessories, and background accents: " + sel.palette);
+  parts.push("preserve natural skin tone, do not color-cast the skin");
+}
+
+  // 7. Composition
+  parts.push(compositionRules(sel));
+
+  // 8. Sticker handling
+  if(sel.carouselMode || sel.stickerOutline || (sel.background && sel.background.toLowerCase().includes("transparent"))){
+  parts.push("isolated centered character, clean silhouette, no background clutter");
+}
+
+if(sel.stickerOutline){
+  parts.push("clean die-cut sticker border");
+}
+
+  // 9. Custom notes
   if(sel.customCategory){
     parts.push("custom notes: " + sel.customCategory);
   }
@@ -1721,17 +1550,19 @@ if(comp.includes("full body") || comp.includes("head-to-toe") || comp.includes("
   }
   parseCustomCategoryLines(sel.customCategories).forEach(x => parts.push(x));
 
+  // 10. Text restrictions
   if(sel.noText){
     parts.push("no text, no watermark, no logo");
   }
+
+  // 11. Negative prompt
   if(sel.negativePrompt){
     parts.push(sel.negativePrompt);
   }
-  if(sel.stickerOutline){
-  parts.push("clean die-cut sticker aesthetic, crisp white sticker border outline, subject fully visible");
-}else{
-  parts.push("clean illustration aesthetic, no sticker border, clean edges");
-}
+
+  // 12. Cleanup guardrails
+  parts.push(qualityGuardrails(sel));
+
   return parts.filter(Boolean).join(", ");
 }
 
@@ -1743,15 +1574,9 @@ function randomizeAll(data){
   $("archetype").value = pick(data.archetype);
   $("expression").value = pick(data.expression);
   $("micro").value = pick(data.micro);
-  $("reaction").value = pick(data.reaction);
-  $("mood").value = pick(data.mood);
   $("attitude").value = pick(data.attitude);
 
-  $("genre").value = pick(data.genre);
-  $("trope").value = pick(data.trope);
-
   $("pose").value = pick(data.pose);
-  $("poseAtt").value = pick(data.poseAtt);
 
   $("nailShape").value = pick(data.nailShape);
   $("nailDesign").value = pick(data.nailDesign);
@@ -1785,7 +1610,7 @@ function randomizeAll(data){
   }
 }
 
-/* ====== QUOTE MATCHER (archetype + genre) ====== */
+/* ====== QUOTE MATCHER (archetype) ====== */
 function matchToQuote(data, quoteRaw, strength){
   const quote = normalize(quoteRaw);
   const has = (...words)=>words.some(w=>quote.includes(w));
@@ -1805,35 +1630,6 @@ function matchToQuote(data, quoteRaw, strength){
     arche = "Morally Gray Enjoyer";
   }
   $("archetype").value = arche;
-
-  let genrePick = "Romance (General)";
-  let tropePick = $("trope").value || "Slow Burn";
-
-  if(has("murder","killer","blood","crime","case","detective","alibi","evidence","suspect","serial")){
-    genrePick = "Thriller / Suspense";
-    tropePick = "Detective / Case File";
-  } else if(has("plot twist","twist","betrayal","secret","double life","exposed")){
-    genrePick = "Mystery";
-    tropePick = "Detective / Case File";
-  } else if(has("witch","vampire","demon","curse","coven","spell","hex","paranormal")){
-    genrePick = "Paranormal Romance";
-    tropePick = "Vampire / Demon / Witch";
-  } else if(has("fae","kingdom","magic","dragon","sword","realm","court")){
-    genrePick = "Fantasy";
-    tropePick = "Fae / Kingdom / Magic";
-  } else if(has("street","hood","trap","boss","hustle","city","ride or die")){
-    genrePick = "Urban Fiction";
-    tropePick = "Hood Love / Street Romance";
-  } else if(has("billionaire","rich","heir","penthouse","luxury","ceo","mogul")){
-    genrePick = "Dark Romance";
-    tropePick = "Billionaire / Wealth";
-  } else if(has("enemies","hate","can’t stand","rivals")){
-    genrePick = "Romance (General)";
-    tropePick = "Enemies to Lovers";
-  }
-
-  if(data.genre.includes(genrePick)) $("genre").value = genrePick;
-  if(data.trope.includes(tropePick)) $("trope").value = tropePick;
 
   if($("smartArchetype").checked){
     applyArchetypeDNA(data, arche);
@@ -1897,8 +1693,6 @@ function buildDrop(data){
       dropName: name,
       dropTheme: theme,
       quoteReference: quote,
-      genre: s.genre || "",
-      trope: s.trope || "",
       prompt,
       caption: content?.caption || "",
       hook: content?.hook || "",
@@ -1920,7 +1714,7 @@ function buildDrop(data){
 }
 
 /* ====== PACKS ====== */
-function buildReactionPack4(data){
+function buildExpressionPack4(data){
   const quote = $("quoteInput").value.trim();
   const original = getSelections();
   const rows = [];
@@ -1947,8 +1741,6 @@ function buildReactionPack4(data){
       dropName:"",
       dropTheme:"",
       quoteReference: quote,
-      genre: s.genre || "",
-      trope: s.trope || "",
       prompt,
       caption: content?.caption || "",
       hook: content?.hook || "",
@@ -1966,7 +1758,7 @@ function buildCarousel4(data){
   const style = $("carouselTitleStyle").value;
   const titles = slideTitles(style);
 
-  const rows = buildReactionPack4(data);
+  const rows = buildExpressionPack4(data);
 
   rows.forEach((r, idx)=>{
     const title = titles[idx] || "";
@@ -1995,8 +1787,6 @@ function buildPackN(data, n, labelPrefix){
       dropName:"",
       dropTheme:"",
       quoteReference: quote,
-      genre: s.genre || "",
-      trope: s.trope || "",
       prompt,
       caption: content?.caption || "",
       hook: content?.hook || "",
@@ -2059,16 +1849,8 @@ function init(){
   fillSelect("archetype", DATA.archetype);
   fillSelect("expression", DATA.expression);
   fillSelect("micro", DATA.micro);
-  fillSelect("reaction", DATA.reaction);
-  fillSelect("mood", DATA.mood);
   fillSelect("attitude", DATA.attitude);
-
-  /* ✅ NEW */
-  fillSelect("genre", DATA.genre);
-  fillSelect("trope", DATA.trope);
-
   fillSelect("pose", DATA.pose);
-  fillSelect("poseAtt", DATA.poseAtt);
 
   fillSelect("complexion", DATA.complexion);
   fillSelect("bodyType", DATA.bodyType);
@@ -2129,8 +1911,6 @@ $("btnRandom").addEventListener("click", ()=>{
     dropName:"",
     dropTheme:"",
     quoteReference:s.quote,
-    genre:s.genre || "",
-    trope:s.trope || "",
     prompt,
     caption: content?.caption || "",
     hook: content?.hook || "",
@@ -2162,8 +1942,6 @@ $("btnGenerate").addEventListener("click", ()=>{
       dropName:"",
       dropTheme:"",
       quoteReference:sel.quote,
-      genre:sel.genre || "",
-      trope:sel.trope || "",
       prompt,
       caption: content?.caption || "",
       hook: content?.hook || "",
@@ -2189,8 +1967,6 @@ $("btnGenerate").addEventListener("click", ()=>{
       dropName:"",
       dropTheme:"",
       quoteReference:sel.quote,
-      genre:s.genre || "",
-      trope:s.trope || "",
       prompt,
       caption: content?.caption || "",
       hook: content?.hook || "",
@@ -2199,13 +1975,13 @@ $("btnGenerate").addEventListener("click", ()=>{
     }];
   }
 
-  if(mode === "reaction4"){
-    if(!sel.quote){ alert("Paste a quote for Reaction Pack (4)."); return; }
-    rows = buildReactionPack4(DATA);
+  if(mode === "expression4"){
+    if(!sel.quote){ alert("Paste a quote for Expression Pack (4)."); return; }
+    rows = buildExpressionPack4(DATA);
 
     $("output").textContent = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
   }
@@ -2217,7 +1993,7 @@ $("btnGenerate").addEventListener("click", ()=>{
     const post = buildContent(getSelections());
     const postCaption = `POST CAPTION\n${post.caption}\n\nCOMMENT HOOK\n${post.hook}\n\nHASHTAGS\n${post.hashtags}\n\n`;
     const slides = rows.map((r, idx)=>{
-      return `SLIDE ${idx+1}\n${r.slideText}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nPROMPT\n${r.prompt}`;
+      return `SLIDE ${idx+1}\n${r.slideText}\n\nPROMPT\n${r.prompt}`;
     }).join("\n\n---\n\n");
 
     $("output").textContent = postCaption + "\n" + slides;
@@ -2228,7 +2004,7 @@ $("btnGenerate").addEventListener("click", ()=>{
     rows = buildPackN(DATA, 10, "Pack");
     $("output").textContent = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
   }
@@ -2238,7 +2014,7 @@ $("btnGenerate").addEventListener("click", ()=>{
     rows = drop.rows;
     $("output").textContent = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
   }
@@ -2250,7 +2026,7 @@ $("btnGenerate").addEventListener("click", ()=>{
     const header = `DROP NAME\n${drop.dropName}\n\nDROP THEME\n${drop.dropTheme}\n\nQUOTE (optional)\n${drop.quoteReference || "(none)"}\n\n=== OUTPUT ===\n`;
     const body = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
 
@@ -2270,8 +2046,6 @@ $("btnGenerate").addEventListener("click", ()=>{
         dropName:"",
         dropTheme:"",
         quoteReference:"",
-        genre:s.genre || "",
-        trope:s.trope || "",
         prompt,
         caption: content?.caption || "",
         hook: content?.hook || "",
@@ -2282,7 +2056,7 @@ $("btnGenerate").addEventListener("click", ()=>{
 
     $("output").textContent = rows.map(r=>{
       return sel.contentMode
-        ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+        ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
         : `${r.label}\n${r.prompt}`;
     }).join("\n\n---\n\n");
   }
@@ -2379,7 +2153,7 @@ $("btnLoadDrop").addEventListener("click", ()=>{
   const header = `DROP NAME\n${drop.dropName}\n\nDROP THEME\n${drop.dropTheme}\n\nQUOTE (optional)\n${drop.quoteReference || "(none)"}\n\n=== OUTPUT ===\n`;
   const body = drop.rows.map(r=>{
     return sel.contentMode
-      ? `${r.label}\nPROMPT\n${r.prompt}\n\nGENRE\n${r.genre}\nTROPE\n${r.trope}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
+      ? `${r.label}\nPROMPT\n${r.prompt}\n\nCAPTION\n${r.caption}\n\nHOOK\n${r.hook}\n\nHASHTAGS\n${r.hashtags}`
       : `${r.label}\n${r.prompt}`;
   }).join("\n\n---\n\n");
 
@@ -2463,8 +2237,6 @@ $("btnLoadPreset").addEventListener("click", ()=>{
     dropName:"",
     dropTheme:"",
     quoteReference:s.quote,
-    genre:s.genre || "",
-    trope:s.trope || "",
     prompt,
     caption: content?.caption || "",
     hook: content?.hook || "",
